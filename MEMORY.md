@@ -122,6 +122,7 @@
 - `README.md` - 项目说明
 - `DEPLOYMENT.md` - 部署文档
 - `ACCEPTANCE-CRITERIA.md` - 验收标准
+- **`项目验收经验教训.md` - 验收经验教训（Day 20 反思）**
 
 ### PROGRESS 目录
 - `PROGRESS/Day1-完成报告.md` 到 `PROGRESS/Day20-最终验收报告.md`
