@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 心情打卡 (PC 版)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 30px;
+        }
+
+        /* 左侧个人信息卡片 */
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(102, 126, 234, 0.15);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            border: 5px solid rgba(255,255,255,0.4);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .username {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-id {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .profile-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+
+        .section-title span {
+            font-size: 1.3rem;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .info-item:hover {
+            background: #e8eaf6;
+        }
+
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        /* 右侧内容区 */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(102, 126, 234, 0.12);
+            overflow: hidden;
+        }
+
+        .menu-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .menu-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-list {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+            gap: 20px;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(90deg, #f8f9fa 0%, rgba(248, 249, 250, 0) 100%);
+            padding-left: 35px;
+        }
+
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .menu-icon.blue { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
+        .menu-icon.green { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .menu-icon.orange { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); }
+        .menu-icon.purple { background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); }
+        .menu-icon.red { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
+        .menu-icon.gray { background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); }
+
+        .menu-content {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 1.05rem;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .menu-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .menu-arrow {
+            color: #cbd5e0;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover .menu-arrow {
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* 设置开关 */
+        .settings-list {
+            padding: 10px 0;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .setting-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-label {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .setting-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+
+        .toggle {
+            width: 56px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            right: 3px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .toggle.off {
+            background: #e0e0e0;
+        }
+
+        .toggle.off::after {
+            transform: translateX(-24px);
+        }
+
+        /* 编辑按钮 */
+        .edit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 18px;
+            background: white;
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff4444;
+            color: white;
+        }
+
+        /* 成就徽章展示 */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px 30px;
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .badge-item:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .badge-item:hover .badge-emoji {
+            filter: brightness(0) invert(1);
+        }
+
+        .badge-item:hover .badge-name {
+            color: white;
+        }
+
+        .badge-emoji {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .badge-name {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-title">
+        <h1>👤 个人中心</h1>
+        <p>Personal Center - PC Layout</p>
+    </div>
+
+    <div class="main-container">
+        <!-- 左侧个人信息 -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">😊</div>
+                <div class="username">建权</div>
+                <div class="user-id">ID: 88291034</div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-value">28</span>
+                    <span class="stat-label">打卡天数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">心情徽章</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">7</span>
+                    <span class="stat-label">连续打卡</span>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                <div class="section-title">
+                    <span>📋</span> 个人信息
+                </div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <div class="info-label">邮箱</div>
+                            <div class="info-value">jianquan@example.com</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div class="info-content">
+                            <div class="info-label">手机号</div>
+                            <div class="info-value">138****5678</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🎂</div>
+                        <div class="info-content">
+                            <div class="info-label">生日</div>
+                            <div class="info-value">1995 年 6 月 15 日</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <div class="info-label">地区</div>
+                            <div class="info-value">北京市朝阳区</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="edit-btn">✏️ 编辑资料</button>
+                <button class="logout-btn">🚪 退出登录</button>
+            </div>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="content-area">
+            <!-- 功能菜单 -->
+            <div class="menu-card">
+                <div class="menu-header">
+                    <h3>🎯 我的功能</h3>
+                </div>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <div class="menu-icon blue">📝</div>
+                        <div class="menu-content">
+                            <div class="menu-title">打卡历史</div>
+                            <div class="menu-desc">查看所有心情记录</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon green">📊</div>
+                        <div class="menu-content">
+                            <div class="menu-title">数据统计</div>
+                            <div class="menu-desc">心情趋势分析</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon orange">🏆</div>
+                        <div class="menu-content">
+                            <div class="menu-title">成就徽章</div>
+                            <div class="menu-desc">已解锁 5 个徽章</div>
+                        </div>
+                        <span class="badge">5</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon purple">🔔</div>
+                        <div class="menu-content">
+                            <div class="menu-title">消息通知</div>
+                            <div class="menu-desc">打卡提醒设置</div>
+                        </div>
+                        <span class="badge">3</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成就徽章 -->
+            <div class="menu-card">
+                <div class="menu-header">
+                    <h3>🎖️ 我的徽章</h3>
+                </div>
+                <div class="badges-grid">
+                    <div class="badge-item">
+                        <div class="badge-emoji">🔥</div>
+                        <div class="badge-name">连续打卡</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-emoji">⭐</div>
+                        <div class="badge-name">早起鸟</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-emoji">🌙</div>
+                        <div class="badge-name">夜猫子</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-emoji">💪</div>
+                        <div class="badge-name">坚持达人</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设置 -->
+            <div class="menu-card">
+                <div class="menu-header">
+                    <h3>⚙️ 设置</h3>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-icon">🎨</div>
+                            <div class="setting-text">
+                                <div class="setting-label">主题外观</div>
+                                <div class="setting-desc">深色/浅色模式切换</div>
+                            </div>
+                        </div>
+                        <div class="toggle off"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-icon">🔔</div>
+                            <div class="setting-text">
+                                <div class="setting-label">每日提醒</div>
+                                <div class="setting-desc">每天早上 9:00 提醒打卡</div>
+                            </div>
+                        </div>
+                        <div class="toggle"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-icon">🔒</div>
+                            <div class="setting-text">
+                                <div class="setting-label">隐私模式</div>
+                                <div class="setting-desc">隐藏心情数据</div>
+                            </div>
+                        </div>
+                        <div class="toggle off"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-icon">❓</div>
+                            <div class="setting-text">
+                                <div class="setting-label">帮助与反馈</div>
+                                <div class="setting-desc">常见问题解答</div>
+                            </div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-icon">ℹ️</div>
+                            <div class="setting-text">
+                                <div class="setting-label">关于我们</div>
+                                <div class="setting-desc">版本 1.0.0</div>
+                            </div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

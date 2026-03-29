@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知设置 - 小雅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background: #f0f1f2;
+            transform: translateX(4px);
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+        }
+
+        .setting-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #e0e0e0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .toggle.active .toggle-knob {
+            transform: translateX(24px);
+        }
+
+        /* Select Dropdown */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select {
+            padding: 10px 36px 10px 16px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #666;
+        }
+
+        /* Time Picker */
+        .time-picker {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .time-input {
+            padding: 10px 16px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            width: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f1f2;
+            color: #1a1a2e;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: 8px;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 通知设置</h1>
+            <p>自定义您的通知偏好，不错过重要提醒</p>
+        </div>
+
+        <div class="content">
+            <!-- 通知开关 -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">📱</span>
+                    通知开关
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">推送通知 <span class="badge">推荐</span></div>
+                        <div class="setting-desc">接收应用内推送通知</div>
+                    </div>
+                    <div class="toggle active" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">声音提醒</div>
+                        <div class="setting-desc">通知时播放提示音</div>
+                    </div>
+                    <div class="toggle active" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">震动反馈</div>
+                        <div class="setting-desc">通知时震动（仅移动设备）</div>
+                    </div>
+                    <div class="toggle" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 通知类型 -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">📋</span>
+                    通知类型
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">日程提醒</div>
+                        <div class="setting-desc">日程开始前提醒</div>
+                    </div>
+                    <div class="select-wrapper">
+                        <select class="select">
+                            <option>提前 15 分钟</option>
+                            <option selected>提前 30 分钟</option>
+                            <option>提前 1 小时</option>
+                            <option>提前 1 天</option>
+                            <option>关闭</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">每日摘要</div>
+                        <div class="setting-desc">每日早晨发送当天日程摘要</div>
+                    </div>
+                    <div class="toggle active" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">每周回顾</div>
+                        <div class="setting-desc">每周一发送上周回顾</div>
+                    </div>
+                    <div class="toggle" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 免打扰时段 -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">🌙</span>
+                    免打扰时段
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">开启免打扰</div>
+                        <div class="setting-desc">在设定时段内静音所有通知</div>
+                    </div>
+                    <div class="toggle" onclick="toggleSwitch(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">免打扰时间</div>
+                        <div class="setting-desc">设置免打扰开始和结束时间</div>
+                    </div>
+                    <div class="time-picker">
+                        <input type="time" class="time-input" value="22:00">
+                        <span>至</span>
+                        <input type="time" class="time-input" value="08:00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="btn-group">
+                <button class="btn btn-secondary">重置</button>
+                <button class="btn btn-primary">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

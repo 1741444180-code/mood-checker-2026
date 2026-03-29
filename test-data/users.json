@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "username": "建权",
+    "email": "jianquan@example.com",
+    "phone": "13800138001",
+    "role": "main",
+    "description": "主账号，90天完整数据"
+  },
+  {
+    "id": 2,
+    "username": "测试用户A",
+    "email": "testa@example.com",
+    "phone": "13800138002",
+    "role": "active",
+    "description": "60天数据，打卡率80%，心情偏积极"
+  },
+  {
+    "id": 3,
+    "username": "测试用户B",
+    "email": "testb@example.com",
+    "phone": "13800138003",
+    "role": "fluctuating",
+    "description": "30天数据，打卡率50%，心情波动大"
+  },
+  {
+    "id": 4,
+    "username": "测试用户C",
+    "email": "testc@example.com",
+    "phone": "13800138004",
+    "role": "stable",
+    "description": "90天数据，打卡率90%，心情稳定"
+  },
+  {
+    "id": 5,
+    "username": "测试用户D",
+    "email": "testd@example.com",
+    "phone": "13800138005",
+    "role": "new",
+    "description": "15天数据，新用户，数据不完整"
+  }
+]

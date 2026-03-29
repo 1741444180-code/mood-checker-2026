@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>数据导出 - 移动端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .navbar-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar-back {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* 内容区域 */
+        .content {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* 导出格式选择 */
+        .format-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .format-option {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .format-option:hover {
+            border-color: #667eea;
+        }
+
+        .format-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .format-option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .format-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .format-option.excel .format-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .format-option.csv .format-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .format-option.pdf .format-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .format-info {
+            flex: 1;
+        }
+
+        .format-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .format-desc {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* 日期范围选择 */
+        .date-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .date-input-wrapper {
+            position: relative;
+        }
+
+        .date-input-wrapper label {
+            display: block;
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .quick-dates {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-dates::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-date-btn {
+            padding: 10px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            background: white;
+            font-size: 13px;
+            color: #4a5568;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .quick-date-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quick-date-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* 字段选择 */
+        .fields-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .field-item:active {
+            transform: scale(0.98);
+        }
+
+        .field-item.checked {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .field-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .field-label {
+            font-size: 14px;
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .field-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-mini {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-mini:active {
+            transform: scale(0.95);
+        }
+
+        .btn-select-all {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-clear {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 底部操作栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px 20px;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+        }
+
+        .bottom-bar-content {
+            max-width: 768px;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-export {
+            flex: 1;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-export:active {
+            transform: scale(0.98);
+        }
+
+        .btn-cancel {
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:active {
+            background: #edf2f7;
+        }
+
+        /* 进度弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        @media (min-height: 600px) {
+            .modal-overlay {
+                align-items: center;
+            }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 32px 24px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @media (min-height: 600px) {
+            .modal {
+                border-radius: 20px;
+                max-width: 500px;
+                width: 90%;
+            }
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .progress-container {
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .progress-percent {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .progress-details {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .progress-item:last-child {
+            padding-top: 12px;
+            margin-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #718096;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-modal:active {
+            transform: scale(0.98);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-close {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 成功提示 Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            padding: 14px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1001;
+            animation: toastFadeIn 0.3s ease;
+            min-width: 280px;
+        }
+
+        @keyframes toastFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        /* 统计信息卡片 */
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .summary-title {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .summary-stat-label {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-back">←</div>
+            <div class="navbar-title">数据导出</div>
+            <div style="width: 28px;"></div>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <!-- 统计摘要 -->
+        <div class="summary-card">
+            <div class="summary-title">📊 导出数据概览</div>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-value">12,458</div>
+                    <div class="summary-stat-label">总记录数</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value">88 天</div>
+                    <div class="summary-stat-label">时间跨度</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value">10 个</div>
+                    <div class="summary-stat-label">导出字段</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导出格式选择 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📁</div>
+                <div class="card-title">导出格式</div>
+            </div>
+            <div class="format-options">
+                <div class="format-option excel selected">
+                    <div class="format-icon">📈</div>
+                    <div class="format-info">
+                        <div class="format-name">Excel</div>
+                        <div class="format-desc">.xlsx 格式，支持公式和格式</div>
+                    </div>
+                </div>
+                <div class="format-option csv">
+                    <div class="format-icon">📄</div>
+                    <div class="format-info">
+                        <div class="format-name">CSV</div>
+                        <div class="format-desc">通用格式，兼容所有工具</div>
+                    </div>
+                </div>
+                <div class="format-option pdf">
+                    <div class="format-icon">📕</div>
+                    <div class="format-info">
+                        <div class="format-name">PDF</div>
+                        <div class="format-desc">适合打印和分享</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日期范围选择 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📅</div>
+                <div class="card-title">日期范围</div>
+            </div>
+            <div class="date-inputs">
+                <div class="date-input-wrapper">
+                    <label>开始日期</label>
+                    <input type="date" class="date-input" value="2026-01-01">
+                </div>
+                <div class="date-input-wrapper">
+                    <label>结束日期</label>
+                    <input type="date" class="date-input" value="2026-03-29">
+                </div>
+            </div>
+            <div class="quick-dates">
+                <button class="quick-date-btn">最近 7 天</button>
+                <button class="quick-date-btn active">最近 30 天</button>
+                <button class="quick-date-btn">最近 90 天</button>
+                <button class="quick-date-btn">本月</button>
+                <button class="quick-date-btn">本年</button>
+            </div>
+        </div>
+
+        <!-- 导出字段选择 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">✓</div>
+                <div class="card-title">导出字段</div>
+            </div>
+            <div class="field-actions">
+                <button class="btn-mini btn-select-all">✓ 全选</button>
+                <button class="btn-mini btn-clear">✕ 清除</button>
+            </div>
+            <div class="fields-list">
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">订单编号</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">用户姓名</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">手机号码</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">邮箱地址</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">订单金额</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">支付方式</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">订单状态</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">创建时间</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">更新时间</span>
+                </label>
+                <label class="field-item checked">
+                    <input type="checkbox" class="field-checkbox" checked>
+                    <span class="field-label">收货地址</span>
+                </label>
+                <label class="field-item">
+                    <input type="checkbox" class="field-checkbox">
+                    <span class="field-label">备注信息</span>
+                </label>
+                <label class="field-item">
+                    <input type="checkbox" class="field-checkbox">
+                    <span class="field-label">物流单号</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="bottom-bar">
+        <div class="bottom-bar-content">
+            <button class="btn-cancel">取消</button>
+            <button class="btn-export" onclick="showProgress()">
+                <span>🚀</span>
+                <span>开始导出</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 导出进度弹窗 -->
+    <div class="modal-overlay" id="progressModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">⏳</div>
+                <h3 class="modal-title">正在导出数据</h3>
+                <p class="modal-subtitle">请稍候，正在处理您的导出请求</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="progress-label">导出进度</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="progress-details">
+                <div class="progress-item">
+                    <span>数据格式</span>
+                    <span>Excel (.xlsx)</span>
+                </div>
+                <div class="progress-item">
+                    <span>日期范围</span>
+                    <span>2026-01-01 至 2026-03-29</span>
+                </div>
+                <div class="progress-item">
+                    <span>选中字段</span>
+                    <span>10 个字段</span>
+                </div>
+                <div class="progress-item">
+                    <span>预计时间</span>
+                    <span>约 30 秒</span>
+                </div>
+            </div>
+
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="processedRows">0</div>
+                    <div class="stat-label">已处理行数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="estimatedSize">0 MB</div>
+                    <div class="stat-label">预计大小</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="elapsedTime">0s</div>
+                    <div class="stat-label">已用时间</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-close" onclick="hideProgress()">取消导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示 Toast -->
+    <div class="toast" id="successToast" style="display: none;">
+        <div class="toast-icon">✓</div>
+        <div class="toast-message">导出成功！文件已下载</div>
+    </div>
+
+    <script>
+        // 格式选择交互
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // 字段选择交互
+        document.querySelectorAll('.field-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const input = this.querySelector('input[type="checkbox"]');
+                    input.checked = !input.checked;
+                    this.classList.toggle('checked', input.checked);
+                }
+            });
+        });
+
+        // 全选/清除
+        document.querySelector('.btn-select-all').addEventListener('click', function() {
+            document.querySelectorAll('.field-item').forEach(item => {
+                item.querySelector('input').checked = true;
+                item.classList.add('checked');
+            });
+        });
+
+        document.querySelector('.btn-clear').addEventListener('click', function() {
+            document.querySelectorAll('.field-item').forEach(item => {
+                item.querySelector('input').checked = false;
+                item.classList.remove('checked');
+            });
+        });
+
+        // 快捷日期选择
+        document.querySelectorAll('.quick-date-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.quick-date-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 显示进度弹窗
+        function showProgress() {
+            document.getElementById('progressModal').style.display = 'flex';
+            simulateProgress();
+        }
+
+        // 隐藏进度弹窗
+        function hideProgress() {
+            document.getElementById('progressModal').style.display = 'none';
+        }
+
+        // 模拟进度
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideProgress();
+                        showToast();
+                    }, 500);
+                }
+
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+                document.getElementById('processedRows').textContent = Math.floor(progress * 125);
+                document.getElementById('estimatedSize').textContent = (progress * 0.25).toFixed(1) + ' MB';
+                document.getElementById('elapsedTime').textContent = Math.floor(progress / 3) + 's';
+            }, 500);
+        }
+
+        // 显示成功提示
+        function showToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

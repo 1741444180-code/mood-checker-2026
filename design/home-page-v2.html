@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日打卡 - 心情打卡 v2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+    .mood-btn:hover {
+      transform: translateY(-4px);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+  <!-- 顶部导航 -->
+  <nav class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🎨</span>
+        <span class="text-xl font-semibold text-gray-800">心情打卡</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="p-2 text-gray-600 hover:text-gray-800 relative">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+            建
+          </div>
+          <span class="text-sm font-medium text-gray-700 hidden md:block">建权</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 欢迎区域 -->
+  <div class="bg-gradient-to-br from-indigo-500 to-purple-600 mx-4 mt-6 rounded-2xl p-8 md:p-10">
+    <div class="flex items-center gap-3 mb-2">
+      <span class="text-3xl">👋</span>
+      <h1 class="text-2xl md:text-3xl font-bold text-white">早上好，建权！</h1>
+    </div>
+    <p class="text-white/85 text-base">今天感觉怎么样？选个心情打卡吧~</p>
+  </div>
+
+  <!-- 打卡卡片 -->
+  <div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+      <!-- 日期 -->
+      <div class="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
+        <span class="text-indigo-500">📍</span>
+        <span class="text-gray-700 font-medium">2026 年 3 月 28 日 星期六</span>
+      </div>
+
+      <!-- 心情选择 - 4×2 布局 -->
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">选择你今天的心情：</h2>
+        
+        <!-- 第一排：4 个心情 -->
+        <div class="grid grid-cols-4 gap-4 mb-4">
+          <!-- 开心 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😄</div>
+            <div class="text-sm font-medium text-gray-600">开心</div>
+          </button>
+          <!-- 平静 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😊</div>
+            <div class="text-sm font-medium text-gray-600">平静</div>
+          </button>
+          <!-- 低落 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😔</div>
+            <div class="text-sm font-medium text-gray-600">低落</div>
+          </button>
+          <!-- 生气 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😠</div>
+            <div class="text-sm font-medium text-gray-600">生气</div>
+          </button>
+        </div>
+
+        <!-- 第二排：3 个心情 + 自定义 -->
+        <div class="grid grid-cols-4 gap-4">
+          <!-- 焦虑 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😰</div>
+            <div class="text-sm font-medium text-gray-600">焦虑</div>
+          </button>
+          <!-- 疲惫 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">😴</div>
+            <div class="text-sm font-medium text-gray-600">疲惫</div>
+          </button>
+          <!-- 兴奋 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">🤩</div>
+            <div class="text-sm font-medium text-gray-600">兴奋</div>
+          </button>
+          <!-- 自定义 -->
+          <button class="mood-btn relative p-4 rounded-2xl border-2 border-dashed border-indigo-300 bg-indigo-50 hover:border-indigo-500 hover:bg-indigo-100 hover:shadow-md transition-all duration-300" style="aspect-ratio: 1;">
+            <div class="text-4xl mb-2">➕</div>
+            <div class="text-sm font-medium text-indigo-600">自定义</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 备注输入 -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          今天发生了什么？（可选）
+        </label>
+        <textarea
+          placeholder="记录一下今天的心情故事..."
+          class="w-full min-h-[80px] p-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none resize-none"
+          maxLength="500"
+        ></textarea>
+        <div class="text-right text-xs text-gray-400 mt-1">
+          0/500
+        </div>
+      </div>
+
+      <!-- 标签选择 -->
+      <div class="mb-8">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          添加标签（可选）：
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
+            工作
+          </button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
+            生活
+          </button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
+            健康
+          </button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
+            学习
+          </button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
+            家庭
+          </button>
+        </div>
+      </div>
+
+      <!-- 提交按钮 -->
+      <button
+        class="w-full h-14 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+      >
+        提交打卡
+      </button>
+    </div>
+
+    <!-- 快捷导航 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <a href="#" class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center">
+        <div class="w-10 h-10 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xl">
+          📅
+        </div>
+        <span class="text-sm font-medium text-gray-700">心情日历</span>
+      </a>
+      <a href="#" class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center">
+        <div class="w-10 h-10 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xl">
+          📊
+        </div>
+        <span class="text-sm font-medium text-gray-700">数据统计</span>
+      </a>
+      <a href="#" class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center">
+        <div class="w-10 h-10 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xl">
+          👤
+        </div>
+        <span class="text-sm font-medium text-gray-700">个人中心</span>
+      </a>
+      <a href="#" class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center">
+        <div class="w-10 h-10 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xl">
+          ⚙️
+        </div>
+        <span class="text-sm font-medium text-gray-700">设置</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 自定义心情弹窗 -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <!-- 弹窗头部 -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-100">
+        <h3 class="text-xl font-bold text-gray-800">自定义心情</h3>
+        <button class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 弹窗内容 -->
+      <div class="p-6">
+        <!-- 图片上传区域 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-3">
+            上传图片（1-9 张）
+          </label>
+          <div class="grid grid-cols-3 gap-3">
+            <!-- 已上传图片 -->
+            <div class="relative aspect-square rounded-xl border-2 border-indigo-400 overflow-hidden bg-gray-100">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect fill='%23FFE4E1' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-size='40'%3E😄%3C/text%3E%3C/svg%3E" alt="自定义表情 1" class="w-full h-full object-cover">
+              <button class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600">×</button>
+            </div>
+            <div class="relative aspect-square rounded-xl border-2 border-indigo-400 overflow-hidden bg-gray-100">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect fill='%23E0FFFF' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-size='40'%3E🌟%3C/text%3E%3C/svg%3E" alt="自定义表情 2" class="w-full h-full object-cover">
+              <button class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600">×</button>
+            </div>
+            <!-- 添加图片按钮 -->
+            <label class="aspect-square rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all">
+              <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              <span class="text-xs text-gray-500">添加图片</span>
+              <input type="file" accept="image/*" multiple class="hidden">
+            </label>
+          </div>
+          <p class="text-xs text-gray-400 mt-2">已选择 2/9 张图片</p>
+        </div>
+
+        <!-- 表情选择 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-3">
+            选择表情符号
+          </label>
+          <div class="grid grid-cols-8 gap-2">
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😄</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😊</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🥰</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😎</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🤗</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😇</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🤩</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😋</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🥳</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😌</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😏</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🤭</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">😺</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🌈</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">⭐</button>
+            <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-indigo-100 text-2xl flex items-center justify-center transition-all">🎉</button>
+          </div>
+        </div>
+
+        <!-- 心情名称 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            心情名称
+          </label>
+          <input
+            type="text"
+            placeholder="给这个心情起个名字..."
+            class="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none"
+            maxLength="20"
+          >
+        </div>
+
+        <!-- 颜色选择 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            选择颜色
+          </label>
+          <div class="flex flex-wrap gap-3">
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-pink-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-500 border-2 border-indigo-300 shadow-md scale-110"></button>
+            <button class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 border-2 border-white shadow-md hover:scale-110 transition-transform"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 弹窗底部 -->
+      <div class="flex gap-3 p-6 border-t border-gray-100">
+        <button class="flex-1 h-12 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all">
+          取消
+        </button>
+        <button class="flex-1 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all">
+          保存自定义
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

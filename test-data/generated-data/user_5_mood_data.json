@@ -1,0 +1,77 @@
+[
+  {
+    "userId": 5,
+    "date": "2026-03-25",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "健康",
+      "生活"
+    ],
+    "createdAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "userId": 5,
+    "date": "2026-03-24",
+    "moodTypeId": 6,
+    "moodName": "😴 疲惫",
+    "moodColor": "#D3D3D3",
+    "note": null,
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-03-24T00:00:00.000Z"
+  },
+  {
+    "userId": 5,
+    "date": "2026-03-19",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-03-19T00:00:00.000Z"
+  },
+  {
+    "userId": 5,
+    "date": "2026-03-18",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-03-18T00:00:00.000Z"
+  },
+  {
+    "userId": 5,
+    "date": "2026-03-17",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": "家人打来电话，感到温暖",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-03-17T00:00:00.000Z"
+  },
+  {
+    "userId": 5,
+    "date": "2026-03-14",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "工作",
+      "生活"
+    ],
+    "createdAt": "2026-03-14T00:00:00.000Z"
+  }
+]

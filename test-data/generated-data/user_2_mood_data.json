@@ -1,0 +1,556 @@
+[
+  {
+    "userId": 2,
+    "date": "2026-03-27",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-27T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-25",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "健康",
+      "生活"
+    ],
+    "createdAt": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-23",
+    "moodTypeId": 5,
+    "moodName": "😰 焦虑",
+    "moodColor": "#DDA0DD",
+    "note": "完成了今天的任务，很有满足感",
+    "tags": [
+      "工作",
+      "生活"
+    ],
+    "createdAt": "2026-03-23T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-22",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了不开心的事，但会过去的",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-03-22T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-19",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": "看了喜欢的电影，放松了一下",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-03-19T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-18",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": "今天工作顺利，心情不错",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-18T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-16",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-03-16T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-15",
+    "moodTypeId": 7,
+    "moodName": "🤩 兴奋",
+    "moodColor": "#FF69B4",
+    "note": "遇到了挫折，但会努力克服",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-03-15T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-14",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了老朋友，聊得很愉快",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-03-14T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-12",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了挫折，但会努力克服",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-03-12T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-10",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": "和朋友聚会，很开心",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-09",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": null,
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-09T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-08",
+    "moodTypeId": 7,
+    "moodName": "🤩 兴奋",
+    "moodColor": "#FF69B4",
+    "note": "早上喝了杯咖啡，精神满满",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-08T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-07",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": null,
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-04",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": null,
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-03-04T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-03",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": "读了一本好书，收获颇丰",
+    "tags": [
+      "健康",
+      "生活"
+    ],
+    "createdAt": "2026-03-03T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-02",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": "感觉有点累，需要休息一下",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-03-02T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-03-01",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "完成了今天的任务，很有满足感",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-03-01T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-28",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": "遇到了老朋友，聊得很愉快",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-02-28T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-27",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "今天工作顺利，心情不错",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-27T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-26",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "和朋友聚会，很开心",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-26T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-25",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": "今天工作顺利，心情不错",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-02-25T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-24",
+    "moodTypeId": 7,
+    "moodName": "🤩 兴奋",
+    "moodColor": "#FF69B4",
+    "note": "今天工作顺利，心情不错",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-02-24T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-23",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "读了一本好书，收获颇丰",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-02-23T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-21",
+    "moodTypeId": 5,
+    "moodName": "😰 焦虑",
+    "moodColor": "#DDA0DD",
+    "note": "做了美味的食物，心情愉悦",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-02-21T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-20",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": null,
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-20T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-19",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-19T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-17",
+    "moodTypeId": 6,
+    "moodName": "😴 疲惫",
+    "moodColor": "#D3D3D3",
+    "note": null,
+    "tags": [
+      "工作",
+      "生活"
+    ],
+    "createdAt": "2026-02-17T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-16",
+    "moodTypeId": 5,
+    "moodName": "😰 焦虑",
+    "moodColor": "#DDA0DD",
+    "note": "感觉有点累，需要休息一下",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-16T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-15",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": "看了喜欢的电影，放松了一下",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-15T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-14",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了老朋友，聊得很愉快",
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-14T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-13",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "今天没什么特别的，平平淡淡",
+    "tags": [
+      "健康",
+      "生活"
+    ],
+    "createdAt": "2026-02-13T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-12",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了挫折，但会努力克服",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-12T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-10",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-10T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-09",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": "遇到了老朋友，聊得很愉快",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-02-09T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-08",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": "今天没什么特别的，平平淡淡",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-08T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-07",
+    "moodTypeId": 3,
+    "moodName": "😔 低落",
+    "moodColor": "#87CEEB",
+    "note": "遇到了一些困难，但还是解决了",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-07T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-06",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-02-06T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-05",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "读了一本好书，收获颇丰",
+    "tags": [
+      "工作",
+      "生活"
+    ],
+    "createdAt": "2026-02-05T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-04",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": "学习新技能，虽然难但有进步",
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-02-04T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-03",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": "遇到了老朋友，聊得很愉快",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-02-03T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-02-02",
+    "moodTypeId": 4,
+    "moodName": "😠 生气",
+    "moodColor": "#FF6B6B",
+    "note": "学到了新知识，很有成就感",
+    "tags": [
+      "工作",
+      "健康"
+    ],
+    "createdAt": "2026-02-02T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-01-30",
+    "moodTypeId": 5,
+    "moodName": "😰 焦虑",
+    "moodColor": "#DDA0DD",
+    "note": "家人打来电话，感到温暖",
+    "tags": [
+      "健康"
+    ],
+    "createdAt": "2026-01-30T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-01-29",
+    "moodTypeId": 1,
+    "moodName": "😄 开心",
+    "moodColor": "#FFD700",
+    "note": null,
+    "tags": [
+      "工作"
+    ],
+    "createdAt": "2026-01-29T00:00:00.000Z"
+  },
+  {
+    "userId": 2,
+    "date": "2026-01-28",
+    "moodTypeId": 2,
+    "moodName": "😊 平静",
+    "moodColor": "#90EE90",
+    "note": null,
+    "tags": [
+      "生活"
+    ],
+    "createdAt": "2026-01-28T00:00:00.000Z"
+  }
+]

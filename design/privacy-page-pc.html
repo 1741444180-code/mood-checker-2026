@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隐私管理 - 小雅游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 40px;
+            top: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .privacy-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .privacy-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .privacy-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+        }
+
+        .privacy-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .privacy-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .data-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .data-type {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .data-type:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .data-type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .data-type-label {
+            font-size: 13px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .data-type-size {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff3344;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .visibility-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .visibility-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .visibility-option:hover {
+            border-color: #667eea;
+        }
+
+        .visibility-info {
+            flex: 1;
+        }
+
+        .visibility-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .visibility-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #e0e0e0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .toggle.active .toggle-knob {
+            left: 26px;
+        }
+
+        .export-format {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .format-option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .format-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .format-option.active {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .format-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .format-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .format-desc {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .delete-steps {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .delete-steps h4 {
+            font-size: 15px;
+            color: #856404;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: #ffc107;
+            color: #856404;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .warning-box {
+            background: #ffe6e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #ff4757;
+        }
+
+        .warning-box h4 {
+            font-size: 15px;
+            color: #c0392b;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box ul {
+            list-style: none;
+            padding-left: 28px;
+        }
+
+        .warning-box li {
+            font-size: 13px;
+            color: #c0392b;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .warning-box li::before {
+            content: "⚠️";
+            position: absolute;
+            left: -20px;
+        }
+
+        .confirm-checkbox {
+            margin: 20px 0;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .confirm-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .confirm-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-box h4 {
+            font-size: 15px;
+            color: #2980b9;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #34495e;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='settings-page-pc.html'">← 返回设置</button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ 隐私管理</h1>
+            <p>控制您的数据可见性、导出个人数据或注销账号</p>
+        </div>
+
+        <div class="content">
+            <!-- 数据可见性 -->
+            <div class="privacy-section">
+                <div class="section-title">
+                    <div class="section-icon">📊</div>
+                    数据可见性
+                </div>
+
+                <div class="visibility-options">
+                    <div class="visibility-option">
+                        <div class="visibility-info">
+                            <div class="visibility-label">公开个人资料</div>
+                            <div class="visibility-desc">其他用户可以查看您的昵称和头像</div>
+                        </div>
+                        <div class="toggle active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+
+                    <div class="visibility-option">
+                        <div class="visibility-info">
+                            <div class="visibility-label">显示在线状态</div>
+                            <div class="visibility-desc">其他用户可以看到您是否在线</div>
+                        </div>
+                        <div class="toggle active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+
+                    <div class="visibility-option">
+                        <div class="visibility-info">
+                            <div class="visibility-label">公开游戏成就</div>
+                            <div class="visibility-desc">其他用户可以查看您的游戏成就和排名</div>
+                        </div>
+                        <div class="toggle" onclick="this.classList.toggle('active')">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+
+                    <div class="visibility-option">
+                        <div class="visibility-info">
+                            <div class="visibility-label">显示游戏动态</div>
+                            <div class="visibility-desc">其他用户可以看到您的游戏活动记录</div>
+                        </div>
+                        <div class="toggle active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据导出 -->
+            <div class="privacy-section">
+                <div class="section-title">
+                    <div class="section-icon">📥</div>
+                    数据导出
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 导出数据说明</h4>
+                    <p>您可以随时下载您的个人数据副本，包含您的账号信息、游戏记录、设置偏好等。数据将以加密压缩包形式提供，通常在 24 小时内准备完成。</p>
+                </div>
+
+                <div class="privacy-card">
+                    <h3>📦 选择数据类型</h3>
+                    <p>选择您想要导出的数据类型</p>
+                    <div class="data-types">
+                        <div class="data-type">
+                            <div class="data-type-icon">👤</div>
+                            <div class="data-type-label">个人信息</div>
+                            <div class="data-type-size">约 2 MB</div>
+                        </div>
+                        <div class="data-type">
+                            <div class="data-type-icon">🎮</div>
+                            <div class="data-type-label">游戏记录</div>
+                            <div class="data-type-size">约 15 MB</div>
+                        </div>
+                        <div class="data-type">
+                            <div class="data-type-icon">⚙️</div>
+                            <div class="data-type-label">设置数据</div>
+                            <div class="data-type-size">约 0.5 MB</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-card">
+                    <h3>📄 选择导出格式</h3>
+                    <p>选择数据文件的格式</p>
+                    <div class="export-format">
+                        <div class="format-option active">
+                            <div class="format-icon">📋</div>
+                            <div class="format-name">JSON</div>
+                            <div class="format-desc">结构化数据，适合程序读取</div>
+                        </div>
+                        <div class="format-option">
+                            <div class="format-icon">📊</div>
+                            <div class="format-name">CSV</div>
+                            <div class="format-desc">表格格式，适合 Excel 打开</div>
+                        </div>
+                        <div class="format-option">
+                            <div class="format-icon">📄</div>
+                            <div class="format-name">PDF</div>
+                            <div class="format-desc">可读报告，适合打印</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary">申请导出数据</button>
+                    <button class="btn btn-secondary">查看导出历史</button>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-info">
+                        <span>上次导出：2026-02-15</span>
+                        <span>状态：已完成</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 账号注销 -->
+            <div class="privacy-section">
+                <div class="section-title">
+                    <div class="section-icon">🗑️</div>
+                    账号注销
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ 注销前请三思</h4>
+                    <ul>
+                        <li>所有个人数据将被永久删除，无法恢复</li>
+                        <li>游戏进度、成就、虚拟货币将全部清空</li>
+                        <li>已购买的服务和订阅将立即终止</li>
+                        <li>用户名将被释放，其他人可以注册</li>
+                    </ul>
+                </div>
+
+                <div class="delete-steps">
+                    <h4>📝 注销流程</h4>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div>确认您已了解注销后果，并备份需要保留的数据</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>取消所有活跃的订阅和自动续费服务</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>验证您的身份（短信或邮箱验证码）</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div>等待 7 天冷静期，期间可随时撤销注销申请</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div>7 天后账号和数据将被永久删除</div>
+                    </div>
+                </div>
+
+                <div class="confirm-checkbox">
+                    <label>
+                        <input type="checkbox" id="confirmDelete">
+                        <span>我已阅读并理解账号注销的后果，确认要永久删除我的账号</span>
+                    </label>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-danger" id="deleteBtn" disabled onclick="document.getElementById('deleteBtn').disabled = false">申请注销账号</button>
+                    <button class="btn btn-secondary">联系客服</button>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 10px; text-align: center;">
+                    <p style="font-size: 13px; color: #666;">
+                        如有任何问题或疑虑，请联系客服邮箱：<a href="mailto:support@xiaoyagame.com" style="color: #667eea;">support@xiaoyagame.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.format-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.getElementById('confirmDelete').addEventListener('change', function() {
+            document.getElementById('deleteBtn').disabled = !this.checked;
+        });
+    </script>
+</body>
+</html>

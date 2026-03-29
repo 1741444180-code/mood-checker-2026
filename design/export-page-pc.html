@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导出 - 管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .export-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* 导出格式选择 */
+        .format-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .format-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .format-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .format-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .format-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .format-option.excel .format-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .format-option.csv .format-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .format-option.pdf .format-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .format-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .format-desc {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* 日期范围选择 */
+        .date-range-picker {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .date-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .date-input-wrapper label {
+            display: block;
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .date-separator {
+            font-size: 20px;
+            color: #a0aec0;
+            margin-top: 20px;
+        }
+
+        .quick-dates {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .quick-date-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-date-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .quick-date-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* 字段选择 */
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .field-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .field-checkbox:hover {
+            border-color: #667eea;
+        }
+
+        .field-checkbox.checked {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .field-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .field-label {
+            font-size: 14px;
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .field-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-select-all {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-select-all:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-clear {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-clear:hover {
+            background: #edf2f7;
+        }
+
+        /* 导出按钮 */
+        .export-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            padding-top: 32px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-export {
+            padding: 16px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-export:active {
+            transform: translateY(0);
+        }
+
+        .btn-cancel {
+            padding: 16px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: white;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: #a0aec0;
+            background: #f7fafc;
+        }
+
+        /* 进度弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a202c;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .progress-container {
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .progress-percent {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .progress-details {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        .progress-item:last-child {
+            padding-top: 12px;
+            margin-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-close {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-close:hover {
+            background: #edf2f7;
+        }
+
+        /* 成功提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1001;
+            animation: toastSlideIn 0.3s ease;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .toast-message {
+            font-size: 14px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .format-options {
+                grid-template-columns: 1fr;
+            }
+
+            .fields-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .export-actions {
+                flex-direction: column;
+            }
+
+            .btn-export,
+            .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <h1 class="page-title">📊 数据导出</h1>
+            <p class="page-subtitle">选择导出格式、日期范围和字段，将系统数据导出为本地文件</p>
+        </div>
+
+        <!-- 导出配置卡片 -->
+        <div class="export-card">
+            <!-- 导出格式选择 -->
+            <div class="section">
+                <h2 class="section-title">导出格式</h2>
+                <div class="format-options">
+                    <div class="format-option excel selected">
+                        <div class="format-icon">📈</div>
+                        <div class="format-name">Excel</div>
+                        <div class="format-desc">.xlsx 格式，支持公式和格式</div>
+                    </div>
+                    <div class="format-option csv">
+                        <div class="format-icon">📄</div>
+                        <div class="format-name">CSV</div>
+                        <div class="format-desc">通用格式，兼容所有工具</div>
+                    </div>
+                    <div class="format-option pdf">
+                        <div class="format-icon">📕</div>
+                        <div class="format-name">PDF</div>
+                        <div class="format-desc">适合打印和分享</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日期范围选择 -->
+            <div class="section">
+                <h2 class="section-title">日期范围</h2>
+                <div class="date-range-picker">
+                    <div class="date-input-group">
+                        <div class="date-input-wrapper">
+                            <label>开始日期</label>
+                            <input type="date" class="date-input" value="2026-01-01">
+                        </div>
+                        <div class="date-separator">—</div>
+                        <div class="date-input-wrapper">
+                            <label>结束日期</label>
+                            <input type="date" class="date-input" value="2026-03-29">
+                        </div>
+                    </div>
+                    <div class="quick-dates">
+                        <button class="quick-date-btn">最近 7 天</button>
+                        <button class="quick-date-btn active">最近 30 天</button>
+                        <button class="quick-date-btn">最近 90 天</button>
+                        <button class="quick-date-btn">本月</button>
+                        <button class="quick-date-btn">本年</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导出字段选择 -->
+            <div class="section">
+                <h2 class="section-title">导出字段</h2>
+                <div class="field-actions">
+                    <button class="btn btn-select-all">✓ 全选</button>
+                    <button class="btn btn-clear">✕ 清除</button>
+                </div>
+                <div class="fields-grid">
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">订单编号</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">用户姓名</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">手机号码</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">邮箱地址</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">订单金额</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">支付方式</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">订单状态</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">创建时间</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">更新时间</span>
+                    </label>
+                    <label class="field-checkbox checked">
+                        <input type="checkbox" checked>
+                        <span class="field-label">收货地址</span>
+                    </label>
+                    <label class="field-checkbox">
+                        <input type="checkbox">
+                        <span class="field-label">备注信息</span>
+                    </label>
+                    <label class="field-checkbox">
+                        <input type="checkbox">
+                        <span class="field-label">物流单号</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 导出操作按钮 -->
+            <div class="export-actions">
+                <button class="btn-export" onclick="showProgress()">
+                    <span>🚀</span>
+                    <span>开始导出</span>
+                </button>
+                <button class="btn-cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导出进度弹窗 -->
+    <div class="modal-overlay" id="progressModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-icon">⏳</div>
+            <h3 class="modal-title">正在导出数据</h3>
+            <p class="modal-subtitle">请稍候，正在处理您的导出请求</p>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="progress-label">导出进度</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="progress-details">
+                <div class="progress-item">
+                    <span>数据格式</span>
+                    <span>Excel (.xlsx)</span>
+                </div>
+                <div class="progress-item">
+                    <span>日期范围</span>
+                    <span>2026-01-01 至 2026-03-29</span>
+                </div>
+                <div class="progress-item">
+                    <span>选中字段</span>
+                    <span>10 个字段</span>
+                </div>
+                <div class="progress-item">
+                    <span>预计时间</span>
+                    <span>约 30 秒</span>
+                </div>
+            </div>
+
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="processedRows">0</div>
+                    <div class="stat-label">已处理行数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="estimatedSize">0 MB</div>
+                    <div class="stat-label">预计文件大小</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="elapsedTime">0s</div>
+                    <div class="stat-label">已用时间</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-close" onclick="hideProgress()">取消导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示 Toast -->
+    <div class="toast" id="successToast" style="display: none;">
+        <div class="toast-icon">✓</div>
+        <div class="toast-message">导出成功！文件已下载到本地</div>
+    </div>
+
+    <script>
+        // 格式选择交互
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // 字段选择交互
+        document.querySelectorAll('.field-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                const input = this.querySelector('input[type="checkbox"]');
+                input.checked = !input.checked;
+                this.classList.toggle('checked', input.checked);
+            });
+        });
+
+        // 全选/清除
+        document.querySelector('.btn-select-all').addEventListener('click', function() {
+            document.querySelectorAll('.field-checkbox').forEach(cb => {
+                cb.querySelector('input').checked = true;
+                cb.classList.add('checked');
+            });
+        });
+
+        document.querySelector('.btn-clear').addEventListener('click', function() {
+            document.querySelectorAll('.field-checkbox').forEach(cb => {
+                cb.querySelector('input').checked = false;
+                cb.classList.remove('checked');
+            });
+        });
+
+        // 快捷日期选择
+        document.querySelectorAll('.quick-date-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.quick-date-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 显示进度弹窗
+        function showProgress() {
+            document.getElementById('progressModal').style.display = 'flex';
+            simulateProgress();
+        }
+
+        // 隐藏进度弹窗
+        function hideProgress() {
+            document.getElementById('progressModal').style.display = 'none';
+        }
+
+        // 模拟进度
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideProgress();
+                        showToast();
+                    }, 500);
+                }
+
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+                document.getElementById('processedRows').textContent = Math.floor(progress * 125);
+                document.getElementById('estimatedSize').textContent = (progress * 0.25).toFixed(1) + ' MB';
+                document.getElementById('elapsedTime').textContent = Math.floor(progress / 3) + 's';
+            }, 500);
+        }
+
+        // 显示成功提示
+        function showToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
