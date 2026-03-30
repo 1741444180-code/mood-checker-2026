@@ -1,0 +1,9 @@
+[
+  { "id": 1, "name": "😄 开心", "color": "#FFD700", "weight": 0.25 },
+  { "id": 2, "name": "😊 平静", "color": "#90EE90", "weight": 0.30 },
+  { "id": 3, "name": "😔 低落", "color": "#87CEEB", "weight": 0.15 },
+  { "id": 4, "name": "😠 生气", "color": "#FF6B6B", "weight": 0.10 },
+  { "id": 5, "name": "😰 焦虑", "color": "#DDA0DD", "weight": 0.10 },
+  { "id": 6, "name": "😴 疲惫", "color": "#D3D3D3", "weight": 0.07 },
+  { "id": 7, "name": "🤩 兴奋", "color": "#FF69B4", "weight": 0.03 }
+]

@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// 用户表
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique @db.VarChar(50)
+  email       String    @unique @db.VarChar(100)
+  password    String    @db.VarChar(255) // bcrypt hash
+  avatar      String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  lastLogin   DateTime?
+  timezone    String    @default("UTC") @db.VarChar(50)
+  
+  // 关系
+  moodRecords   MoodRecord[]
+  moodTypes     MoodType[]
+  customMoods   CustomMood[]
+  settings      UserSettings?
+  comments      Comment[]
+}
+
+/// 心情记录表
+model MoodRecord {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  date          DateTime  @db.Date
+  moodLevel     Int       @db.SmallInt // 1-5 分
+  moodType      String    @db.VarChar(50)
+  customMoodId  Int?      // 自定义心情 ID（可选）
+  note          String?   @db.Text
+  tags          String?   @db.VarChar(100) // 逗号分隔的标签
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // 关系
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customMood    CustomMood? @relation(fields: [customMoodId], references: [id], onDelete: SetNull)
+  comments      Comment[]
+  
+  // 约束
+  @@unique([userId, date]) // 每天只能打卡一次
+  @@index([userId])
+  @@index([date])
+  @@index([moodType])
+  @@index([userId, date])
+  @@index([customMoodId])
+}
+
+/// 心情类型表
+model MoodType {
+  id          Int       @id @default(autoincrement())
+  userId      Int?      // NULL 表示系统默认心情
+  name        String    @db.VarChar(50)
+  color       String    @db.VarChar(7)   // 16进制颜色代码，如 #FFD700
+  icon        String    @db.VarChar(50)  // emoji 或图标名称
+  sortOrder   Int       @default(0)
+  isSystem    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  
+  // 关系
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 索引
+  @@index([userId])
+  @@index([isSystem])
+}
+
+/// 用户设置表
+model UserSettings {
+  id                Int       @id @default(autoincrement())
+  userId            Int       @unique
+  reminderTime      DateTime? @db.Time // HH:MM:SS 格式
+  reminderEnabled   Boolean   @default(false)
+  weeklyReport      Boolean   @default(false)
+  publicProfile     Boolean   @default(false)
+  theme             String    @default("light") @db.VarChar(50) // light/dark
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // 关系
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 索引
+  @@index([userId])
+}
+
+/// 自定义心情表
+model CustomMood {
+  id          Int       @id @default(autoincrement())
+  userId      Int       // 用户 ID（外键）
+  name        String    @db.VarChar(50)
+  imageUrls   String[]  // 图片 URL 数组（1-9 张）
+  isSystem    Boolean   @default(false) // 是否系统默认
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // 关系
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moodRecords MoodRecord[]
+  
+  // 索引
+  @@index([userId])
+  @@index([isSystem])
+}
+
+/// 评论表
+model Comment {
+  id              Int       @id @default(autoincrement())
+  moodRecordId    Int
+  userId          Int?      // NULL 表示游客评论
+  content         String    @db.Text
+  status          String    @default("pending") @db.VarChar(20) // pending/approved/rejected
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // 关系
+  moodRecord      MoodRecord @relation(fields: [moodRecordId], references: [id], onDelete: Cascade)
+  user            User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // 索引
+  @@index([moodRecordId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}

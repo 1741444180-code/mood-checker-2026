@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>启动画面设计 - Splash Screen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .showcase-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .showcase-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .showcase-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .splash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .splash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .splash-label {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== 启动画面设备框架 ===== */
+        .device-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 44px;
+            padding: 12px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), 0 0 0 2px #333;
+            position: relative;
+        }
+
+        .device-mockup::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .splash-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 36px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== 启动画面样式 1: 经典渐变 ===== */
+        .splash-classic {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .splash-classic::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .splash-logo-classic {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+            animation: logoFloat 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .splash-title-classic {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 32px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .splash-subtitle-classic {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 12px;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .splash-loader-classic {
+            margin-top: 48px;
+            display: flex;
+            gap: 8px;
+            z-index: 1;
+        }
+
+        .splash-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .splash-dot:nth-child(2) { animation-delay: 0.2s; }
+        .splash-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.4); opacity: 1; }
+        }
+
+        /* ===== 启动画面样式 2: 深色优雅 ===== */
+        .splash-dark {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .splash-dark::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.3) 0%, transparent 50%);
+        }
+
+        .splash-logo-dark {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            animation: logoGlow 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 20px 80px rgba(102, 126, 234, 0.6); }
+        }
+
+        .splash-title-dark {
+            color: white;
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 40px;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 1;
+        }
+
+        .splash-tagline-dark {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-top: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 1;
+        }
+
+        .splash-progress-dark {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .splash-progress-bar-dark {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            animation: progressLoad 2s ease-out infinite;
+        }
+
+        @keyframes progressLoad {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== 启动画面样式 3: 简约白色 ===== */
+        .splash-light {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .splash-logo-light {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+            animation: logoSpin 4s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .splash-title-light {
+            color: #2d3748;
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 32px;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .splash-version-light {
+            color: #999999;
+            font-size: 13px;
+            margin-top: 8px;
+            z-index: 1;
+        }
+
+        .splash-powered-light {
+            position: absolute;
+            bottom: 60px;
+            color: #ccc;
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        /* ===== 启动画面样式 4: 品牌渐变 ===== */
+        .splash-brand {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f39c12 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .splash-brand::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: brandRotate 10s linear infinite;
+        }
+
+        @keyframes brandRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .splash-logo-brand {
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+            animation: logoBounce 2s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes logoBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .splash-title-brand {
+            color: white;
+            font-size: 40px;
+            font-weight: 800;
+            margin-top: 40px;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .splash-slogan-brand {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-top: 16px;
+            font-style: italic;
+            z-index: 1;
+        }
+
+        .splash-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.2)' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            z-index: 1;
+        }
+
+        /* ===== 启动画面样式 5: 游戏风格 ===== */
+        .splash-game {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .splash-game::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.5) 0%, transparent 40%),
+                radial-gradient(circle at 80% 50%, rgba(243, 156, 18, 0.5) 0%, transparent 40%);
+            animation: gamePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gamePulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .splash-logo-game {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 50%, #9b59b6 100%);
+            border-radius: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            box-shadow: 0 0 60px rgba(243, 156, 18, 0.5);
+            animation: gameGlow 2s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes gameGlow {
+            0%, 100% { box-shadow: 0 0 60px rgba(243, 156, 18, 0.5); }
+            50% { box-shadow: 0 0 100px rgba(243, 156, 18, 0.8); }
+        }
+
+        .splash-title-game {
+            color: white;
+            font-size: 42px;
+            font-weight: 800;
+            margin-top: 40px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+            z-index: 1;
+        }
+
+        .splash-subtitle-game {
+            color: #f39c12;
+            font-size: 16px;
+            margin-top: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .splash-start-game {
+            margin-top: 60px;
+            padding: 16px 48px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+            border-radius: 30px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 30px rgba(243, 156, 18, 0.4);
+            animation: startPulse 1.5s ease-in-out infinite;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        @keyframes startPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .splash-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(243, 156, 18, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 4s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 90%; top: 30%; animation-delay: 0.5s; }
+        .particle:nth-child(3) { left: 20%; top: 80%; animation-delay: 1s; }
+        .particle:nth-child(4) { left: 80%; top: 70%; animation-delay: 1.5s; }
+        .particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 2s; }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-30px) scale(1.2); opacity: 1; }
+        }
+
+        /* 规范说明区域 */
+        .specs-section {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+        }
+
+        .specs-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .spec-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .spec-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary-600);
+        }
+
+        .spec-card ul {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 2;
+        }
+
+        .spec-card code {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase-header">
+        <h1>🚀 启动画面设计稿</h1>
+        <p>Day16 任务 - 5 种风格 · PWA 适配 · 多尺寸支持</p>
+    </div>
+
+    <div class="splash-grid">
+        <!-- 样式 1: 经典渐变 -->
+        <div class="splash-container">
+            <div class="splash-label">经典渐变风格</div>
+            <div class="device-mockup">
+                <div class="splash-screen splash-classic">
+                    <div class="splash-logo-classic">🦐</div>
+                    <div class="splash-title-classic">鱼虾蟹</div>
+                    <div class="splash-subtitle-classic">经典游戏 · 欢乐无限</div>
+                    <div class="splash-loader-classic">
+                        <div class="splash-dot"></div>
+                        <div class="splash-dot"></div>
+                        <div class="splash-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 样式 2: 深色优雅 -->
+        <div class="splash-container">
+            <div class="splash-label">深色优雅风格</div>
+            <div class="device-mockup">
+                <div class="splash-screen splash-dark">
+                    <div class="splash-logo-dark">🎮</div>
+                    <div class="splash-title-dark">鱼虾蟹</div>
+                    <div class="splash-tagline-dark">Premium Gaming</div>
+                    <div class="splash-progress-dark">
+                        <div class="splash-progress-bar-dark"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 样式 3: 简约白色 -->
+        <div class="splash-container">
+            <div class="splash-label">简约白色风格</div>
+            <div class="device-mockup">
+                <div class="splash-screen splash-light">
+                    <div class="splash-logo-light">🎲</div>
+                    <div class="splash-title-light">鱼虾蟹</div>
+                    <div class="splash-version-light">Version 2.0.0</div>
+                    <div class="splash-powered-light">Powered by OpenClaw</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 样式 4: 品牌渐变 -->
+        <div class="splash-container">
+            <div class="splash-label">品牌渐变风格</div>
+            <div class="device-mockup">
+                <div class="splash-screen splash-brand">
+                    <div class="splash-logo-brand">🏆</div>
+                    <div class="splash-title-brand">鱼虾蟹</div>
+                    <div class="splash-slogan-brand">Luck Meets Strategy</div>
+                    <div class="splash-wave"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 样式 5: 游戏风格 -->
+        <div class="splash-container">
+            <div class="splash-label">游戏风格 (推荐)</div>
+            <div class="device-mockup">
+                <div class="splash-screen splash-game">
+                    <div class="splash-particles">
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                    </div>
+                    <div class="splash-logo-game">🎰</div>
+                    <div class="splash-title-game">鱼虾蟹</div>
+                    <div class="splash-subtitle-game">CASINO GAME</div>
+                    <div class="splash-start-game">开始游戏</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设计规范说明 -->
+    <div class="specs-section">
+        <h2>📐 启动画面设计规范</h2>
+        
+        <div class="specs-grid">
+            <div class="spec-card">
+                <h3>📱 尺寸规格</h3>
+                <ul>
+                    <li>iPhone: <code>1170x2532px</code> (@3x)</li>
+                    <li>Android: <code>1080x2340px</code> (xxhdpi)</li>
+                    <li>iPad: <code>2048x2732px</code> (@2x)</li>
+                    <li>通用： <code>1242x2688px</code></li>
+                </ul>
+            </div>
+
+            <div class="spec-card">
+                <h3>🎨 设计要素</h3>
+                <ul>
+                    <li>Logo 尺寸：<code>120-180px</code></li>
+                    <li>主标题：<code>28-42px</code></li>
+                    <li>副标题：<code>14-16px</code></li>
+                    <li>安全边距：<code>≥60px</code></li>
+                </ul>
+            </div>
+
+            <div class="spec-card">
+                <h3>⚡ 动画规范</h3>
+                <ul>
+                    <li>Logo 浮动：<code>3s</code> 循环</li>
+                    <li>加载点：<code>1.4s</code> 脉冲</li>
+                    <li>进度条：<code>2s</code> 加载</li>
+                    <li>淡出时间：<code>0.3s</code></li>
+                </ul>
+            </div>
+
+            <div class="spec-card">
+                <h3>🔧 PWA 配置</h3>
+                <ul>
+                    <li><code>background_color: #667eea</code></li>
+                    <li><code>theme_color: #764ba2</code></li>
+                    <li><code>display: standalone</code></li>
+                    <li><code>orientation: portrait</code></li>
+                </ul>
+            </div>
+
+            <div class="spec-card">
+                <h3>📄 文件命名</h3>
+                <ul>
+                    <li>iOS: <code>splash-@3x.png</code></li>
+                    <li>Android: <code>splash-xxhdpi.png</code></li>
+                    <li>通用： <code>splash-1242x2688.png</code></li>
+                    <li>SVG: <code>splash.svg</code></li>
+                </ul>
+            </div>
+
+            <div class="spec-card">
+                <h3>🎯 最佳实践</h3>
+                <ul>
+                    <li>加载时间 <code>&lt;2s</code></li>
+                    <li>使用品牌主色调</li>
+                    <li>避免过多文字</li>
+                    <li>保持简洁优雅</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟启动画面自动切换演示
+        let currentSplash = 0;
+        const splashStyles = ['splash-classic', 'splash-dark', 'splash-light', 'splash-brand', 'splash-game'];
+        
+        // 可选：自动轮播演示 (已禁用)
+        // setInterval(() => {
+        //     currentSplash = (currentSplash + 1) % splashStyles.length;
+        //     // 切换逻辑...
+        // }, 3000);
+    </script>
+</body>
+</html>

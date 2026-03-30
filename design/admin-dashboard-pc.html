@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 小雅游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            padding: 30px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 24px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            color: #667eea;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            color: #667eea;
+            border-left-color: #667eea;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-text {
+            font-size: 15px;
+        }
+
+        .user-section {
+            padding: 20px 24px;
+            border-top: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(41, 128, 185, 0.15));
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(39, 174, 96, 0.15));
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(230, 126, 34, 0.15));
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .stat-trend.up {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .stat-trend.down {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 16px;
+            background: #f5f7fa;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background: #fafafa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .status-badge.inactive {
+            background: rgba(149, 165, 166, 0.1);
+            color: #95a5a6;
+        }
+
+        .status-badge.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+
+        .action-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-link.delete {
+            color: #e74c3c;
+        }
+
+        /* Chart Placeholder */
+        .chart-container {
+            height: 300px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .quick-action-btn {
+            padding: 20px;
+            background: #f5f7fa;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .quick-action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-text {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <div class="logo">🎮 小雅游戏</div>
+            <div class="logo-subtitle">后台管理系统</div>
+        </div>
+
+        <nav class="nav-menu">
+            <a class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">数据统计</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">用户管理</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">内容管理</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">🎲</span>
+                <span class="nav-text">游戏管理</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">财务管理</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-text">消息中心</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">系统设置</span>
+            </a>
+        </nav>
+
+        <div class="user-section">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <div class="user-name">Admin</div>
+                    <div class="user-role">超级管理员</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">数据统计</h1>
+            <p class="page-subtitle">欢迎回来，这是今天的运营数据概览</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon purple">👥</div>
+                    <span class="stat-trend up">↑ 12.5%</span>
+                </div>
+                <div class="stat-value">24,589</div>
+                <div class="stat-label">总用户数</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon blue">🎮</div>
+                    <span class="stat-trend up">↑ 8.3%</span>
+                </div>
+                <div class="stat-value">8,234</div>
+                <div class="stat-label">日活跃用户</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon green">💰</div>
+                    <span class="stat-trend up">↑ 23.7%</span>
+                </div>
+                <div class="stat-value">¥128,450</div>
+                <div class="stat-label">今日收入</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon orange">📱</div>
+                    <span class="stat-trend down">↓ 2.1%</span>
+                </div>
+                <div class="stat-value">1,456</div>
+                <div class="stat-label">新增用户</div>
+            </div>
+        </div>
+
+        <!-- User Management Table -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">👥</span>
+                    最近用户
+                </h2>
+                <button class="action-btn">+ 添加用户</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>用户 ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>注册时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#10001</td>
+                        <td>张三</td>
+                        <td>zhangsan@example.com</td>
+                        <td>2026-03-28</td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#10002</td>
+                        <td>李四</td>
+                        <td>lisi@example.com</td>
+                        <td>2026-03-27</td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#10003</td>
+                        <td>王五</td>
+                        <td>wangwu@example.com</td>
+                        <td>2026-03-27</td>
+                        <td><span class="status-badge pending">待审核</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#10004</td>
+                        <td>赵六</td>
+                        <td>zhaoliu@example.com</td>
+                        <td>2026-03-26</td>
+                        <td><span class="status-badge inactive">禁用</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#10005</td>
+                        <td>钱七</td>
+                        <td>qianqi@example.com</td>
+                        <td>2026-03-26</td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <div class="pagination-info">显示 1-5 共 2,458 条记录</div>
+                <div class="pagination-controls">
+                    <button class="page-btn">‹</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Management -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">📝</span>
+                    内容管理
+                </h2>
+                <button class="action-btn">+ 发布内容</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>内容 ID</th>
+                        <th>标题</th>
+                        <th>类型</th>
+                        <th>作者</th>
+                        <th>发布时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#C001</td>
+                        <td>新版本更新公告</td>
+                        <td>公告</td>
+                        <td>Admin</td>
+                        <td>2026-03-29</td>
+                        <td><span class="status-badge active">已发布</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#C002</td>
+                        <td>游戏攻略：如何快速升级</td>
+                        <td>攻略</td>
+                        <td>小编 A</td>
+                        <td>2026-03-28</td>
+                        <td><span class="status-badge active">已发布</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#C003</td>
+                        <td>周末活动预告</td>
+                        <td>活动</td>
+                        <td>Admin</td>
+                        <td>2026-03-28</td>
+                        <td><span class="status-badge pending">待审核</span></td>
+                        <td>
+                            <a class="action-link">编辑</a>
+                            <a class="action-link delete">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- System Settings Quick Actions -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    系统设置
+                </h2>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🔐</div>
+                    <div class="quick-action-text">权限管理</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🎨</div>
+                    <div class="quick-action-text">界面设置</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">📧</div>
+                    <div class="quick-action-text">邮件配置</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🔔</div>
+                    <div class="quick-action-text">通知设置</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">💾</div>
+                    <div class="quick-action-text">数据备份</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">📜</div>
+                    <div class="quick-action-text">操作日志</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Chart -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">📈</span>
+                    数据趋势
+                </h2>
+            </div>
+
+            <div class="chart-container">
+                📊 图表区域 - 可集成 Chart.js 或 ECharts
+            </div>
+        </div>
+    </main>
+</body>
+</html>

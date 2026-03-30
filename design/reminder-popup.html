@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提醒弹窗 - 小雅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .demo-label {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Backdrop */
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Popup Container */
+        .popup-container {
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .popup {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            min-width: 400px;
+        }
+
+        .popup-header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #f0f1f2;
+        }
+
+        .popup-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .popup-icon.reminder {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+        }
+
+        .popup-icon.meeting {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .popup-icon.success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .popup-icon.info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .popup-title {
+            flex: 1;
+        }
+
+        .popup-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .popup-title p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .popup-close {
+            width: 32px;
+            height: 32px;
+            background: #f0f1f2;
+            border: none;
+            border-radius: 8px;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .popup-close:hover {
+            background: #e0e0e0;
+        }
+
+        .popup-body {
+            padding: 24px;
+        }
+
+        .event-info {
+            margin-bottom: 20px;
+        }
+
+        .event-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .event-detail .icon {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .event-description {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .popup-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f1f2;
+            color: #1a1a2e;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-snooze {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            color: white;
+        }
+
+        .btn-snooze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(241, 196, 15, 0.4);
+        }
+
+        /* Snooze Options */
+        .snooze-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .snooze-option {
+            flex: 1;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .snooze-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .snooze-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        /* Variants */
+        .popup.meeting .popup-header {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.1) 100%);
+        }
+
+        .popup.success .popup-header {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(39, 174, 96, 0.1) 100%);
+        }
+
+        /* Mobile Popup */
+        .popup-mobile {
+            min-width: 320px;
+            max-width: 90%;
+        }
+
+        .popup-mobile .popup-header {
+            padding: 20px;
+        }
+
+        .popup-mobile .popup-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+
+        .popup-mobile .popup-title h3 {
+            font-size: 16px;
+        }
+
+        .popup-mobile .popup-title p {
+            font-size: 13px;
+        }
+
+        .popup-mobile .popup-body {
+            padding: 20px;
+        }
+
+        .popup-mobile .event-name {
+            font-size: 18px;
+        }
+
+        .popup-mobile .event-detail {
+            font-size: 14px;
+        }
+
+        .popup-mobile .popup-actions {
+            flex-direction: column;
+        }
+
+        .popup-mobile .snooze-options {
+            flex-wrap: wrap;
+        }
+
+        /* Section Label */
+        .section-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-label">提醒弹窗设计稿</div>
+
+    <!-- PC 版本 - 会议提醒 -->
+    <div style="position: relative;">
+        <div class="section-label">PC 版本 - 会议提醒</div>
+        <div class="popup-container">
+            <div class="popup meeting">
+                <div class="popup-header">
+                    <div class="popup-icon meeting">🔴</div>
+                    <div class="popup-title">
+                        <h3>会议即将开始</h3>
+                        <p>5 分钟后开始</p>
+                    </div>
+                    <button class="popup-close">×</button>
+                </div>
+                <div class="popup-body">
+                    <div class="event-info">
+                        <div class="event-name">产品评审会</div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>今天 14:00 - 15:30</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">📍</span>
+                                <span>会议室 B</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">👥</span>
+                                <span>主持人：大伟</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">🔗</span>
+                                <span>线上会议：https://meet.example.com/abc123</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-description">
+                        请提前准备好设计稿和相关文档，会议将讨论新版本的 UI 设计方案和用户反馈。
+                    </div>
+                    <div class="popup-actions">
+                        <button class="btn btn-secondary">稍后提醒</button>
+                        <button class="btn btn-primary">我知道了</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PC 版本 - 日程提醒 -->
+    <div style="position: relative;">
+        <div class="section-label">PC 版本 - 日程提醒</div>
+        <div class="popup-container">
+            <div class="popup reminder">
+                <div class="popup-header">
+                    <div class="popup-icon reminder">⏰</div>
+                    <div class="popup-title">
+                        <h3>日程提醒</h3>
+                        <p>30 分钟后开始</p>
+                    </div>
+                    <button class="popup-close">×</button>
+                </div>
+                <div class="popup-body">
+                    <div class="event-info">
+                        <div class="event-name">客户沟通会</div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>明天 09:00 - 10:00</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">📍</span>
+                                <span>线上会议</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">👥</span>
+                                <span>参会人：建权、大伟</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popup-actions">
+                        <button class="btn btn-secondary">取消日程</button>
+                        <button class="btn btn-snooze">小睡 10 分钟</button>
+                        <button class="btn btn-primary">确认参加</button>
+                    </div>
+                    <div class="snooze-options">
+                        <div class="snooze-option">5 分钟</div>
+                        <div class="snooze-option selected">10 分钟</div>
+                        <div class="snooze-option">15 分钟</div>
+                        <div class="snooze-option">30 分钟</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PC 版本 - 成功提醒 -->
+    <div style="position: relative;">
+        <div class="section-label">PC 版本 - 成功提醒</div>
+        <div class="popup-container">
+            <div class="popup success">
+                <div class="popup-header">
+                    <div class="popup-icon success">✅</div>
+                    <div class="popup-title">
+                        <h3>日程已创建</h3>
+                        <p>添加成功</p>
+                    </div>
+                    <button class="popup-close">×</button>
+                </div>
+                <div class="popup-body">
+                    <div class="event-info">
+                        <div class="event-name">设计稿评审</div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>3 月 30 日 15:00 - 16:00</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">📍</span>
+                                <span>设计部</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">🔔</span>
+                                <span>提醒：提前 30 分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popup-actions">
+                        <button class="btn btn-secondary">添加更多</button>
+                        <button class="btn btn-primary">完成</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动版本 -->
+    <div style="position: relative;">
+        <div class="section-label">移动版本</div>
+        <div class="popup-container">
+            <div class="popup popup-mobile info">
+                <div class="popup-header">
+                    <div class="popup-icon info">🔔</div>
+                    <div class="popup-title">
+                        <h3>每日摘要</h3>
+                        <p>今日有 3 个日程</p>
+                    </div>
+                    <button class="popup-close">×</button>
+                </div>
+                <div class="popup-body">
+                    <div class="event-info">
+                        <div class="event-name">今日安排</div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>10:00 团队站会</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>14:00 产品评审会</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="icon">🕐</span>
+                                <span>16:00 设计讨论</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popup-actions">
+                        <button class="btn btn-secondary">明天再看</button>
+                        <button class="btn btn-primary">查看详情</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

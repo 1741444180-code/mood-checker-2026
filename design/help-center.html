@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - 小雅设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px 80px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 25px;
+            padding-right: 60px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            font-family: inherit;
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .search-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: -40px auto 40px;
+            padding: 0 20px;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+        }
+
+        .category-card h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .category-card p {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .popular-questions {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .popular-questions h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .question-list {
+            list-style: none;
+        }
+
+        .question-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-item:hover {
+            padding-left: 10px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            margin: 0 -10px;
+            padding-left: 20px;
+        }
+
+        .question-item h4 {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-item h4::before {
+            content: '❓';
+            font-size: 18px;
+        }
+
+        .question-item:hover h4 {
+            color: #667eea;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px 60px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .content {
+                margin-top: -30px;
+                padding: 0 15px;
+            }
+
+            .categories {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .category-card {
+                padding: 25px;
+            }
+
+            .popular-questions {
+                padding: 25px;
+            }
+
+            .popular-questions h2 {
+                font-size: 20px;
+            }
+
+            .question-item h4 {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .search-box {
+                padding: 15px 20px;
+                padding-right: 55px;
+                font-size: 14px;
+            }
+
+            .search-btn {
+                width: 38px;
+                height: 38px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 帮助中心</h1>
+        <p>有什么问题？我们在这里帮助您</p>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="搜索帮助文档、常见问题...">
+            <button class="search-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="categories">
+            <div class="category-card">
+                <div class="category-icon">🎮</div>
+                <h3>游戏玩法</h3>
+                <p>游戏规则、操作指南、技巧说明</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">💰</div>
+                <h3>充值支付</h3>
+                <p>充值方式、支付问题、退款政策</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">👤</div>
+                <h3>账号管理</h3>
+                <p>注册登录、账号安全、个人信息</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🔧</div>
+                <h3>技术问题</h3>
+                <p>故障排除、系统要求、兼容性</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">📱</div>
+                <h3>移动端</h3>
+                <p>APP 下载、安装教程、使用指南</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">📞</div>
+                <h3>联系客服</h3>
+                <p>联系方式、服务时间、反馈渠道</p>
+            </div>
+        </div>
+
+        <div class="popular-questions">
+            <h2>🔥 热门问题</h2>
+            <ul class="question-list">
+                <li class="question-item">
+                    <h4>如何注册新账号？</h4>
+                </li>
+                <li class="question-item">
+                    <h4>充值后未到账怎么办？</h4>
+                </li>
+                <li class="question-item">
+                    <h4>忘记密码如何找回？</h4>
+                </li>
+                <li class="question-item">
+                    <h4>游戏无法启动如何解决？</h4>
+                </li>
+                <li class="question-item">
+                    <h4>如何申请退款？</h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能
+        document.querySelector('.search-box').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                alert('🔍 搜索：' + this.value);
+            }
+        });
+
+        // 分类卡片点击
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.querySelector('h3').textContent;
+                alert('📂 进入分类：' + category);
+            });
+        });
+
+        // 问题点击
+        document.querySelectorAll('.question-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const question = this.querySelector('h4').textContent;
+                alert('❓ 查看问题详情：' + question);
+            });
+        });
+    </script>
+</body>
+</html>

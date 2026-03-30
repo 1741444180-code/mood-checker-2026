@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常见问题 - 小雅设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .faq-list {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .faq-question h3 {
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .faq-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon svg {
+            transform: rotate(45deg);
+        }
+
+        .faq-item.active .faq-icon {
+            background: #e74c3c;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: #f8f9fa;
+        }
+
+        .faq-answer-content {
+            padding: 0 30px;
+            color: #666;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-answer-content {
+            padding: 25px 30px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .category-tab.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+            font-weight: 600;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .faq-question {
+                padding: 20px;
+            }
+
+            .faq-question h3 {
+                font-size: 15px;
+            }
+
+            .faq-answer-content {
+                padding: 20px;
+                font-size: 14px;
+            }
+
+            .category-tabs {
+                gap: 8px;
+            }
+
+            .category-tab {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .faq-question {
+                padding: 18px;
+            }
+
+            .faq-question h3 {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❓ 常见问题</h1>
+            <p>快速找到您需要的答案</p>
+        </div>
+
+        <div class="category-tabs">
+            <div class="category-tab active">全部</div>
+            <div class="category-tab">账号相关</div>
+            <div class="category-tab">充值支付</div>
+            <div class="category-tab">游戏玩法</div>
+            <div class="category-tab">技术问题</div>
+        </div>
+
+        <div class="faq-list">
+            <div class="faq-item active">
+                <div class="faq-question">
+                    <h3>🎮 如何注册新账号？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>注册账号非常简单：</p>
+                        <p>1. 点击首页右上角的"注册"按钮</p>
+                        <p>2. 填写您的邮箱地址和设置密码</p>
+                        <p>3. 验证邮箱后即可完成注册</p>
+                        <p>4. 也可以使用微信、QQ 等第三方账号快速登录</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>💰 充值后未到账怎么办？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>如果遇到充值未到账的情况：</p>
+                        <p>1. 首先检查支付是否成功（查看银行/支付平台扣款记录）</p>
+                        <p>2. 等待 1-2 分钟，系统可能有延迟</p>
+                        <p>3. 刷新页面或重新登录账号</p>
+                        <p>4. 如仍未到账，请联系客服并提供订单号</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>🔐 忘记密码如何找回？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>找回密码步骤：</p>
+                        <p>1. 在登录页面点击"忘记密码"</p>
+                        <p>2. 输入您注册时使用的邮箱</p>
+                        <p>3. 查收邮件中的重置链接</p>
+                        <p>4. 点击链接设置新密码</p>
+                        <p>5. 使用新密码重新登录</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>🎯 游戏有哪些玩法模式？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>我们提供多种游戏模式：</p>
+                        <p>• 经典模式：传统玩法，适合新手</p>
+                        <p>• 竞技模式：排位赛，赢取奖励</p>
+                        <p>• 挑战模式：高难度关卡，测试技巧</p>
+                        <p>• 娱乐模式：轻松休闲，无压力</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>📱 支持哪些设备和系统？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>我们支持以下平台和设备：</p>
+                        <p>• Windows 10/11 (64 位)</p>
+                        <p>• macOS 10.15 及以上</p>
+                        <p>• iOS 13.0 及以上</p>
+                        <p>• Android 8.0 及以上</p>
+                        <p>• 网页版：Chrome、Safari、Edge 等主流浏览器</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>💳 支持哪些支付方式？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>我们支持多种支付方式：</p>
+                        <p>• 微信支付</p>
+                        <p>• 支付宝</p>
+                        <p>• 银联云闪付</p>
+                        <p>• Apple Pay</p>
+                        <p>• 信用卡/借记卡</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>🔄 如何申请退款？</h3>
+                    <div class="faq-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>退款申请流程：</p>
+                        <p>1. 进入"我的订单"页面</p>
+                        <p>2. 找到需要退款的订单</p>
+                        <p>3. 点击"申请退款"按钮</p>
+                        <p>4. 填写退款原因并提交</p>
+                        <p>5. 客服将在 1-3 个工作日内处理</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FAQ 展开/收起交互
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const item = this.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // 关闭所有其他项
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // 如果之前不是激活状态，现在激活它
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 分类标签切换
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.textContent;
+                if (category !== '全部') {
+                    alert('📂 筛选分类：' + category);
+                } else {
+                    alert('📋 显示全部问题');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

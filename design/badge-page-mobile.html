@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成就徽章 - 鱼虾蟹游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            padding: 20px 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 50%, #9b59b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 20px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f39c12;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #a0a0a0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(180deg, #f39c12, #e74c3c);
+            border-radius: 2px;
+        }
+
+        .badge-wall {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .badge-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-card:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .badge-card.unlocked {
+            border-color: rgba(243, 156, 18, 0.5);
+        }
+
+        .badge-card.unlocked::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .badge-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 12px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 50%, #9b59b6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .badge-card.locked .badge-icon {
+            background: rgba(255, 255, 255, 0.1);
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .badge-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .badge-description {
+            font-size: 11px;
+            color: #a0a0a0;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 10px;
+            color: #a0a0a0;
+        }
+
+        /* Badge Detail Modal - Mobile Optimized */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .badge-modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 24px 24px 0 0;
+            padding: 30px 20px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            border-top: 2px solid rgba(243, 156, 18, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .modal-badge-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 50%, #9b59b6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
+        }
+
+        .modal-badge-name {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .badge-rarity {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .rarity-common {
+            background: rgba(150, 150, 150, 0.3);
+            color: #b0b0b0;
+        }
+
+        .rarity-rare {
+            background: rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+
+        .rarity-epic {
+            background: rgba(155, 89, 182, 0.3);
+            color: #9b59b6;
+        }
+
+        .rarity-legendary {
+            background: rgba(243, 156, 18, 0.3);
+            color: #f39c12;
+        }
+
+        .modal-badge-desc {
+            font-size: 14px;
+            color: #a0a0a0;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .modal-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .modal-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f39c12;
+            margin-bottom: 6px;
+        }
+
+        .modal-stat-label {
+            font-size: 11px;
+            color: #a0a0a0;
+        }
+
+        .modal-progress {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .modal-progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .modal-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .modal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 5px;
+        }
+
+        .modal-progress-text {
+            font-size: 12px;
+            color: #a0a0a0;
+            text-align: right;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #a0a0a0;
+            font-size: 10px;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #f39c12;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 成就徽章</h1>
+            <p>收集徽章，证明你的游戏实力</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">24</div>
+                <div class="stat-label">已解锁</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">56</div>
+                <div class="stat-label">总数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">43%</div>
+                <div class="stat-label">完成度</div>
+            </div>
+        </div>
+
+        <div class="section-title">徽章收藏</div>
+        
+        <div class="badge-wall">
+            <!-- Unlocked Badge 1 -->
+            <div class="badge-card unlocked" onclick="openModal('legendary')">
+                <div class="badge-icon">🎲</div>
+                <div class="badge-name">骰子大师</div>
+                <div class="badge-description">累计投掷骰子 1000 次</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <div class="progress-text">1000/1000</div>
+            </div>
+
+            <!-- Unlocked Badge 2 -->
+            <div class="badge-card unlocked" onclick="openModal('epic')">
+                <div class="badge-icon">💰</div>
+                <div class="badge-name">财富积累</div>
+                <div class="badge-description">累计赢得 100,000 金币</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <div class="progress-text">完成</div>
+            </div>
+
+            <!-- Unlocked Badge 3 -->
+            <div class="badge-card unlocked" onclick="openModal('rare')">
+                <div class="badge-icon">🎯</div>
+                <div class="badge-name">精准预测</div>
+                <div class="badge-description">连续正确预测 10 次</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <div class="progress-text">完成</div>
+            </div>
+
+            <!-- Locked Badge 1 -->
+            <div class="badge-card locked">
+                <div class="badge-icon">👑</div>
+                <div class="badge-name">至尊王者</div>
+                <div class="badge-description">达到排行榜第 1 名</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 35%"></div>
+                </div>
+                <div class="progress-text">排名：35</div>
+            </div>
+
+            <!-- Locked Badge 2 -->
+            <div class="badge-card locked">
+                <div class="badge-icon">🔥</div>
+                <div class="badge-name">连胜之王</div>
+                <div class="badge-description">取得 20 连胜</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%"></div>
+                </div>
+                <div class="progress-text">12/20</div>
+            </div>
+
+            <!-- Locked Badge 3 -->
+            <div class="badge-card locked">
+                <div class="badge-icon">⭐</div>
+                <div class="badge-name">全收集者</div>
+                <div class="badge-description">解锁所有其他徽章</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 43%"></div>
+                </div>
+                <div class="progress-text">24/56</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badge Detail Modal -->
+    <div class="modal-overlay" id="badgeModal">
+        <div class="badge-modal">
+            <div class="modal-handle"></div>
+            <div class="modal-close" onclick="closeModal()">×</div>
+            <div class="modal-badge-icon" id="modalIcon">🎲</div>
+            <div style="text-align: center;">
+                <span class="badge-rarity rarity-legendary" id="modalRarity">传说</span>
+            </div>
+            <div class="modal-badge-name" id="modalName">骰子大师</div>
+            <div class="modal-badge-desc" id="modalDesc">累计投掷骰子 1000 次，展现你对游戏的热爱和坚持。</div>
+            
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <div class="modal-stat-value">1,247</div>
+                    <div class="modal-stat-label">总投掷</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-value">Top 5%</div>
+                    <div class="modal-stat-label">玩家排名</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-value">24</div>
+                    <div class="modal-stat-label">解锁日期</div>
+                </div>
+            </div>
+
+            <div class="modal-progress">
+                <div class="modal-progress-title">当前进度</div>
+                <div class="modal-progress-bar">
+                    <div class="modal-progress-fill" style="width: 100%"></div>
+                </div>
+                <div class="modal-progress-text">1000 / 1000 (已完成)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🎮</span>
+            <span>游戏</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🏆</span>
+            <span>成就</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>排行</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script>
+        function openModal(rarity) {
+            const modal = document.getElementById('badgeModal');
+            const rarityClass = 'rarity-' + rarity;
+            const rarityText = {
+                'common': '普通',
+                'rare': '稀有',
+                'epic': '史诗',
+                'legendary': '传说'
+            };
+            
+            document.getElementById('modalRarity').className = 'badge-rarity ' + rarityClass;
+            document.getElementById('modalRarity').textContent = rarityText[rarity];
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('badgeModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('badgeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

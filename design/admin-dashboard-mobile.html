@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 移动端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .menu-line {
+            width: 20px;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px 16px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 24px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(41, 128, 185, 0.15));
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(39, 174, 96, 0.15));
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(230, 126, 34, 0.15));
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .stat-trend {
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .stat-trend.up {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .stat-trend.down {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* User List */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .user-item:active {
+            background: #e8e8e8;
+        }
+
+        .user-item-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .user-item-info {
+            flex: 1;
+        }
+
+        .user-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .user-item-email {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .status-badge.inactive {
+            background: rgba(149, 165, 166, 0.1);
+            color: #95a5a6;
+        }
+
+        .status-badge.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+
+        /* Content List */
+        .content-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .content-item {
+            padding: 14px;
+            background: #f5f7fa;
+            border-radius: 10px;
+            border-left: 4px solid transparent;
+        }
+
+        .content-item.pending {
+            border-left-color: #f39c12;
+        }
+
+        .content-item.published {
+            border-left-color: #27ae60;
+        }
+
+        .content-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .content-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-type {
+            font-size: 11px;
+            color: #999;
+            padding: 3px 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 4px;
+        }
+
+        .content-date {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            padding: 16px 12px;
+            background: #f5f7fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .quick-action-btn:active {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .quick-action-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-text {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 12px;
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f5f7fa;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #f5f7fa;
+            color: #666;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">🎮 小雅游戏</div>
+            <button class="menu-btn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </button>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div class="user-details">
+                <div class="user-name">Admin</div>
+                <div class="user-role">超级管理员</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+        <h1 class="page-title">数据统计</h1>
+        <p class="page-subtitle">今天的运营数据概览</p>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">👥</div>
+                <div class="stat-value">24,589</div>
+                <div class="stat-label">总用户数</div>
+                <span class="stat-trend up">↑ 12.5%</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">🎮</div>
+                <div class="stat-value">8,234</div>
+                <div class="stat-label">日活跃</div>
+                <span class="stat-trend up">↑ 8.3%</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">💰</div>
+                <div class="stat-value">¥128k</div>
+                <div class="stat-label">今日收入</div>
+                <span class="stat-trend up">↑ 23.7%</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">📱</div>
+                <div class="stat-value">1,456</div>
+                <div class="stat-label">新增用户</div>
+                <span class="stat-trend down">↓ 2.1%</span>
+            </div>
+        </div>
+
+        <!-- User Management -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">👥</span>
+                    用户管理
+                </h2>
+                <button class="action-btn" onclick="openModal('userModal')">+ 添加</button>
+            </div>
+
+            <div class="user-list">
+                <div class="user-item">
+                    <div class="user-item-avatar">张</div>
+                    <div class="user-item-info">
+                        <div class="user-item-name">张三</div>
+                        <div class="user-item-email">zhangsan@example.com</div>
+                    </div>
+                    <span class="status-badge active">活跃</span>
+                </div>
+
+                <div class="user-item">
+                    <div class="user-item-avatar">李</div>
+                    <div class="user-item-info">
+                        <div class="user-item-name">李四</div>
+                        <div class="user-item-email">lisi@example.com</div>
+                    </div>
+                    <span class="status-badge active">活跃</span>
+                </div>
+
+                <div class="user-item">
+                    <div class="user-item-avatar">王</div>
+                    <div class="user-item-info">
+                        <div class="user-item-name">王五</div>
+                        <div class="user-item-email">wangwu@example.com</div>
+                    </div>
+                    <span class="status-badge pending">待审核</span>
+                </div>
+
+                <div class="user-item">
+                    <div class="user-item-avatar">赵</div>
+                    <div class="user-item-info">
+                        <div class="user-item-name">赵六</div>
+                        <div class="user-item-email">zhaoliu@example.com</div>
+                    </div>
+                    <span class="status-badge inactive">禁用</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Management -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">📝</span>
+                    内容管理
+                </h2>
+                <button class="action-btn" onclick="openModal('contentModal')">+ 发布</button>
+            </div>
+
+            <div class="content-list">
+                <div class="content-item published">
+                    <div class="content-title">新版本更新公告</div>
+                    <div class="content-meta">
+                        <span class="content-type">公告</span>
+                        <span class="content-date">03-29</span>
+                    </div>
+                </div>
+
+                <div class="content-item published">
+                    <div class="content-title">游戏攻略：如何快速升级</div>
+                    <div class="content-meta">
+                        <span class="content-type">攻略</span>
+                        <span class="content-date">03-28</span>
+                    </div>
+                </div>
+
+                <div class="content-item pending">
+                    <div class="content-title">周末活动预告</div>
+                    <div class="content-meta">
+                        <span class="content-type">活动</span>
+                        <span class="content-date">03-28</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Settings -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    系统设置
+                </h2>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🔐</div>
+                    <div class="quick-action-text">权限</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🎨</div>
+                    <div class="quick-action-text">界面</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">📧</div>
+                    <div class="quick-action-text">邮件</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">🔔</div>
+                    <div class="quick-action-text">通知</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">💾</div>
+                    <div class="quick-action-text">备份</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="quick-action-icon">📜</div>
+                    <div class="quick-action-text">日志</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a class="nav-item active">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">统计</span>
+        </a>
+        <a class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">用户</span>
+        </a>
+        <a class="nav-item">
+            <span class="nav-icon">📝</span>
+            <span class="nav-text">内容</span>
+        </a>
+        <a class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">设置</span>
+        </a>
+    </nav>
+
+    <!-- User Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">添加用户</h3>
+                <button class="modal-close" onclick="closeModal('userModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" class="form-input" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" class="form-input" placeholder="请输入邮箱">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">角色</label>
+                    <select class="form-input">
+                        <option>普通用户</option>
+                        <option>管理员</option>
+                        <option>超级管理员</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('userModal')">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Modal -->
+    <div class="modal-overlay" id="contentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">发布内容</h3>
+                <button class="modal-close" onclick="closeModal('contentModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" placeholder="请输入标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">类型</label>
+                    <select class="form-input">
+                        <option>公告</option>
+                        <option>攻略</option>
+                        <option>活动</option>
+                        <option>新闻</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-input" rows="4" placeholder="请输入内容"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('contentModal')">取消</button>
+                <button class="btn btn-primary">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

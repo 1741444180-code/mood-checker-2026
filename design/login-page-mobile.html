@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>登录/注册 - 心情打卡</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 触摸区域最小 44px */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full relative overflow-hidden" style="width: 375px; height: 667px;">
+  <!-- 背景渐变 -->
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"></div>
+  
+  <!-- 装饰圆形 -->
+  <div class="absolute top-[15%] left-[10%] w-[200px] h-[200px] bg-white/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-[20%] right-[15%] w-[250px] h-[250px] bg-white/8 rounded-full blur-3xl"></div>
+  
+  <!-- 主容器 -->
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <!-- 卡片 -->
+    <div class="w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6" style="max-width: calc(375px - 32px);">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="text-5xl mb-4">🎨</div>
+        <h1 class="text-xl font-bold text-gray-800 mb-2">心情打卡</h1>
+        <p class="text-xs text-gray-600 tracking-wide">Mood Checker</p>
+      </div>
+      
+      <!-- Tab 切换 -->
+      <div class="flex bg-gray-100 rounded-xl p-1 mb-6">
+        <button
+          class="flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 bg-white text-indigo-600 shadow-md touch-target"
+        >
+          登录
+        </button>
+        <button
+          class="flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 text-gray-600 hover:text-gray-800 hover:bg-white/50 touch-target"
+        >
+          注册
+        </button>
+      </div>
+      
+      <!-- 表单 -->
+      <form class="space-y-4">
+        <!-- 账号输入 -->
+        <div class="space-y-1">
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+            </svg>
+            <input
+              type="text"
+              placeholder="手机号/邮箱"
+              class="w-full h-[48px] pl-12 pr-4 bg-white border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none touch-target"
+            />
+          </div>
+        </div>
+        
+        <!-- 密码输入 -->
+        <div class="space-y-1">
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <input
+              type="password"
+              placeholder="密码"
+              class="w-full h-[48px] pl-12 pr-12 bg-white border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none touch-target"
+            />
+            <button
+              type="button"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors touch-target"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 提交按钮 -->
+        <button
+          type="submit"
+          class="w-full h-[48px] bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-base font-semibold rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm transition-all duration-300 touch-target"
+        >
+          登 录
+        </button>
+        
+        <!-- 辅助链接 -->
+        <div class="flex justify-between items-center">
+          <a href="#" class="text-xs text-gray-600 hover:text-gray-800 transition-colors touch-target">
+            忘记密码？
+          </a>
+          <button
+            type="button"
+            class="text-xs text-gray-600 hover:text-gray-800 transition-colors touch-target"
+          >
+            没有账号？<span class="font-medium text-indigo-600">注册</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

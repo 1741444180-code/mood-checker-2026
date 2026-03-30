@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日历视图 - 小雅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 32px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .current-month {
+            font-size: 20px;
+            font-weight: 600;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .view-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        /* Calendar Grid */
+        .calendar {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .weekday {
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .weekday:first-child {
+            color: #e74c3c;
+        }
+
+        .weekday:last-child {
+            color: #3498db;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .day {
+            min-height: 120px;
+            padding: 12px;
+            border-right: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .day:hover {
+            background: #f8f9fa;
+        }
+
+        .day:nth-child(7n) {
+            border-right: none;
+        }
+
+        .day.other-month {
+            background: #fafbfc;
+            color: #ccc;
+        }
+
+        .day.today {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .day-number {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .day.today .day-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .day.other-month .day-number {
+            color: #ccc;
+        }
+
+        /* Event Cards */
+        .event {
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .event:hover {
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-work {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border-left: 3px solid #667eea;
+        }
+
+        .event-personal {
+            background: rgba(52, 152, 219, 0.15);
+            color: #2980b9;
+            border-left: 3px solid #3498db;
+        }
+
+        .event-reminder {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f39c12;
+            border-left: 3px solid #f1c40f;
+        }
+
+        .event-meeting {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border-left: 3px solid #e74c3c;
+        }
+
+        /* Sidebar */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 40px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .upcoming-event {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upcoming-event:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .event-time {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .event-location {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-event-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .add-event-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>📅 日历视图</h1>
+                <p>查看和管理您的日程安排</p>
+            </div>
+            <div class="header-right">
+                <button class="nav-btn">‹</button>
+                <div class="current-month">2026 年 3 月</div>
+                <button class="nav-btn">›</button>
+                <button class="view-btn">日</button>
+                <button class="view-btn">周</button>
+                <button class="view-btn active">月</button>
+                <button class="view-btn">年</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="calendar-container">
+                <div class="calendar">
+                    <div class="weekdays">
+                        <div class="weekday">日</div>
+                        <div class="weekday">一</div>
+                        <div class="weekday">二</div>
+                        <div class="weekday">三</div>
+                        <div class="weekday">四</div>
+                        <div class="weekday">五</div>
+                        <div class="weekday">六</div>
+                    </div>
+                    <div class="days">
+                        <!-- 上月 -->
+                        <div class="day other-month"><span class="day-number">23</span></div>
+                        <div class="day other-month"><span class="day-number">24</span></div>
+                        <div class="day other-month"><span class="day-number">25</span></div>
+                        <div class="day other-month"><span class="day-number">26</span></div>
+                        <div class="day other-month"><span class="day-number">27</span></div>
+                        <div class="day other-month"><span class="day-number">28</span></div>
+                        <div class="day other-month"><span class="day-number">1</span></div>
+                        
+                        <!-- 本月 -->
+                        <div class="day"><span class="day-number">2</span></div>
+                        <div class="day"><span class="day-number">3</span></div>
+                        <div class="day"><span class="day-number">4</span></div>
+                        <div class="day"><span class="day-number">5</span></div>
+                        <div class="day"><span class="day-number">6</span></div>
+                        <div class="day"><span class="day-number">7</span></div>
+                        <div class="day"><span class="day-number">8</span></div>
+                        
+                        <div class="day"><span class="day-number">9</span></div>
+                        <div class="day"><span class="day-number">10</span></div>
+                        <div class="day"><span class="day-number">11</span></div>
+                        <div class="day"><span class="day-number">12</span></div>
+                        <div class="day"><span class="day-number">13</span></div>
+                        <div class="day"><span class="day-number">14</span></div>
+                        <div class="day"><span class="day-number">15</span></div>
+                        
+                        <div class="day"><span class="day-number">16</span></div>
+                        <div class="day"><span class="day-number">17</span></div>
+                        <div class="day"><span class="day-number">18</span></div>
+                        <div class="day"><span class="day-number">19</span></div>
+                        <div class="day"><span class="day-number">20</span></div>
+                        <div class="day"><span class="day-number">21</span></div>
+                        <div class="day"><span class="day-number">22</span></div>
+                        
+                        <div class="day"><span class="day-number">23</span></div>
+                        <div class="day"><span class="day-number">24</span></div>
+                        <div class="day"><span class="day-number">25</span></div>
+                        <div class="day"><span class="day-number">26</span></div>
+                        <div class="day"><span class="day-number">27</span></div>
+                        <div class="day today"><span class="day-number">28</span>
+                            <div class="event event-work">产品评审会 14:00</div>
+                            <div class="event event-meeting">团队站会 10:00</div>
+                        </div>
+                        <div class="day"><span class="day-number">29</span></div>
+                        
+                        <div class="day"><span class="day-number">30</span></div>
+                        <div class="day"><span class="day-number">31</span></div>
+                        <div class="day"><span class="day-number">1</span></div>
+                        <div class="day"><span class="day-number">2</span></div>
+                        <div class="day"><span class="day-number">3</span></div>
+                        <div class="day"><span class="day-number">4</span></div>
+                        <div class="day"><span class="day-number">5</span></div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="sidebar-title">📌 即将开始</div>
+                    
+                    <div class="upcoming-event">
+                        <div class="event-time">🕐 今天 10:00 - 10:30</div>
+                        <div class="event-title">团队站会</div>
+                        <div class="event-location">📍 会议室 A</div>
+                    </div>
+
+                    <div class="upcoming-event">
+                        <div class="event-time">🕐 今天 14:00 - 15:30</div>
+                        <div class="event-title">产品评审会</div>
+                        <div class="event-location">📍 会议室 B</div>
+                    </div>
+
+                    <div class="upcoming-event">
+                        <div class="event-time">🕐 明天 09:00 - 10:00</div>
+                        <div class="event-title">客户沟通会</div>
+                        <div class="event-location">📍 线上会议</div>
+                    </div>
+
+                    <div class="upcoming-event">
+                        <div class="event-time">🕐 3 月 30 日 15:00</div>
+                        <div class="event-title">设计稿评审</div>
+                        <div class="event-location">📍 设计部</div>
+                    </div>
+
+                    <button class="add-event-btn">+ 添加日程</button>
+
+                    <div class="legend">
+                        <div class="legend-title">图例</div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #667eea;"></div>
+                                <span>工作</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #3498db;"></div>
+                                <span>个人</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f1c40f;"></div>
+                                <span>提醒</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #e74c3c;"></div>
+                                <span>会议</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
