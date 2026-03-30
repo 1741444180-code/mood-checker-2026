@@ -66,9 +66,6 @@ const TIME_RANGES = [
 
 const COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6"];
 
-export const metadata = {
-  title: '数据统计',
-};
 
 export default function StatsPage() {
   const [timeRange, setTimeRange] = useState("week");

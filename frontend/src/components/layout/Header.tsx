@@ -1,79 +1,34 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { Menu } from 'lucide-react';
 
-export default function Header() {
+const Header: React.FC = () => {
   return (
-    <header className="border-b">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="text-xl font-bold">
+    <header className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="text-xl font-bold text-gray-900">
             心情打卡
           </Link>
-        </div>
-
-        {/* 桌面导航 */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
-            首页
-          </Link>
-          <Link href="/stats" className="text-sm font-medium transition-colors hover:text-primary">
-            数据统计
-          </Link>
-          <Link href="/calendar" className="text-sm font-medium transition-colors hover:text-primary">
-            心情日历
-          </Link>
-          <Link href="/friends" className="text-sm font-medium transition-colors hover:text-primary">
-            好友列表
-          </Link>
-          <Link href="/badges" className="text-sm font-medium transition-colors hover:text-primary">
-            徽章系统
-          </Link>
-          <Link href="/leaderboard" className="text-sm font-medium transition-colors hover:text-primary">
-            排行榜
-          </Link>
-        </nav>
-
-        {/* 移动端菜单 */}
-        <div className="md:hidden">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost" size="sm" className="md:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">打开菜单</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Link href="/">首页</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/stats">数据统计</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/calendar">心情日历</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/friends">好友列表</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/badges">徽章系统</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/leaderboard">排行榜</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <nav className="flex space-x-4">
+            <Link href="/checkin" className="text-gray-600 hover:text-gray-900">
+              打卡
+            </Link>
+            <Link href="/calendar" className="text-gray-600 hover:text-gray-900">
+              日历
+            </Link>
+            <Link href="/stats" className="text-gray-600 hover:text-gray-900">
+              统计
+            </Link>
+            <Link href="/profile" className="text-gray-600 hover:text-gray-900">
+              我的
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
   );
-}
+};
+
+export default Header;
