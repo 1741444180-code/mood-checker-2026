@@ -1,8 +1,5 @@
 import { NotificationSettingsForm } from '@/components/notifications/NotificationSettingsForm';
 
-export const metadata = {
-  title: '设置',
-};
 
 export default function NotificationSettingsPage() {
   return (

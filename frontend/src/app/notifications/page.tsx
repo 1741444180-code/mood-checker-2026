@@ -6,9 +6,6 @@ import NotificationBanner from './components/NotificationBanner';
 import NotificationService from '../services/notificationService';
 import { Notification } from '../types/notification';
 
-export const metadata = {
-  title: '通知',
-};
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);

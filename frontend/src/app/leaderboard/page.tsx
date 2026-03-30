@@ -2,9 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 
-export const metadata = {
-  title: '排行榜',
-};
 import LeaderboardComponent from './LeaderboardComponent';
 
 interface User {

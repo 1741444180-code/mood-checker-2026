@@ -4,9 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, User, Lock, Mail } from 'lucide-react';
 
-export const metadata = {
-  title: '注册',
-};
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);

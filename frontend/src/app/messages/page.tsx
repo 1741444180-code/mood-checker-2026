@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-export const metadata = {
-  title: '消息中心',
-};
 import MessageList from '@/components/MessageList';
 import { messageAPI } from '@/utils/api';
 

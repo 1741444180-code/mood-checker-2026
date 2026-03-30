@@ -2,9 +2,6 @@
 
 import { useState } from 'react';
 
-export const metadata = {
-  title: '用户反馈',
-};
 import { Star, Send } from 'lucide-react';
 
 const FeedbackPage = () => {

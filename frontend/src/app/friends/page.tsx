@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-export const metadata = {
-  title: '好友列表',
-};
 import FriendList from '@/components/FriendList';
 import { friendAPI } from '@/utils/api';
 

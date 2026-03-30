@@ -3,9 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 
-export const metadata = {
-  title: '服务条款',
-};
 
 export default function TosPage() {
   return (

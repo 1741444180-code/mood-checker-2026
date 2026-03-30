@@ -1,8 +1,5 @@
 import { CalendarView } from '@/components/calendar/CalendarView';
 
-export const metadata = {
-  title: '心情日历',
-};
 
 export default function CalendarPage() {
   return (

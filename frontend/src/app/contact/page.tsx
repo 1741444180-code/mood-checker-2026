@@ -3,9 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-export const metadata = {
-  title: '联系我们',
-};
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
