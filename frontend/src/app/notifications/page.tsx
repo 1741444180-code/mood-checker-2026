@@ -10,25 +10,29 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showBanner, setShowBanner] = useState(false);
   const [bannerNotification, setBannerNotification] = useState<Notification | null>(null);
-  const notificationService = NotificationService.getInstance();
 
   useEffect(() => {
-    // 订阅通知变化
-    const unsubscribe = notificationService.subscribe(setNotifications);
-    
-    return () => {
-      unsubscribe();
+    // 加载通知列表
+    const fetchNotifications = async () => {
+      try {
+        const data = await NotificationService.getList();
+        setNotifications(data);
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
     };
+    
+    fetchNotifications();
   }, []);
 
   // 处理通知标记为已读
   const markAsRead = (id: string) => {
-    notificationService.markAsRead(id);
+    NotificationService.markAsRead(id);
   };
 
   // 标记所有为已读
   const markAllAsRead = () => {
-    notificationService.markAllAsRead();
+    NotificationService.markAllAsRead();
   };
 
   // 显示横幅通知
@@ -47,13 +51,14 @@ export default function NotificationsPage() {
         const newNotification: Notification = {
           id: `${Date.now()}`,
           title: '新通知',
-          content: `这是一条新的通知消息，时间: ${new Date().toLocaleTimeString()}`,
-          timestamp: new Date(),
-          read: false,
-          type: 'general'
+          message: `这是一条新的通知消息，时间: ${new Date().toLocaleTimeString()}`,
+          timestamp: new Date().toISOString(),
+          isRead: false,
+          type: 'system'
         };
         
-        notificationService.add(newNotification);
+        // 本地添加通知（模拟）
+        setNotifications(prev => [newNotification, ...prev]);
         showNotificationBanner(newNotification);
       }
     }, 30000); // 每30秒检查一次
@@ -72,7 +77,7 @@ export default function NotificationsPage() {
         {/* 操作栏 */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <div className="text-sm text-gray-500">
-            共 {notifications.length} 条通知，{notificationService.getUnreadCount()} 条未读
+            共 {notifications.length} 条通知，{notifications.filter(n => !n.isRead).length} 条未读
           </div>
           <button
             onClick={markAllAsRead}

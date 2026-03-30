@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
 
     // 获取查询参数
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('pageSize') || '20');
+    let page = parseInt(searchParams.get('page') || '1');
+    let pageSize = parseInt(searchParams.get('pageSize') || '20');
     const level = searchParams.get('level') || ''; // 日志级别: error, warn, info, debug
     const startDate = searchParams.get('startDate') || '';
     const endDate = searchParams.get('endDate') || '';

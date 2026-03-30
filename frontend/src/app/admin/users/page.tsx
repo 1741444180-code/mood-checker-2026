@@ -4,12 +4,22 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminWrapper from '../components/AdminWrapper';
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  joinDate: string;
+  lastLogin: string;
+}
+
 const UsersPage = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalAction, setModalAction] = useState('');
   
@@ -52,7 +62,7 @@ const UsersPage = () => {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   // 处理状态更改
-  const handleStatusChange = (userId, newStatus) => {
+  const handleStatusChange = (userId: number, newStatus: string) => {
     setUsers(users.map(user => 
       user.id === userId ? { ...user, status: newStatus } : user
     ));
@@ -60,14 +70,14 @@ const UsersPage = () => {
   };
 
   // 打开确认模态框
-  const openModal = (user, action) => {
+  const openModal = (user: User, action: string) => {
     setSelectedUser(user);
     setModalAction(action);
     setShowModal(true);
   };
 
   // 获取状态标签
-  const getStatusLabel = (status) => {
+  const getStatusLabel = (status: string) => {
     switch(status) {
       case 'active':
         return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">活跃</span>;
@@ -81,7 +91,7 @@ const UsersPage = () => {
   };
 
   // 获取角色标签
-  const getRoleLabel = (role) => {
+  const getRoleLabel = (role: string) => {
     switch(role) {
       case '管理员':
         return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">管理员</span>;
@@ -203,7 +213,7 @@ const UsersPage = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

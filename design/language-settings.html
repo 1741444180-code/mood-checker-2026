@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多语言设置 - 小雅游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        /* 设置区块 */
+        .settings-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* 设置项 */
+        .setting-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #f5f7fa;
+            gap: 20px;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .setting-control {
+            flex-shrink: 0;
+        }
+
+        /* 开关组件 */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #e0e0e0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 27px;
+        }
+
+        /* 下拉选择 */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            appearance: none;
+            padding: 10px 36px 10px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 180px;
+        }
+
+        .select-wrapper select:hover {
+            border-color: #667eea;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+        /* 语言优先级列表 */
+        .priority-list {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .priority-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .priority-drag {
+            color: #999;
+            margin-right: 12px;
+            cursor: grab;
+            font-size: 16px;
+        }
+
+        .priority-flag {
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .priority-info {
+            flex: 1;
+        }
+
+        .priority-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .priority-native {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* 文案预览 */
+        .preview-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .preview-label {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preview-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .preview-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .preview-language {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preview-text {
+            font-size: 14px;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        /* 区域选择 */
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .region-option {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .region-option:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .region-option.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .region-flag {
+            font-size: 18px;
+        }
+
+        /* 翻译进度 */
+        .translation-progress {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .progress-item {
+            margin-bottom: 16px;
+        }
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-language {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-percentage {
+            font-size: 13px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* 提示信息 */
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #1976d2;
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff9e6, #ffe0b2);
+            border-left: 4px solid #ff9800;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #f57c00;
+            line-height: 1.6;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px 100px;
+            }
+
+            .container {
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 25px 20px;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .setting-control {
+                width: 100%;
+                margin-top: 12px;
+            }
+
+            .preview-content {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ 多语言设置</h1>
+            <p>Language & Region Settings</p>
+        </div>
+
+        <div class="content">
+            <!-- 基础语言设置 -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">🌐</span>
+                    基础语言设置 / Basic Language Settings
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            📱 界面语言 / Interface Language
+                        </div>
+                        <div class="setting-description">
+                            选择应用程序的显示语言 / Select the display language for the application
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>简体中文</option>
+                                <option>English (US)</option>
+                                <option>English (UK)</option>
+                                <option>日本語</option>
+                                <option>한국어</option>
+                                <option>Français</option>
+                                <option>Deutsch</option>
+                                <option>Español</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            🔊 内容语言 / Content Language
+                        </div>
+                        <div class="setting-description">
+                            优先显示的内容语言（如游戏文案、公告等）/ Preferred content language
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>跟随界面语言</option>
+                                <option>简体中文</option>
+                                <option>English</option>
+                                <option>日本語</option>
+                                <option>한국어</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            🌍 自动检测语言 / Auto-detect Language
+                        </div>
+                        <div class="setting-description">
+                            根据浏览器/系统语言自动切换界面语言 / Auto-switch based on browser/system language
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 语言优先级 -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">⭐</span>
+                    语言优先级 / Language Priority
+                </div>
+
+                <div class="setting-info" style="margin-bottom: 16px;">
+                    <div class="setting-description">
+                        拖拽调整语言偏好顺序，系统会按优先级尝试显示对应语言内容 / Drag to adjust language preference order
+                    </div>
+                </div>
+
+                <div class="priority-list">
+                    <div class="priority-item">
+                        <span class="priority-drag">☰</span>
+                        <span class="priority-flag">🇨🇳</span>
+                        <div class="priority-info">
+                            <div class="priority-name">简体中文</div>
+                            <div class="priority-native">Chinese Simplified</div>
+                        </div>
+                        <span class="priority-badge">默认</span>
+                    </div>
+
+                    <div class="priority-item">
+                        <span class="priority-drag">☰</span>
+                        <span class="priority-flag">🇺🇸</span>
+                        <div class="priority-info">
+                            <div class="priority-name">English</div>
+                            <div class="priority-native">English (US)</div>
+                        </div>
+                    </div>
+
+                    <div class="priority-item">
+                        <span class="priority-drag">☰</span>
+                        <span class="priority-flag">🇯🇵</span>
+                        <div class="priority-info">
+                            <div class="priority-name">日本語</div>
+                            <div class="priority-native">Japanese</div>
+                        </div>
+                    </div>
+
+                    <div class="priority-item">
+                        <span class="priority-drag">☰</span>
+                        <span class="priority-flag">🇰🇷</span>
+                        <div class="priority-info">
+                            <div class="priority-name">한국어</div>
+                            <div class="priority-native">Korean</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-icon">💡</span>
+                    <div class="info-text">
+                        <strong>提示：</strong>当首选语言的翻译不完整时，系统会自动降级到下一个优先级的语言。例如：如果某内容没有简体中文版本，会尝试显示 English 版本。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 区域设置 -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">🗺️</span>
+                    区域设置 / Region Settings
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            📍 所在地区 / Region
+                        </div>
+                        <div class="setting-description">
+                            影响日期格式、数字格式、时区等 / Affects date format, number format, timezone, etc.
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>中国大陆</option>
+                                <option>美国</option>
+                                <option>英国</option>
+                                <option>日本</option>
+                                <option>韩国</option>
+                                <option>法国</option>
+                                <option>德国</option>
+                                <option>西班牙</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            📅 日期格式 / Date Format
+                        </div>
+                        <div class="setting-description">
+                            选择日期的显示格式 / Select date display format
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>YYYY-MM-DD (2026-03-30)</option>
+                                <option>DD/MM/YYYY (30/03/2026)</option>
+                                <option>MM/DD/YYYY (03/30/2026)</option>
+                                <option>YYYY 年 MM 月 DD 日 (2026 年 03 月 30 日)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">
+                            🔢 数字格式 / Number Format
+                        </div>
+                        <div class="setting-description">
+                            选择数字和货币的显示格式 / Select number and currency format
+                        </div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>1,234.56 (英文)</option>
+                                <option>1.234,56 (德文)</option>
+                                <option>1 234,56 (法文)</option>
+                                <option>1,234.56 (中文)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 翻译进度 -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">📊</span>
+                    翻译进度 / Translation Progress
+                </div>
+
+                <div class="translation-progress">
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-language">
+                                <span class="priority-flag">🇨🇳</span>
+                                简体中文
+                            </span>
+                            <span class="progress-percentage">100%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-language">
+                                <span class="priority-flag">🇺🇸</span>
+                                English (US)
+                            </span>
+                            <span class="progress-percentage">95%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-language">
+                                <span class="priority-flag">🇯🇵</span>
+                                日本語
+                            </span>
+                            <span class="progress-percentage">78%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-language">
+                                <span class="priority-flag">🇰🇷</span>
+                                한국어
+                            </span>
+                            <span class="progress-percentage">62%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 62%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <span class="warning-icon">⚠️</span>
+                    <div class="warning-text">
+                        <strong>注意：</strong>部分语言的翻译尚未完成。在未完成的语言下，部分内容可能会回退到英文显示。翻译工作正在进行中。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文案长度预览 -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">📏</span>
+                    文案长度预览 / Text Length Preview
+                </div>
+
+                <div class="setting-info" style="margin-bottom: 16px;">
+                    <div class="setting-description">
+                        查看不同语言下相同文案的长度差异，确保 UI 适配 / Compare text lengths across languages for UI adaptation
+                    </div>
+                </div>
+
+                <div class="preview-box">
+                    <div class="preview-label">🔘 按钮文案 / Button Text</div>
+                    <div class="preview-content">
+                        <div class="preview-item">
+                            <div class="preview-language">中文 / Chinese</div>
+                            <div class="preview-text">保存设置</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-language">英文 / English</div>
+                            <div class="preview-text">Save Settings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-box">
+                    <div class="preview-label">📝 表单标签 / Form Labels</div>
+                    <div class="preview-content">
+                        <div class="preview-item">
+                            <div class="preview-language">中文 / Chinese</div>
+                            <div class="preview-text">请选择您偏好的界面语言</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-language">英文 / English</div>
+                            <div class="preview-text">Please select your preferred interface language</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-box">
+                    <div class="preview-label">⚠️ 提示信息 / Alert Messages</div>
+                    <div class="preview-content">
+                        <div class="preview-item">
+                            <div class="preview-language">中文 / Chinese</div>
+                            <div class="preview-text">设置已保存，页面将在 3 秒后刷新</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-language">英文 / English</div>
+                            <div class="preview-text">Settings saved. Page will refresh in 3 seconds</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-icon">💡</span>
+                    <div class="info-text">
+                        <strong>设计提示：</strong>英文文案平均比中文长 30%-100%。所有文本容器都应使用弹性布局，支持自动换行。按钮和标签应设置最小宽度，并在设计时考虑最长文案的情况。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="actions">
+                <button class="btn btn-secondary">重置为默认</button>
+                <button class="btn btn-primary">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 区域选择交互
+        document.querySelectorAll('.region-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.region-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        // 语言优先级拖拽交互（简化版）
+        document.querySelectorAll('.priority-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+                // 仅用于演示，实际应实现拖拽功能
+                console.log('Priority item clicked:', index);
+            });
+        });
+
+        // 开关交互
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -125,7 +125,7 @@ export async function GET(req: NextRequest) {
     });
 
     // 转换日期格式以适合作为趋势数据
-    const formattedTrend = userGrowthTrend.map(item => ({
+    const formattedTrend = userGrowthTrend.map((item: any) => ({
       date: item.createdAt.toISOString().split('T')[0],
       newUsers: item._count.id
     }));

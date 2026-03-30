@@ -20,10 +20,10 @@ export async function GET(request: NextRequest) {
     let sortedUsers = [...mockUsers];
     if (type === 'happy') {
       // 按平均心情分数排序
-      sortedUsers.sort((a, b) => b.averageMoodScore - a.averageMoodScore);
+      sortedUsers.sort((a: any, b: any) => b.averageMoodScore - a.averageMoodScore);
     } else {
       // 按打卡次数排序（默认）
-      sortedUsers.sort((a, b) => b.checkInCount - a.checkInCount);
+      sortedUsers.sort((a: any, b: any) => b.checkInCount - a.checkInCount);
     }
     
     // 限制返回前10名

@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按日期降序）
-    filteredRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    filteredRecords.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
     // 分页
     const paginatedRecords = filteredRecords.slice(offset, offset + limit);

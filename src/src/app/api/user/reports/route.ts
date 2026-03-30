@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按生成时间倒序）
-    filteredReports.sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime());
+    filteredReports.sort((a: any, b: any) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime());
     
     // 分页
     const paginatedReports = filteredReports.slice(offset, offset + limit);

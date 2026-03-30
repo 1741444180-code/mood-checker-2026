@@ -131,12 +131,12 @@ export async function GET(request: NextRequest) {
       : 0;
 
     const trendsData = {
-      dailyStats: dailyStats.map(d => ({
+      dailyStats: dailyStats.map((d: any) => ({
         date: d.createdAt.toISOString().split('T')[0],
         totalAmount: d._sum.totalAmount || 0,
         count: 1 // Placeholder - would need to count actual orders per day
       })),
-      weeklyStats: weeklyStats.map(w => ({
+      weeklyStats: weeklyStats.map((w: any) => ({
         date: w.createdAt.toISOString().split('T')[0],
         totalAmount: w._sum.totalAmount || 0,
         quantity: w._sum.quantity || 0

@@ -94,7 +94,7 @@ function getStartDate(range: string): Date {
 function calculateConsecutiveDays(moods: any[]): number {
   if (moods.length === 0) return 0
   
-  const sortedMoods = [...moods].sort((a, b) => 
+  const sortedMoods = [...moods].sort((a: any, b: any) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   )
   

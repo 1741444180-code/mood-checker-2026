@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     );
 
     // 排序（按时间倒序）
-    filteredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    filteredPosts.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     
     // 分页
     const paginatedPosts = filteredPosts.slice(offset, offset + limit);

@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 解析每个FAQ的标签
-    const faqsWithParsedTags = faqs.map(faq => {
+    const faqsWithParsedTags = faqs.map((faq: any) => {
       let parsedTags = [];
       try {
         parsedTags = JSON.parse(faq.tags || '[]');

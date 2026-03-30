@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按时间倒序）
-    filteredLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    filteredLogs.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     
     // 分页
     const paginatedLogs = filteredLogs.slice(offset, offset + limit);

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 获取用户详细信息
-    const userIds = leaderboardData.map(item => item.userId);
+    const userIds = leaderboardData.map((item: any) => item.userId);
     const users = await prisma.user.findMany({
       where: {
         id: {
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 将用户信息与徽章数量合并
-    const leaderboardWithUserInfo = leaderboardData.map((item, index) => {
+    const leaderboardWithUserInfo = leaderboardData.map((item: any, index: number) => {
       const user = users.find(u => u.id === item.userId);
       return {
         rank: skip + index + 1, // 考虑分页的排名

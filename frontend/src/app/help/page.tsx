@@ -204,7 +204,7 @@ const HelpPage = () => {
               ) : (
                 <div className="bg-white rounded-xl shadow-sm p-12 text-center">
                   <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-                    <FiSearch className="h-6 w-6 text-blue-600" />
+                    <Search className="h-6 w-6 text-blue-600" />
                   </div>
                   <h3 className="mt-4 text-lg font-medium text-gray-900">未找到相关文章</h3>
                   <p className="mt-2 text-gray-500">

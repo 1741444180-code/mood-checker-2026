@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按评分和使用次数）
-    filteredSuggestions.sort((a, b) => {
+    filteredSuggestions.sort((a: any, b: any) => {
       // 首先按评分排序
       if (b.rating !== a.rating) {
         return b.rating - a.rating;

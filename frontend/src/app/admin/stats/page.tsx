@@ -6,9 +6,22 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
+interface StatsData {
+  totalUsers: number;
+  activeUsers: number;
+  newUsersToday: number;
+  totalContent: number;
+  approvedContent: number;
+  pendingContent: number;
+  rejectedContent: number;
+  dailyUsers: Array<{ date: string; users: number }>;
+  contentByCategory: Array<{ name: string; value: number }>;
+  userGrowth: Array<{ month: string; growth: number }>;
+}
+
 const StatsPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [statsData, setStatsData] = useState(null);
+  const [statsData, setStatsData] = useState<StatsData | null>(null);
   const [dateRange, setDateRange] = useState('7d');
   const [loading, setLoading] = useState(true);
   
@@ -276,7 +289,10 @@ const StatsPage = () => {
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={(props: any) => {
+                          const { name, percent } = props;
+                          return `${name || ''} ${((percent || 0) * 100).toFixed(0)}%`;
+                        }}
                       >
                         {statsData.contentByCategory.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

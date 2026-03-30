@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按优先级和创建日期）
-    filteredGoals.sort((a, b) => {
+    filteredGoals.sort((a: any, b: any) => {
       // 首先按优先级排序
       const priorityOrder: Record<string, number> = { high: 3, medium: 2, low: 1 };
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];

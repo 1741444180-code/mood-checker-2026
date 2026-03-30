@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
     
     // 按排序顺序排列
-    filteredMoodTypes.sort((a, b) => a.sortOrder - b.sortOrder);
+    filteredMoodTypes.sort((a: any, b: any) => a.sortOrder - b.sortOrder);
     
     return Response.json(filteredMoodTypes);
   } catch (error) {

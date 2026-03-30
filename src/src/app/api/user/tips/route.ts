@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序（按评分降序）
-    filteredTips.sort((a, b) => b.rating - a.rating);
+    filteredTips.sort((a: any, b: any) => b.rating - a.rating);
     
     // 分页
     const paginatedTips = filteredTips.slice(offset, offset + limit);

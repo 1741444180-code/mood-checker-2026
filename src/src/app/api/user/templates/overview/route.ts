@@ -168,11 +168,11 @@ export async function GET(request: NextRequest) {
 
     // 过滤心情类型
     if (moodType) {
-      templates = templates.filter(t => t.moodType === moodType);
+      templates = templates.filter((t: any) => t.moodType === moodType);
     }
 
     // 排序
-    templates.sort((a, b) => {
+    templates.sort((a: any, b: any) => {
       let comparison = 0;
       if (sortBy === 'usage') {
         comparison = sortOrder === 'asc' ? a.usageCount - b.usageCount : b.usageCount - a.usageCount;

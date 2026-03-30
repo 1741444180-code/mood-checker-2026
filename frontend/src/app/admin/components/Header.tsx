@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-const Header = ({ setSidebarOpen }) => {
+const Header = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) => {
   const router = useRouter();
 
   const handleLogout = () => {

@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
     // 整理好友数据，确保返回的是用户的实际好友（而非用户自己）
     const friends = friendships
-      .map(friendship => {
+      .map((friendship: any) => {
         // 如果 userId 是 friendship.userId，则好友是 friend
         // 如果 userId 是 friendship.friendId，则好友是 user
         if (friendship.userId === userId) {

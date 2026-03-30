@@ -181,7 +181,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序
-    goals.sort((a, b) => {
+    goals.sort((a: any, b: any) => {
       let comparison = 0;
       if (sortBy === 'priority') {
         const priorityOrder: Record<string, number> = { high: 3, medium: 2, low: 1 };

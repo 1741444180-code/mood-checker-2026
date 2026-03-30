@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 查询完整内容（如果需要）
-    const articleIds = articles.map(article => article.id);
+    const articleIds = articles.map((article: any) => article.id);
     const articlesWithContent = await prisma.helpArticle.findMany({
       where: {
         id: {
@@ -76,8 +76,8 @@ export async function GET(request: NextRequest) {
     });
 
     // 合并内容到结果中，并解析标签
-    const result = articles.map(article => {
-      const fullArticle = articlesWithContent.find(a => a.id === article.id);
+    const result = articles.map((article: any) => {
+      const fullArticle = articlesWithContent.find((a: any) => a.id === article.id);
       
       // 解析标签JSON字符串
       let parsedTags = [];

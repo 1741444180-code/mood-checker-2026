@@ -3,13 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import AdminWrapper from '../components/AdminWrapper';
 
+interface Content {
+  id: number;
+  title: string;
+  author: string;
+  category: string;
+  status: string;
+  createdAt: string;
+  views: number;
+  likes: number;
+}
+
 const ContentPage = () => {
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState<Content[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [selectedContent, setSelectedContent] = useState(null);
+  const [selectedContent, setSelectedContent] = useState<Content | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalAction, setModalAction] = useState('');
   
@@ -56,7 +67,7 @@ const ContentPage = () => {
   const totalPages = Math.ceil(filteredContents.length / contentsPerPage);
 
   // 处理内容状态更改
-  const handleStatusChange = (contentId, newStatus) => {
+  const handleStatusChange = (contentId: number, newStatus: string) => {
     setContents(contents.map(content => 
       content.id === contentId ? { ...content, status: newStatus } : content
     ));
@@ -64,14 +75,14 @@ const ContentPage = () => {
   };
 
   // 打开确认模态框
-  const openModal = (content, action) => {
+  const openModal = (content: Content, action: string) => {
     setSelectedContent(content);
     setModalAction(action);
     setShowModal(true);
   };
 
   // 获取状态标签
-  const getStatusLabel = (status) => {
+  const getStatusLabel = (status: string) => {
     switch(status) {
       case 'approved':
         return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已通过</span>;
@@ -85,7 +96,7 @@ const ContentPage = () => {
   };
 
   return (
-    <AdminWrapper title="内容管理" description="审核和管理用户提交的内容">
+    <AdminWrapper>
       {/* 搜索和过滤区 */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -219,7 +230,7 @@ const ContentPage = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

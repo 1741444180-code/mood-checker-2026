@@ -362,7 +362,7 @@ export default function HomePage() {
                   type="text"
                   placeholder="给这个心情起个名字..."
                   className="w-full h-11 px-4 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none touch-target"
-                  maxLength="20"
+                  maxLength={20}
                 />
               </div>
 

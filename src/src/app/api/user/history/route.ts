@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 排序
-    filteredHistory.sort((a, b) => {
+    filteredHistory.sort((a: any, b: any) => {
       let comparison = 0;
       if (sortBy === 'moodScore') {
         comparison = sortOrder === 'asc' ? a.moodScore - b.moodScore : b.moodScore - a.moodScore;

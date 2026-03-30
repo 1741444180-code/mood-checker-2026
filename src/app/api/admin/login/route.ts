@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-import { encryptData, verifyEncryptedData } from '@/utils/encryption';
+import { encrypt, verifyEncryptedData } from '@/utils/encryption';
 
 const prisma = new PrismaClient();
 
@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
     const isValidPassword = verifyEncryptedData(
       password,
       adminUser.password,
-      adminUser.passwordSalt || ''
     );
 
     if (!isValidPassword) {
