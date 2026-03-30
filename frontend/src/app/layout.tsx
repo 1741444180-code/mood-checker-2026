@@ -3,8 +3,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "心情打卡网站",
-  description: "记录您的每日心情",
+  title: {
+    default: "心情打卡 - 记录您的每一天",
+    template: "%s - 心情打卡"
+  },
+  description: "追踪情绪变化，发现内心规律，成为更好的自己",
 };
 
 export default function RootLayout({

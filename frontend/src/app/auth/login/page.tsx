@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+export const metadata = {
+  title: '登录',
+};
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -10,6 +10,10 @@ import PeopleIcon from '@mui/icons-material/People';
 import BadgeIcon from '@mui/icons-material/Badge';
 import InsightsIcon from '@mui/icons-material/Insights';
 
+export const metadata = {
+  title: '首页',
+};
+
 export default function HomePage() {
   return (
     <Box className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50">

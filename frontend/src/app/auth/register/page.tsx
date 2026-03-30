@@ -10,6 +10,10 @@ import Lock from '@mui/icons-material/Lock';
 import Person from '@mui/icons-material/Person';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 
+export const metadata = {
+  title: '注册',
+};
+
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

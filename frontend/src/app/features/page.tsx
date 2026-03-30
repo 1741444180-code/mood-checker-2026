@@ -3,6 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 
+export const metadata = {
+  title: '功能介绍',
+};
+
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">

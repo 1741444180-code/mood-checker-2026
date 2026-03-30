@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+export const metadata = {
+  title: '帮助中心',
+};
 import { Search, Home, Info, HelpCircle, Settings, ChevronRight } from 'lucide-react';
 import FAQComponent from '@/components/faq/FAQComponent';
 

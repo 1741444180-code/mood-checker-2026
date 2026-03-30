@@ -14,6 +14,10 @@ interface Badge {
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
+export const metadata = {
+  title: '徽章系统',
+};
+
 const BadgesPage = () => {
   const [badges, setBadges] = useState<Badge[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
