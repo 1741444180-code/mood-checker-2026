@@ -1,0 +1,36 @@
+# 独立工作区通知 - 2026-03-28
+
+## 📋 通知内容
+
+建权已为所有 Agent 创建了独立工作区。
+
+### ✅ 大伟的独立工作区
+- **工作区路径**: `/Users/lijianquan/.openclaw/workspace-dawei/`
+- **IDENTITY.md**: 已创建在工作区根目录
+- **权限**: 可以管理团队成员工作区
+
+### 👥 团队成员工作区权限
+大伟可以访问以下团队成员的工作区：
+- 小雅 (UI 设计师) - workspace-xiaoya
+- 小林 (前端开发) - workspace-xiaolin
+- 咪咪 (后端开发) - workspace-mimi
+- 老张 (运维工程师) - workspace-laozhang
+- 小陈 (测试工程师) - workspace-xiaochen
+
+### 🔒 权限限制
+- ❌ 不能修改主工作区 (workspace/) 的文件
+- ❌ 不能修改其他非团队 Agent 的工作区
+
+### 📝 通知状态
+- ⚠️ 小雅 - 需要 Feishu 用户 ID 才能发送
+- ⚠️ 小林 - 需要 Feishu 用户 ID 才能发送
+- ⚠️ 咪咪 - 需要 Feishu 用户 ID 才能发送
+- ⚠️ 老张 - 需要 Feishu 用户 ID 才能发送
+- ⚠️ 小陈 - 需要 Feishu 用户 ID 才能发送
+
+### ⚠️ 问题记录
+尝试通过 message 工具发送通知时，发现需要提供 Feishu 用户的 open_id 或 chat_id，而不能直接使用中文名称。
+需要建权提供团队成员的 Feishu 用户 ID，或通过其他方式通知。
+
+---
+*此文件用于记录独立工作区通知的执行情况*

@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计页优化设计 - 心情打卡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 主色调 - 蓝白主题 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* 心情颜色 */
+            --mood-1: #ef4444;
+            --mood-2: #f97316;
+            --mood-3: #eab308;
+            --mood-4: #22c55e;
+            --mood-5: #3b82f6;
+            
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            /* 圆角 */
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        /* ==================== PC 端布局 ==================== */
+        .pc-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .pc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .pc-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pc-header .subtitle {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 6px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .time-filter button {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-filter button:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .time-filter button.active {
+            background: var(--primary-500);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pc-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .pc-left {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .pc-right {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-100);
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: transform 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .pie-chart-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 20px 0;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--mood-5) 0deg 108deg,
+                var(--mood-4) 108deg 216deg,
+                var(--mood-3) 216deg 270deg,
+                var(--mood-2) 270deg 324deg,
+                var(--mood-1) 324deg 360deg
+            );
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .pie-chart::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .pie-legend {
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .legend-item:last-child {
+            border-bottom: none;
+        }
+
+        .legend-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-emoji {
+            font-size: 1.2rem;
+        }
+
+        .legend-label {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+
+        .legend-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .legend-percent {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-left: 8px;
+        }
+
+        .bar-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 200px;
+            padding: 20px 10px;
+            gap: 8px;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            max-width: 48px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        .bar::before {
+            content: attr(data-value);
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .bar-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            text-align: center;
+        }
+
+        .trend-card {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            color: white;
+        }
+
+        .trend-card .card-title {
+            color: white;
+        }
+
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .trend-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 16px;
+            border-radius: var(--radius);
+        }
+
+        .trend-item .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .trend-item .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .trend-item .change {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up {
+            color: #86efac;
+        }
+
+        .trend-down {
+            color: #fca5a5;
+        }
+
+        .insights-list {
+            list-style: none;
+        }
+
+        .insight-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-50);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content {
+            flex: 1;
+        }
+
+        .insight-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .insight-desc {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        /* ==================== 移动端布局 - 修复版 ==================== */
+        .mobile-layout {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .mobile-header {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .mobile-filter {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .mobile-filter button {
+            padding: 8px 16px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-filter button.active {
+            background: white;
+            color: var(--primary-600);
+        }
+
+        .mobile-content {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .mobile-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-100);
+        }
+
+        .mobile-card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 移动端统计概览 */
+        .mobile-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mobile-stat {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .mobile-stat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin: 0 auto 8px;
+        }
+
+        .mobile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: block;
+        }
+
+        .mobile-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* 移动端饼图 - 优化布局 */
+        .mobile-pie {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .mobile-pie-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--mood-5) 0deg 108deg,
+                var(--mood-4) 108deg 216deg,
+                var(--mood-3) 216deg 270deg,
+                var(--mood-2) 270deg 324deg,
+                var(--mood-1) 324deg 360deg
+            );
+            position: relative;
+        }
+
+        .mobile-pie-chart::after {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .mobile-legend {
+            width: 100%;
+        }
+
+        .mobile-legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .mobile-legend-item:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-legend-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        .mobile-legend-text {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+
+        .mobile-legend-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* 移动端柱状图 - 优化显示 */
+        .mobile-bar-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 180px;
+            padding: 16px 8px;
+            gap: 6px;
+        }
+
+        .mobile-bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-bar {
+            width: 100%;
+            max-width: 36px;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        .mobile-bar::before {
+            content: attr(data-value);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .mobile-bar-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-align: center;
+        }
+
+        /* 移动端趋势分析卡片 - 修复版 */
+        .mobile-trend-card {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+        }
+
+        .mobile-trend-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-trend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mobile-trend-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 14px 12px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .mobile-trend-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 6px;
+        }
+
+        .mobile-trend-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .mobile-trend-change {
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .mobile-trend-up {
+            color: #86efac;
+        }
+
+        .mobile-trend-down {
+            color: #fca5a5;
+        }
+
+        /* 移动端心情洞察 - 优化间距 */
+        .mobile-insights-list {
+            list-style: none;
+        }
+
+        .mobile-insight-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .mobile-insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-insight-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-50);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .mobile-insight-content {
+            flex: 1;
+        }
+
+        .mobile-insight-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .mobile-insight-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        /* 移动端底部导航 */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid var(--gray-200);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-500);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--primary-600);
+        }
+
+        .mobile-nav-icon {
+            font-size: 1.5rem;
+        }
+
+        /* 响应式工具 */
+        @media (max-width: 768px) {
+            .pc-layout {
+                display: none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-layout {
+                display: none;
+            }
+        }
+
+        /* 演示控制 */
+        .demo-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+        }
+
+        .demo-controls h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--gray-700);
+        }
+
+        .demo-controls button {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .demo-controls button:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-600);
+        }
+
+        .demo-controls button.active {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .view-label {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--gray-900);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- 演示控制 -->
+    <div class="demo-controls">
+        <h3>🎨 切换视图</h3>
+        <button onclick="switchView('pc')" id="btn-pc" class="active">💻 PC 端</button>
+        <button onclick="switchView('mobile')" id="btn-mobile">📱 移动端</button>
+        <button onclick="switchView('both')" id="btn-both">📊 并排对比</button>
+    </div>
+
+    <!-- PC 端布局 -->
+    <div class="pc-layout" id="pc-view">
+        <div class="pc-header">
+            <div>
+                <h1>📊 心情统计</h1>
+                <p class="subtitle">了解你的情绪变化模式</p>
+            </div>
+            <div class="time-filter">
+                <button>7 天</button>
+                <button class="active">30 天</button>
+                <button>90 天</button>
+                <button>全部</button>
+            </div>
+        </div>
+
+        <div class="pc-grid">
+            <div class="pc-left">
+                <!-- 统计概览 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📈 概览统计</h2>
+                    </div>
+                    <div class="overview-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon">📅</div>
+                            <span class="stat-value">28</span>
+                            <span class="stat-label">打卡天数</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🔥</div>
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">连续打卡</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">😊</div>
+                            <span class="stat-value">4.2</span>
+                            <span class="stat-label">平均心情</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">📊</div>
+                            <span class="stat-value">93%</span>
+                            <span class="stat-label">打卡率</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心情分布饼图 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🎯 心情分布</h2>
+                    </div>
+                    <div class="pie-chart-container">
+                        <div class="pie-chart"></div>
+                        <div class="pie-legend">
+                            <div class="legend-item">
+                                <div class="legend-left">
+                                    <div class="legend-color" style="background: var(--mood-5);"></div>
+                                    <span class="legend-emoji">🤩</span>
+                                    <span class="legend-label">超棒</span>
+                                </div>
+                                <div>
+                                    <span class="legend-value">10</span>
+                                    <span class="legend-percent">30%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-left">
+                                    <div class="legend-color" style="background: var(--mood-4);"></div>
+                                    <span class="legend-emoji">😊</span>
+                                    <span class="legend-label">还不错</span>
+                                </div>
+                                <div>
+                                    <span class="legend-value">9</span>
+                                    <span class="legend-percent">27%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-left">
+                                    <div class="legend-color" style="background: var(--mood-3);"></div>
+                                    <span class="legend-emoji">😐</span>
+                                    <span class="legend-label">一般般</span>
+                                </div>
+                                <div>
+                                    <span class="legend-value">6</span>
+                                    <span class="legend-percent">18%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-left">
+                                    <div class="legend-color" style="background: var(--mood-2);"></div>
+                                    <span class="legend-emoji">😕</span>
+                                    <span class="legend-label">不太好</span>
+                                </div>
+                                <div>
+                                    <span class="legend-value">3</span>
+                                    <span class="legend-percent">10%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-left">
+                                    <div class="legend-color" style="background: var(--mood-1);"></div>
+                                    <span class="legend-emoji">😢</span>
+                                    <span class="legend-label">很糟糕</span>
+                                </div>
+                                <div>
+                                    <span class="legend-value">2</span>
+                                    <span class="legend-percent">6%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周趋势柱状图 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📅 本周趋势</h2>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-item">
+                            <div class="bar" style="height: 80px; background: linear-gradient(180deg, var(--mood-4) 0%, var(--mood-5) 100%);" data-value="4.0"></div>
+                            <span class="bar-label">周一</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 100px; background: linear-gradient(180deg, var(--mood-5) 0%, var(--mood-5) 100%);" data-value="5.0"></div>
+                            <span class="bar-label">周二</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 60px; background: linear-gradient(180deg, var(--mood-3) 0%, var(--mood-4) 100%);" data-value="3.0"></div>
+                            <span class="bar-label">周三</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 90px; background: linear-gradient(180deg, var(--mood-4) 0%, var(--mood-5) 100%);" data-value="4.5"></div>
+                            <span class="bar-label">周四</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 100px; background: linear-gradient(180deg, var(--mood-5) 0%, var(--mood-5) 100%);" data-value="5.0"></div>
+                            <span class="bar-label">周五</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 70px; background: linear-gradient(180deg, var(--mood-3) 0%, var(--mood-4) 100%);" data-value="3.5"></div>
+                            <span class="bar-label">周六</span>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar" style="height: 50px; background: linear-gradient(180deg, var(--mood-2) 0%, var(--mood-3) 100%);" data-value="2.5"></div>
+                            <span class="bar-label">周日</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pc-right">
+                <!-- 趋势卡片 -->
+                <div class="card trend-card">
+                    <div class="card-header">
+                        <h2 class="card-title">📈 趋势分析</h2>
+                    </div>
+                    <div class="trend-grid">
+                        <div class="trend-item">
+                            <div class="label">本周平均</div>
+                            <div class="value">4.1</div>
+                            <div class="change trend-up">↑ 0.3 vs 上周</div>
+                        </div>
+                        <div class="trend-item">
+                            <div class="label">最佳心情</div>
+                            <div class="value">周五</div>
+                            <div class="change trend-up">连续 2 周</div>
+                        </div>
+                        <div class="trend-item">
+                            <div class="label">打卡频率</div>
+                            <div class="value">93%</div>
+                            <div class="change trend-up">↑ 5% vs 上月</div>
+                        </div>
+                        <div class="trend-item">
+                            <div class="label">情绪稳定性</div>
+                            <div class="value">高</div>
+                            <div class="change trend-down">↓ 波动减少</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心情洞察 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">💡 心情洞察</h2>
+                    </div>
+                    <ul class="insights-list">
+                        <li class="insight-item">
+                            <div class="insight-icon">🎯</div>
+                            <div class="insight-content">
+                                <div class="insight-title">最佳状态</div>
+                                <div class="insight-desc">本周二和周五的心情最好，工作效率也最高！</div>
+                            </div>
+                        </li>
+                        <li class="insight-item">
+                            <div class="insight-icon">⚠️</div>
+                            <div class="insight-content">
+                                <div class="insight-title">需要注意</div>
+                                <div class="insight-desc">周日的心情普遍较低，可能是"周末综合症"，建议安排些放松活动。</div>
+                            </div>
+                        </li>
+                        <li class="insight-item">
+                            <div class="insight-icon">🔥</div>
+                            <div class="insight-content">
+                                <div class="insight-title">连续打卡</div>
+                                <div class="insight-desc">已连续打卡 12 天，创造个人新纪录！继续加油！</div>
+                            </div>
+                        </li>
+                        <li class="insight-item">
+                            <div class="insight-icon">📊</div>
+                            <div class="insight-content">
+                                <div class="insight-title">积极趋势</div>
+                                <div class="insight-desc">近 30 天积极心情（开心 + 超棒）占比 57%，比上月提升 8%。</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动端布局 - 修复版 -->
+    <div class="mobile-layout" id="mobile-view" style="display: none;">
+        <div class="mobile-header">
+            <h1>📊 心情统计</h1>
+            <div class="mobile-filter">
+                <button>7 天</button>
+                <button class="active">30 天</button>
+                <button>90 天</button>
+                <button>全部</button>
+            </div>
+        </div>
+
+        <div class="mobile-content">
+            <!-- 统计概览 -->
+            <div class="mobile-card">
+                <h2 class="mobile-card-title">📈 概览</h2>
+                <div class="mobile-overview">
+                    <div class="mobile-stat">
+                        <div class="mobile-stat-icon">📅</div>
+                        <span class="mobile-stat-value">28</span>
+                        <span class="mobile-stat-label">打卡天数</span>
+                    </div>
+                    <div class="mobile-stat">
+                        <div class="mobile-stat-icon">🔥</div>
+                        <span class="mobile-stat-value">12</span>
+                        <span class="mobile-stat-label">连续打卡</span>
+                    </div>
+                    <div class="mobile-stat">
+                        <div class="mobile-stat-icon">😊</div>
+                        <span class="mobile-stat-value">4.2</span>
+                        <span class="mobile-stat-label">平均心情</span>
+                    </div>
+                    <div class="mobile-stat">
+                        <div class="mobile-stat-icon">📊</div>
+                        <span class="mobile-stat-value">93%</span>
+                        <span class="mobile-stat-label">打卡率</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 心情分布 -->
+            <div class="mobile-card">
+                <h2 class="mobile-card-title">🎯 心情分布</h2>
+                <div class="mobile-pie">
+                    <div class="mobile-pie-chart"></div>
+                    <div class="mobile-legend">
+                        <div class="mobile-legend-item">
+                            <div class="mobile-legend-left">
+                                <div class="mobile-legend-color" style="background: var(--mood-5);"></div>
+                                <span class="mobile-legend-text">🤩 超棒</span>
+                            </div>
+                            <span class="mobile-legend-value">10 (30%)</span>
+                        </div>
+                        <div class="mobile-legend-item">
+                            <div class="mobile-legend-left">
+                                <div class="mobile-legend-color" style="background: var(--mood-4);"></div>
+                                <span class="mobile-legend-text">😊 还不错</span>
+                            </div>
+                            <span class="mobile-legend-value">9 (27%)</span>
+                        </div>
+                        <div class="mobile-legend-item">
+                            <div class="mobile-legend-left">
+                                <div class="mobile-legend-color" style="background: var(--mood-3);"></div>
+                                <span class="mobile-legend-text">😐 一般般</span>
+                            </div>
+                            <span class="mobile-legend-value">6 (18%)</span>
+                        </div>
+                        <div class="mobile-legend-item">
+                            <div class="mobile-legend-left">
+                                <div class="mobile-legend-color" style="background: var(--mood-2);"></div>
+                                <span class="mobile-legend-text">😕 不太好</span>
+                            </div>
+                            <span class="mobile-legend-value">3 (10%)</span>
+                        </div>
+                        <div class="mobile-legend-item">
+                            <div class="mobile-legend-left">
+                                <div class="mobile-legend-color" style="background: var(--mood-1);"></div>
+                                <span class="mobile-legend-text">😢 很糟糕</span>
+                            </div>
+                            <span class="mobile-legend-value">2 (6%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 周趋势 -->
+            <div class="mobile-card">
+                <h2 class="mobile-card-title">📅 本周趋势</h2>
+                <div class="mobile-bar-chart">
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 80px; background: linear-gradient(180deg, var(--mood-4) 0%, var(--mood-5) 100%);" data-value="4.0"></div>
+                        <span class="mobile-bar-label">一</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 100px; background: linear-gradient(180deg, var(--mood-5) 0%, var(--mood-5) 100%);" data-value="5.0"></div>
+                        <span class="mobile-bar-label">二</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 60px; background: linear-gradient(180deg, var(--mood-3) 0%, var(--mood-4) 100%);" data-value="3.0"></div>
+                        <span class="mobile-bar-label">三</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 90px; background: linear-gradient(180deg, var(--mood-4) 0%, var(--mood-5) 100%);" data-value="4.5"></div>
+                        <span class="mobile-bar-label">四</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 100px; background: linear-gradient(180deg, var(--mood-5) 0%, var(--mood-5) 100%);" data-value="5.0"></div>
+                        <span class="mobile-bar-label">五</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 70px; background: linear-gradient(180deg, var(--mood-3) 0%, var(--mood-4) 100%);" data-value="3.5"></div>
+                        <span class="mobile-bar-label">六</span>
+                    </div>
+                    <div class="mobile-bar-item">
+                        <div class="mobile-bar" style="height: 50px; background: linear-gradient(180deg, var(--mood-2) 0%, var(--mood-3) 100%);" data-value="2.5"></div>
+                        <span class="mobile-bar-label">日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 趋势分析 - 修复版 -->
+            <div class="mobile-trend-card">
+                <h2 class="mobile-trend-title">📈 趋势分析</h2>
+                <div class="mobile-trend-grid">
+                    <div class="mobile-trend-item">
+                        <div class="mobile-trend-label">本周平均</div>
+                        <div class="mobile-trend-value">4.1</div>
+                        <div class="mobile-trend-change mobile-trend-up">↑ 0.3</div>
+                    </div>
+                    <div class="mobile-trend-item">
+                        <div class="mobile-trend-label">最佳心情</div>
+                        <div class="mobile-trend-value">周五</div>
+                        <div class="mobile-trend-change mobile-trend-up">连续 2 周</div>
+                    </div>
+                    <div class="mobile-trend-item">
+                        <div class="mobile-trend-label">打卡频率</div>
+                        <div class="mobile-trend-value">93%</div>
+                        <div class="mobile-trend-change mobile-trend-up">↑ 5%</div>
+                    </div>
+                    <div class="mobile-trend-item">
+                        <div class="mobile-trend-label">情绪稳定性</div>
+                        <div class="mobile-trend-value">高</div>
+                        <div class="mobile-trend-change mobile-trend-down">↓ 波动少</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 心情洞察 - 优化版 -->
+            <div class="mobile-card">
+                <h2 class="mobile-card-title">💡 心情洞察</h2>
+                <ul class="mobile-insights-list">
+                    <li class="mobile-insight-item">
+                        <div class="mobile-insight-icon">🎯</div>
+                        <div class="mobile-insight-content">
+                            <div class="mobile-insight-title">最佳状态</div>
+                            <div class="mobile-insight-desc">本周二和周五心情最好，效率最高！</div>
+                        </div>
+                    </li>
+                    <li class="mobile-insight-item">
+                        <div class="mobile-insight-icon">⚠️</div>
+                        <div class="mobile-insight-content">
+                            <div class="mobile-insight-title">需要注意</div>
+                            <div class="mobile-insight-desc">周日心情较低，安排些放松活动吧</div>
+                        </div>
+                    </li>
+                    <li class="mobile-insight-item">
+                        <div class="mobile-insight-icon">🔥</div>
+                        <div class="mobile-insight-content">
+                            <div class="mobile-insight-title">连续打卡</div>
+                            <div class="mobile-insight-desc">已连续打卡 12 天，创造新纪录！</div>
+                        </div>
+                    </li>
+                    <li class="mobile-insight-item">
+                        <div class="mobile-insight-icon">📊</div>
+                        <div class="mobile-insight-content">
+                            <div class="mobile-insight-title">积极趋势</div>
+                            <div class="mobile-insight-desc">近 30 天积极心情占比 57%，比上月提升 8%</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="mobile-bottom-nav">
+            <div class="mobile-nav-item">
+                <span class="mobile-nav-icon">🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="mobile-nav-item active">
+                <span class="mobile-nav-icon">📊</span>
+                <span>统计</span>
+            </div>
+            <div class="mobile-nav-item">
+                <span class="mobile-nav-icon">👤</span>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchView(view) {
+            const pcView = document.getElementById('pc-view');
+            const mobileView = document.getElementById('mobile-view');
+            const btnPc = document.getElementById('btn-pc');
+            const btnMobile = document.getElementById('btn-mobile');
+            const btnBoth = document.getElementById('btn-both');
+
+            btnPc.classList.remove('active');
+            btnMobile.classList.remove('active');
+            btnBoth.classList.remove('active');
+
+            if (view === 'pc') {
+                pcView.style.display = 'block';
+                mobileView.style.display = 'none';
+                btnPc.classList.add('active');
+            } else if (view === 'mobile') {
+                pcView.style.display = 'none';
+                mobileView.style.display = 'block';
+                btnMobile.classList.add('active');
+            } else if (view === 'both') {
+                pcView.style.display = 'block';
+                mobileView.style.display = 'block';
+                btnBoth.classList.add('active');
+            }
+        }
+
+        window.addEventListener('load', () => {
+            if (window.innerWidth <= 768) {
+                switchView('mobile');
+            } else {
+                switchView('pc');
+            }
+        });
+    </script>
+</body>
+</html>
