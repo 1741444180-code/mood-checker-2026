@@ -1,44 +1,12 @@
 {
-  "name": "mood-checker",
+  "name": "websocket-server",
   "version": "1.0.0",
-  "description": "心情打卡网站 - 帮助用户记录每日心情、追踪情绪变化、提供数据统计",
-  "main": "index.js",
+  "description": "WebSocket server for deployment",
+  "main": "server.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "jest",
-    "test:unit": "jest --testPathPattern=tests/unit",
-    "test:e2e": "playwright test",
-    "test:api": "jest --testPathPattern=tests/api",
-    "test:debug": "playwright test --debug",
-    "test:ui": "playwright test --ui",
-    "postinstall": "prisma generate"
+    "start": "node server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.0.0",
-    "@aws-sdk/s3-request-presigner": "^3.0.0",
-    "@prisma/client": "^5.0.0",
-    "chart.js": "^4.5.1",
-    "crypto-js": "^4.2.0",
-    "jsonwebtoken": "^9.0.3",
-    "next": "^14.0.0",
-    "next-auth": "^4.24.13",
-    "react": "^18.0.0",
-    "react-chartjs-2": "^5.3.1",
-    "react-dom": "^18.0.0",
-    "ws": "^8.20.0"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@types/jest": "^29.5.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "jest": "^29.7.0",
-    "prisma": "^5.0.0",
-    "typescript": "^5.0.0"
+    "ws": "^8.16.0"
   }
 }

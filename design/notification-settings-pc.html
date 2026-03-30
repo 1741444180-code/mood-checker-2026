@@ -5,6 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通知设置 - 小雅</title>
     <style>
+        /* ===== Design System v2.0 Tokens ===== */
+        :root {
+            /* Colors */
+            --primary-500: #667eea;
+            --primary-600: #764ba2;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #2d3748;
+            --text-secondary: #6c757d;
+            --text-tertiary: #999999;
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #f8f9fa;
+            --border-light: #e0e0e0;
+            
+            /* Typography */
+            --text-3xl: 32px;
+            --text-2xl: 24px;
+            --text-xl: 18px;
+            --text-base: 15px;
+            --text-sm: 13px;
+            --text-xs: 12px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* Spacing */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            
+            /* Radius */
+            --radius-lg: 20px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.08);
+            --shadow-md: 0 8px 24px rgba(102, 126, 234, 0.12);
+            --shadow-lg: 0 16px 48px rgba(102, 126, 234, 0.16);
+            --shadow-xl: 0 24px 64px rgba(102, 126, 234, 0.20);
+            
+            /* Transitions */
+            --transition-base: 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,78 +62,78 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
-            padding: 40px;
+            padding: var(--space-5);
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
-            padding: 40px;
+            padding: var(--space-5);
             text-align: center;
         }
 
         .header h1 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-size: var(--text-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-2);
         }
 
         .header p {
-            font-size: 16px;
+            font-size: var(--text-base);
             opacity: 0.9;
         }
 
         .content {
-            padding: 40px;
+            padding: var(--space-5);
         }
 
         .section {
-            margin-bottom: 40px;
+            margin-bottom: var(--space-5);
         }
 
         .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #667eea;
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+            padding-bottom: var(--space-2);
+            border-bottom: 2px solid var(--primary-500);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-2);
         }
 
         .section-title .icon {
             width: 28px;
             height: 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: var(--text-base);
         }
 
         .setting-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
+            padding: var(--space-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-2);
+            transition: var(--transition-base);
         }
 
         .setting-item:hover {
@@ -97,15 +146,15 @@
         }
 
         .setting-name {
-            font-size: 16px;
-            font-weight: 500;
-            color: #1a1a2e;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
             margin-bottom: 6px;
         }
 
         .setting-desc {
-            font-size: 14px;
-            color: #666;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
         }
 
         /* Toggle Switch */
@@ -113,14 +162,14 @@
             position: relative;
             width: 52px;
             height: 28px;
-            background: #e0e0e0;
-            border-radius: 14px;
+            background: var(--border-light);
+            border-radius: var(--radius-full);
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: var(--transition-base);
         }
 
         .toggle.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
         }
 
         .toggle-knob {
@@ -132,7 +181,7 @@
             background: white;
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            transition: var(--transition-base);
         }
 
         .toggle.active .toggle-knob {
@@ -146,18 +195,18 @@
 
         .select {
             padding: 10px 36px 10px 16px;
-            font-size: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            font-size: var(--text-sm);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
             background: white;
             cursor: pointer;
             appearance: none;
-            transition: border-color 0.3s ease;
+            transition: var(--transition-base);
         }
 
         .select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary-500);
         }
 
         .select-arrow {
@@ -166,64 +215,64 @@
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
-            color: #666;
+            color: var(--text-secondary);
         }
 
         /* Time Picker */
         .time-picker {
             display: flex;
-            gap: 12px;
+            gap: var(--space-2);
             align-items: center;
         }
 
         .time-input {
             padding: 10px 16px;
-            font-size: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            font-size: var(--text-sm);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
             background: white;
             width: 120px;
-            transition: border-color 0.3s ease;
+            transition: var(--transition-base);
         }
 
         .time-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary-500);
         }
 
         /* Buttons */
         .btn-group {
             display: flex;
-            gap: 16px;
+            gap: var(--space-2);
             justify-content: flex-end;
-            margin-top: 40px;
-            padding-top: 40px;
-            border-top: 1px solid #e0e0e0;
+            margin-top: var(--space-5);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border-light);
         }
 
         .btn {
             padding: 14px 32px;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-base);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
             background: #f0f1f2;
-            color: #1a1a2e;
+            color: var(--text-primary);
         }
 
         .btn-secondary:hover {
@@ -234,19 +283,19 @@
         .badge {
             display: inline-block;
             padding: 4px 12px;
-            font-size: 12px;
-            font-weight: 500;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-medium);
+            border-radius: var(--radius-full);
+            background: var(--primary-gradient);
             color: white;
-            margin-left: 8px;
+            margin-left: var(--space-2);
         }
 
         /* Divider */
         .divider {
             height: 1px;
-            background: #e0e0e0;
-            margin: 30px 0;
+            background: var(--border-light);
+            margin: var(--space-4) 0;
         }
     </style>
 </head>

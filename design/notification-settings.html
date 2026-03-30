@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知设置 - 心情打卡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .settings-section {
+            padding: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            font-size: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Time Range Picker */
+        .time-range {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .time-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .time-separator {
+            color: #999;
+            font-weight: 600;
+        }
+
+        /* Select Dropdown */
+        .select-wrapper {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .select-wrapper:after {
+            content: "▼";
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            pointer-events: none;
+            font-size: 12px;
+        }
+
+        /* Push Method Options */
+        .push-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .push-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .push-method:hover {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .push-method.active {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .push-method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: #f5f5f5;
+        }
+
+        .push-method-info {
+            flex: 1;
+        }
+
+        .push-method-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .push-method-desc {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .push-method-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .push-method.active .push-method-checkbox {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .push-method.active .push-method-checkbox:after {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .save-btn {
+            width: calc(100% - 48px);
+            margin: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .settings-section {
+                padding: 20px;
+            }
+
+            .time-range {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .time-separator {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ 通知设置</h1>
+            <p>自定义你的通知偏好</p>
+        </div>
+
+        <!-- 通知类型开关 -->
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">📢</span>
+                通知类型
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">系统通知</div>
+                    <div class="setting-description">系统更新、维护公告等</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">好友请求</div>
+                    <div class="setting-description">新的好友申请和互动</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">任务提醒</div>
+                    <div class="setting-description">打卡提醒、待办事项</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">成就通知</div>
+                    <div class="setting-description">勋章解锁、里程碑达成</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 推送方式设置 -->
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">📱</span>
+                推送方式
+            </div>
+
+            <div class="push-methods">
+                <div class="push-method active">
+                    <div class="push-method-icon">💬</div>
+                    <div class="push-method-info">
+                        <div class="push-method-title">站内信</div>
+                        <div class="push-method-desc">应用内消息通知</div>
+                    </div>
+                    <div class="push-method-checkbox"></div>
+                </div>
+
+                <div class="push-method">
+                    <div class="push-method-icon">📧</div>
+                    <div class="push-method-info">
+                        <div class="push-method-title">邮件通知</div>
+                        <div class="push-method-desc">发送到邮箱 jianquan@example.com</div>
+                    </div>
+                    <div class="push-method-checkbox"></div>
+                </div>
+
+                <div class="push-method">
+                    <div class="push-method-icon">🔔</div>
+                    <div class="push-method-info">
+                        <div class="push-method-title">推送通知</div>
+                        <div class="push-method-desc">手机锁屏推送</div>
+                    </div>
+                    <div class="push-method-checkbox"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 免打扰时段 -->
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">🌙</span>
+                免打扰时段
+            </div>
+
+            <div class="setting-item" style="flex-direction: column; align-items: flex-start;">
+                <div class="setting-info" style="width: 100%;">
+                    <div class="setting-label">开启免打扰</div>
+                    <div class="setting-description">设定时间段内不接收通知推送</div>
+                    <div class="time-range">
+                        <input type="time" class="time-input" value="23:00">
+                        <span class="time-separator">至</span>
+                        <input type="time" class="time-input" value="08:00">
+                    </div>
+                </div>
+                <label class="toggle-switch" style="margin-top: 16px;">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 通知声音 -->
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">🔊</span>
+                通知声音
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">提示音</div>
+                    <div class="setting-description">新通知到达时的声音</div>
+                </div>
+                <div class="select-wrapper" style="width: 150px;">
+                    <select>
+                        <option>默认</option>
+                        <option>轻柔</option>
+                        <option>欢快</option>
+                        <option>静音</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">振动</div>
+                    <div class="setting-description">新通知到达时振动</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <button class="save-btn">💾 保存设置</button>
+    </div>
+
+    <script>
+        // 推送方式选择
+        document.querySelectorAll('.push-method').forEach(method => {
+            method.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // 保存按钮
+        document.querySelector('.save-btn').addEventListener('click', function() {
+            // 模拟保存
+            this.textContent = '✅ 已保存';
+            this.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+            
+            setTimeout(() => {
+                this.textContent = '💾 保存设置';
+                this.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }, 2000);
+        });
+
+        // Toggle 开关状态变化
+        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                console.log('Toggle changed:', this.checked);
+            });
+        });
+    </script>
+</body>
+</html>

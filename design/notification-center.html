@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知中心 - 心情打卡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .notification-list {
+            padding: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f5f5f5;
+        }
+
+        .notification-item.unread {
+            background: #f5f3ff;
+            border-left: 4px solid #667eea;
+        }
+
+        .notification-item.read {
+            background: #fafafa;
+            opacity: 0.8;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+            font-size: 24px;
+        }
+
+        .notification-icon.system {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification-icon.friend {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .notification-icon.task {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .notification-icon.achievement {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .notification-unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            margin-left: 12px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .batch-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .batch-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .batch-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .batch-btn.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .batch-btn.secondary:hover {
+            background: #f5f3ff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .notification-item {
+                padding: 12px;
+            }
+
+            .notification-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 通知中心</h1>
+            <p>你有 3 条未读通知</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">全部通知</div>
+            <div class="tab">未读</div>
+            <div class="tab">已读</div>
+        </div>
+
+        <div class="notification-list">
+            <!-- 未读通知 - 系统 -->
+            <div class="notification-item unread">
+                <div class="notification-icon system">⚙️</div>
+                <div class="notification-content">
+                    <div class="notification-title">系统更新通知</div>
+                    <div class="notification-message">心情打卡已更新至 v2.0，新增心情趋势分析和周报功能！</div>
+                    <div class="notification-time">5 分钟前</div>
+                </div>
+                <div class="notification-unread-dot"></div>
+            </div>
+
+            <!-- 未读通知 - 好友 -->
+            <div class="notification-item unread">
+                <div class="notification-icon friend">👥</div>
+                <div class="notification-content">
+                    <div class="notification-title">新的好友请求</div>
+                    <div class="notification-message">小明请求添加你为好友</div>
+                    <div class="notification-time">15 分钟前</div>
+                </div>
+                <div class="notification-unread-dot"></div>
+            </div>
+
+            <!-- 未读通知 - 任务 -->
+            <div class="notification-item unread">
+                <div class="notification-icon task">📋</div>
+                <div class="notification-content">
+                    <div class="notification-title">打卡提醒</div>
+                    <div class="notification-message">今天还没有记录心情哦，快来打卡吧！</div>
+                    <div class="notification-time">1 小时前</div>
+                </div>
+                <div class="notification-unread-dot"></div>
+            </div>
+
+            <!-- 已读通知 - 成就 -->
+            <div class="notification-item read">
+                <div class="notification-icon achievement">🏆</div>
+                <div class="notification-content">
+                    <div class="notification-title">成就解锁</div>
+                    <div class="notification-message">恭喜你连续打卡 7 天，获得"坚持不懈"勋章！</div>
+                    <div class="notification-time">昨天 18:30</div>
+                </div>
+            </div>
+
+            <!-- 已读通知 - 系统 -->
+            <div class="notification-item read">
+                <div class="notification-icon system">⚙️</div>
+                <div class="notification-content">
+                    <div class="notification-title">欢迎加入心情打卡</div>
+                    <div class="notification-message">感谢使用心情打卡，记录每一天的情绪变化～</div>
+                    <div class="notification-time">昨天 10:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="batch-actions">
+            <button class="batch-btn secondary">全部删除</button>
+            <button class="batch-btn primary">全部已读</button>
+        </div>
+    </div>
+
+    <script>
+        // Tab 切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 点击通知标记为已读
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.remove('unread');
+                this.classList.add('read');
+                const dot = this.querySelector('.notification-unread-dot');
+                if (dot) dot.remove();
+            });
+        });
+
+        // 全部已读按钮
+        document.querySelector('.batch-btn.primary').addEventListener('click', function() {
+            document.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.classList.remove('unread');
+                item.classList.add('read');
+                const dot = item.querySelector('.notification-unread-dot');
+                if (dot) dot.remove();
+            });
+        });
+
+        // 全部删除按钮
+        document.querySelector('.batch-btn.secondary').addEventListener('click', function() {
+            if (confirm('确定要删除所有通知吗？')) {
+                document.querySelector('.notification-list').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🗑️</div>
+                        <h3>通知已清空</h3>
+                        <p>暂时没有通知</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
