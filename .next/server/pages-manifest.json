@@ -1,6 +1,12 @@
 {
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
+  "/api/export/csv/route": "pages/api/export/csv/route.js",
   "/api/custom-moods": "pages/api/custom-moods.js",
+  "/api/export/excel/route": "pages/api/export/excel/route.js",
+  "/api/likes/route": "pages/api/likes/route.js",
+  "/api/stats/route": "pages/api/stats/route.js",
+  "/api/export/json/route": "pages/api/export/json/route.js",
+  "/api/stats/trend/route": "pages/api/stats/trend/route.js",
   "/_document": "pages/_document.js"
 }
