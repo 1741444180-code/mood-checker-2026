@@ -1,15 +1,11 @@
-<<<<<<< HEAD
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-=======
->>>>>>> 9b1466c (feat: Day 25 会员系统 API 完成)
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-<<<<<<< HEAD
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -65,7 +61,7 @@ model MoodType {
   id          Int       @id @default(autoincrement())
   userId      Int?      // NULL 表示系统默认心情
   name        String    @db.VarChar(50)
-  color       String    @db.VarChar(7)   // 16进制颜色代码，如 #FFD700
+  color       String    @db.VarChar(7)   // 16 进制颜色代码，如 #FFD700
   icon        String    @db.VarChar(50)  // emoji 或图标名称
   sortOrder   Int       @default(0)
   isSystem    Boolean   @default(false)
@@ -137,43 +133,46 @@ model Comment {
   @@index([status])
   @@index([createdAt])
 }
-=======
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+
+/// 帮助中心文章表
+model HelpArticle {
+  id            String    @id @default(cuid())
+  title         String    @db.VarChar(200)
+  content       String    @db.Text
+  category      String    @db.VarChar(50)
+  tags          String[]  // 标签数组
+  views         Int       @default(0)
+  helpful       Int       @default(0)
+  notHelpful    Int       @default(0)
+  published     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // 关系
+  feedback      HelpFeedback[]
+  
+  // 索引
+  @@index([category])
+  @@index([published])
+  @@index([createdAt])
+  @@index([title])
 }
 
-model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  name      String?
-  language  String    @default("zh-CN")
-  theme     String    @default("light")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  checkins  CheckIn[]
-}
-
-model CheckIn {
-  id        String   @id @default(cuid())
-  userId    String
-  mood      Int
-  note      String?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likes     Like[]
-
-  @@index([userId])
+/// 帮助中心反馈表
+model HelpFeedback {
+  id            String    @id @default(cuid())
+  articleId     String?
+  userId        String?
+  rating        String    @db.VarChar(20) // helpful/notHelpful
+  comment       String?   @db.Text
+  email         String?   @db.VarChar(100)
+  createdAt     DateTime  @default(now())
+  
+  // 关系
+  article       HelpArticle? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  
+  // 索引
+  @@index([articleId])
+  @@index([rating])
   @@index([createdAt])
 }
-
-model Like {
-  id        String   @id @default(cuid())
-  userId    String
-  checkInId String
-  createdAt DateTime @default(now())
-  checkIn   CheckIn  @relation(fields: [checkInId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, checkInId])
-  @@index([checkInId])
-}
->>>>>>> 9b1466c (feat: Day 25 会员系统 API 完成)

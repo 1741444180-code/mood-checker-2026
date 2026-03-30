@@ -1,164 +1,97 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 interface HelpArticle {
-  id: string;
-  title: string;
-  category: string;
-  content: string;
-  updatedAt: string;
-  views?: number;
+  id: string
+  title: string
+  content: string
+  category: string
+  tags: string[]
+  views: number
+  helpful: number
+  notHelpful: number
+  published: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
-// Mock data - In production, this would come from a database
-const articles: HelpArticle[] = [
-  {
-    id: '1',
-    title: '如何注册新账户',
-    category: 'account',
-    content: '注册新账户非常简单：打开应用，点击"注册"按钮，输入您的邮箱地址和密码，验证邮箱地址，完成个人信息设置，开始记录您的心情！',
-    updatedAt: '2026-03-30T10:00:00Z',
-    views: 1250,
-  },
-  {
-    id: '2',
-    title: '忘记密码怎么办',
-    category: 'account',
-    content: '如果您忘记了密码，可以通过以下步骤重置：在登录页面点击"忘记密码"，输入注册时的邮箱地址，查收重置密码邮件，点击邮件中的链接设置新密码。',
-    updatedAt: '2026-03-30T10:00:00Z',
-    views: 890,
-  },
-  {
-    id: '3',
-    title: '如何记录每天的心情',
-    category: 'mood',
-    content: '记录心情只需几步：点击首页的"记录心情"按钮，选择当前的心情状态，可以添加文字描述（可选），选择心情标签（可选），点击保存完成记录。',
-    updatedAt: '2026-03-30T10:00:00Z',
-    views: 2100,
-  },
-  {
-    id: '4',
-    title: '查看心情统计报告',
-    category: 'data',
-    content: '查看统计报告的步骤：点击底部导航栏的"统计"图标，选择查看时间范围（周/月/年），查看心情分布图表，查看详细趋势分析。',
-    updatedAt: '2026-03-30T10:00:00Z',
-    views: 1560,
-  },
-  {
-    id: '5',
-    title: '设置打卡提醒',
-    category: 'settings',
-    content: '设置提醒很简单：进入"设置"页面，找到"提醒设置"，开启提醒开关，设置提醒时间，选择提醒频率（每天/工作日/自定义）。',
-    updatedAt: '2026-03-30T10:00:00Z',
-    views: 980,
-  },
-];
+interface ArticlesResponse {
+  articles: HelpArticle[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+// In-memory cache for articles
+const cache = new Map<string, { data: ArticlesResponse; timestamp: number }>()
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 export async function GET(request: NextRequest) {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const category = searchParams.get('category');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const sortBy = searchParams.get('sortBy') || 'updatedAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const searchParams = request.nextUrl.searchParams
+    const page = parseInt(searchParams.get('page') || '1')
+    const pageSize = parseInt(searchParams.get('pageSize') || '10')
+    const category = searchParams.get('category')
+    const published = searchParams.get('published') !== 'false'
 
-    // Filter by category if provided
-    let filteredArticles = category
-      ? articles.filter(article => article.category === category)
-      : articles;
-
-    // Sort articles
-    filteredArticles.sort((a, b) => {
-      const aVal = a[sortBy as keyof HelpArticle] || '';
-      const bVal = b[sortBy as keyof HelpArticle] || '';
-      
-      if (sortOrder === 'asc') {
-        return aVal > bVal ? 1 : -1;
-      } else {
-        return aVal < bVal ? 1 : -1;
-      }
-    });
-
-    // Pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedArticles = filteredArticles.slice(startIndex, endIndex);
-
-    const responseTime = Date.now() - startTime;
-
-    return NextResponse.json(
-      {
-        success: true,
-        articles: paginatedArticles,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(filteredArticles.length / limit),
-          totalItems: filteredArticles.length,
-          itemsPerPage: limit,
-        },
-        responseTime: `${responseTime}ms`,
-      },
-      {
-        headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-        },
-      }
-    );
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to fetch articles',
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { title, category, content } = body;
-
-    // Validate required fields
-    if (!title || !category || !content) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required fields',
-        },
-        { status: 400 }
-      );
+    // Check cache
+    const cacheKey = `articles:${page}:${pageSize}:${category}:${published}`
+    const cached = cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data)
     }
 
-    // In production, save to database
-    const newArticle: HelpArticle = {
-      id: Date.now().toString(),
-      title,
-      category,
-      content,
-      updatedAt: new Date().toISOString(),
-      views: 0,
-    };
+    // Build query
+    const where: any = { published }
+    if (category) {
+      where.category = category
+    }
 
-    articles.push(newArticle);
+    // Get total count
+    const total = await prisma.helpArticle.count({ where })
 
-    return NextResponse.json({
-      success: true,
-      article: newArticle,
-      message: 'Article created successfully',
-    });
-  } catch (error) {
-    console.error('Error creating article:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to create article',
+    // Get articles with pagination
+    const articles = await prisma.helpArticle.findMany({
+      where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        category: true,
+        tags: true,
+        views: true,
+        helpful: true,
+        notHelpful: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
       },
+    })
+
+    const response: ArticlesResponse = {
+      articles,
+      total,
+      page,
+      pageSize,
+    }
+
+    // Cache the result
+    cache.set(cacheKey, { data: response, timestamp: Date.now() })
+
+    const responseTime = Date.now() - startTime
+    console.log(`Articles API response time: ${responseTime}ms`)
+
+    return NextResponse.json(response)
+  } catch (error) {
+    console.error('Articles API error:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch articles' },
       { status: 500 }
-    );
+    )
   }
 }

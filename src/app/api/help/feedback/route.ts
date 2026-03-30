@@ -1,237 +1,125 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-interface Feedback {
-  id: string;
-  userId?: string;
-  email: string;
-  subject: string;
-  message: string;
-  category: string;
-  priority: 'low' | 'medium' | 'high';
-  status: 'pending' | 'in_progress' | 'resolved' | 'closed';
-  createdAt: string;
-  updatedAt: string;
+interface FeedbackRequest {
+  articleId?: string
+  userId?: string
+  rating: 'helpful' | 'notHelpful'
+  comment?: string
+  email?: string
 }
 
-// Mock storage - In production, use a database
-const feedbacks: Feedback[] = [];
-
-export async function GET(request: NextRequest) {
-  const startTime = Date.now();
-  
-  try {
-    const searchParams = request.nextUrl.searchParams;
-    const status = searchParams.get('status');
-    const category = searchParams.get('category');
-    const limit = parseInt(searchParams.get('limit') || '20');
-
-    // Filter feedbacks
-    let filteredFeedbacks = feedbacks;
-
-    if (status) {
-      filteredFeedbacks = filteredFeedbacks.filter(f => f.status === status);
-    }
-
-    if (category) {
-      filteredFeedbacks = filteredFeedbacks.filter(f => f.category === category);
-    }
-
-    // Sort by creation date (newest first)
-    filteredFeedbacks.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    // Limit results
-    filteredFeedbacks = filteredFeedbacks.slice(0, limit);
-
-    const responseTime = Date.now() - startTime;
-
-    return NextResponse.json(
-      {
-        success: true,
-        feedbacks: filteredFeedbacks,
-        total: filteredFeedbacks.length,
-        responseTime: `${responseTime}ms`,
-      },
-      {
-        headers: {
-          'Cache-Control': 'private, no-cache',
-        },
-      }
-    );
-  } catch (error) {
-    console.error('Error fetching feedbacks:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to fetch feedbacks',
-      },
-      { status: 500 }
-    );
-  }
+interface FeedbackResponse {
+  success: boolean
+  message: string
+  feedbackId?: string
 }
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const body = await request.json();
-    const { email, subject, message, category, priority = 'medium' } = body;
-
+    const body: FeedbackRequest = await request.json()
+    
     // Validate required fields
-    if (!email || !subject || !message || !category) {
+    if (!body.rating) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required fields',
-          required: ['email', 'subject', 'message', 'category'],
-        },
+        { success: false, error: 'Rating is required' },
         { status: 400 }
-      );
+      )
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (body.rating !== 'helpful' && body.rating !== 'notHelpful') {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid email format',
-        },
+        { success: false, error: 'Invalid rating value' },
         { status: 400 }
-      );
+      )
     }
 
-    // Validate priority
-    const validPriorities = ['low', 'medium', 'high'];
-    if (!validPriorities.includes(priority)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid priority value',
-          validValues: validPriorities,
-        },
-        { status: 400 }
-      );
-    }
-
-    // Create feedback
-    const now = new Date().toISOString();
-    const newFeedback: Feedback = {
-      id: `fb_${Date.now()}`,
-      email,
-      subject,
-      message,
-      category,
-      priority: priority as 'low' | 'medium' | 'high',
-      status: 'pending',
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    feedbacks.push(newFeedback);
-
-    const responseTime = Date.now() - startTime;
-
-    // In production, send email notification to support team
-    // await sendNotificationEmail(newFeedback);
-
-    return NextResponse.json(
-      {
-        success: true,
-        feedback: newFeedback,
-        message: 'Feedback submitted successfully. We will respond within 24-48 hours.',
-        responseTime: `${responseTime}ms`,
+    // Create feedback record
+    const feedback = await prisma.helpFeedback.create({
+      data: {
+        articleId: body.articleId || null,
+        userId: body.userId || null,
+        rating: body.rating,
+        comment: body.comment || null,
+        email: body.email || null,
+        createdAt: new Date(),
       },
-      {
-        status: 201,
-        headers: {
-          'Cache-Control': 'private, no-cache',
-        },
-      }
-    );
+    })
+
+    // Update article stats if articleId is provided
+    if (body.articleId) {
+      const updateData = body.rating === 'helpful' 
+        ? { helpful: { increment: 1 } }
+        : { notHelpful: { increment: 1 } }
+      
+      await prisma.helpArticle.update({
+        where: { id: body.articleId },
+        data: updateData,
+      })
+    }
+
+    const responseTime = Date.now() - startTime
+    
+    const response: FeedbackResponse = {
+      success: true,
+      message: 'Feedback submitted successfully',
+      feedbackId: feedback.id,
+    }
+
+    console.log(`Feedback API response time: ${responseTime}ms`)
+
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Error submitting feedback:', error);
+    console.error('Feedback API error:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to submit feedback',
-      },
+      { success: false, error: 'Failed to submit feedback' },
       { status: 500 }
-    );
+    )
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const startTime = Date.now()
+  
   try {
-    const body = await request.json();
-    const { id, status, priority } = body;
+    const searchParams = request.nextUrl.searchParams
+    const articleId = searchParams.get('articleId')
+    const limit = parseInt(searchParams.get('limit') || '20')
 
-    if (!id) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Feedback ID is required',
-        },
-        { status: 400 }
-      );
+    const where: any = {}
+    if (articleId) {
+      where.articleId = articleId
     }
 
-    const feedback = feedbacks.find(f => f.id === id);
-    if (!feedback) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Feedback not found',
-        },
-        { status: 404 }
-      );
-    }
+    const feedbacks = await prisma.helpFeedback.findMany({
+      where,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        articleId: true,
+        userId: true,
+        rating: true,
+        comment: true,
+        createdAt: true,
+      },
+    })
 
-    // Update fields
-    if (status) {
-      const validStatuses = ['pending', 'in_progress', 'resolved', 'closed'];
-      if (!validStatuses.includes(status)) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'Invalid status value',
-          },
-          { status: 400 }
-        );
-      }
-      feedback.status = status as Feedback['status'];
-    }
-
-    if (priority) {
-      const validPriorities = ['low', 'medium', 'high'];
-      if (!validPriorities.includes(priority)) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'Invalid priority value',
-          },
-          { status: 400 }
-        );
-      }
-      feedback.priority = priority as Feedback['priority'];
-    }
-
-    feedback.updatedAt = new Date().toISOString();
+    const responseTime = Date.now() - startTime
 
     return NextResponse.json({
       success: true,
-      feedback,
-      message: 'Feedback updated successfully',
-    });
+      feedbacks,
+      total: feedbacks.length,
+      responseTime,
+    })
   } catch (error) {
-    console.error('Error updating feedback:', error);
+    console.error('Feedback API error:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to update feedback',
-      },
+      { success: false, error: 'Failed to fetch feedback' },
       { status: 500 }
-    );
+    )
   }
 }

@@ -1,180 +1,149 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-interface AnalyticsData {
-  totalViews: number;
-  totalArticles: number;
+interface AnalyticsResponse {
+  totalArticles: number
+  totalViews: number
+  totalFeedback: number
+  averageRating: number
   topArticles: Array<{
-    id: string;
-    title: string;
-    views: number;
-    category: string;
-  }>;
-  categoryDistribution: Array<{
-    category: string;
-    count: number;
-    percentage: number;
-  }>;
+    id: string
+    title: string
+    views: number
+    helpful: number
+    notHelpful: number
+    rating: number
+  }>
   searchQueries: Array<{
-    query: string;
-    count: number;
-    noResults: number;
-  }>;
-  feedbackStats: {
-    total: number;
-    pending: number;
-    resolved: number;
-    averageResolutionTime: string;
-  };
-  timeRange: {
-    start: string;
-    end: string;
-  };
+    query: string
+    count: number
+  }>
+  categoryStats: Array<{
+    category: string
+    count: number
+    views: number
+  }>
+  responseTime: number
 }
 
-// Mock data - In production, aggregate from database
-const mockAnalytics: AnalyticsData = {
-  totalViews: 15420,
-  totalArticles: 48,
-  topArticles: [
-    { id: '3', title: '如何记录每天的心情', views: 2100, category: 'mood' },
-    { id: '4', title: '查看心情统计报告', views: 1560, category: 'data' },
-    { id: '1', title: '如何注册新账户', views: 1250, category: 'account' },
-    { id: '5', title: '设置打卡提醒', views: 980, category: 'settings' },
-    { id: '2', title: '忘记密码怎么办', views: 890, category: 'account' },
-  ],
-  categoryDistribution: [
-    { category: 'mood', count: 15, percentage: 31.25 },
-    { category: 'account', count: 12, percentage: 25.0 },
-    { category: 'data', count: 10, percentage: 20.83 },
-    { category: 'settings', count: 8, percentage: 16.67 },
-    { category: 'other', count: 3, percentage: 6.25 },
-  ],
-  searchQueries: [
-    { query: '心情记录', count: 320, noResults: 12 },
-    { query: '统计报告', count: 280, noResults: 8 },
-    { query: '提醒设置', count: 210, noResults: 5 },
-    { query: '数据导出', count: 180, noResults: 15 },
-    { query: '密码重置', count: 150, noResults: 3 },
-  ],
-  feedbackStats: {
-    total: 156,
-    pending: 12,
-    resolved: 142,
-    averageResolutionTime: '18h 24m',
-  },
-  timeRange: {
-    start: '2026-03-01T00:00:00Z',
-    end: '2026-03-30T23:59:59Z',
-  },
-};
+// In-memory cache for analytics
+const cache = new Map<string, { data: AnalyticsResponse; timestamp: number }>()
+const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
 
 export async function GET(request: NextRequest) {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const type = searchParams.get('type') || 'overview';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const searchParams = request.nextUrl.searchParams
+    const days = parseInt(searchParams.get('days') || '30')
 
-    // In production, filter by date range and aggregate from database
-    let analytics: Partial<AnalyticsData> = {};
-
-    switch (type) {
-      case 'overview':
-        analytics = {
-          totalViews: mockAnalytics.totalViews,
-          totalArticles: mockAnalytics.totalArticles,
-          feedbackStats: mockAnalytics.feedbackStats,
-          timeRange: mockAnalytics.timeRange,
-        };
-        break;
-
-      case 'top-articles':
-        analytics = {
-          topArticles: mockAnalytics.topArticles,
-          timeRange: mockAnalytics.timeRange,
-        };
-        break;
-
-      case 'categories':
-        analytics = {
-          categoryDistribution: mockAnalytics.categoryDistribution,
-          timeRange: mockAnalytics.timeRange,
-        };
-        break;
-
-      case 'searches':
-        analytics = {
-          searchQueries: mockAnalytics.searchQueries,
-          timeRange: mockAnalytics.timeRange,
-        };
-        break;
-
-      case 'feedback':
-        analytics = {
-          feedbackStats: mockAnalytics.feedbackStats,
-          timeRange: mockAnalytics.timeRange,
-        };
-        break;
-
-      default:
-        analytics = mockAnalytics;
+    // Check cache
+    const cacheKey = `analytics:${days}`
+    const cached = cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data)
     }
 
-    const responseTime = Date.now() - startTime;
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: analytics,
-        responseTime: `${responseTime}ms`,
+    // Get total articles
+    const totalArticles = await prisma.helpArticle.count({
+      where: { published: true },
+    })
+
+    // Get total views
+    const articles = await prisma.helpArticle.findMany({
+      where: { published: true },
+      select: { views: true },
+    })
+    const totalViews = articles.reduce((sum, article) => sum + article.views, 0)
+
+    // Get total feedback
+    const totalFeedback = await prisma.helpFeedback.count({
+      where: { createdAt: { gte: startDate } },
+    })
+
+    // Get feedback ratings
+    const helpfulCount = await prisma.helpFeedback.count({
+      where: {
+        rating: 'helpful',
+        createdAt: { gte: startDate },
       },
-      {
-        headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=900',
-        },
-      }
-    );
+    })
+    const notHelpfulCount = await prisma.helpFeedback.count({
+      where: {
+        rating: 'notHelpful',
+        createdAt: { gte: startDate },
+      },
+    })
+    const averageRating = totalFeedback > 0
+      ? Math.round((helpfulCount / totalFeedback) * 100)
+      : 0
+
+    // Get top articles by views
+    const topArticlesRaw = await prisma.helpArticle.findMany({
+      where: { published: true },
+      orderBy: { views: 'desc' },
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        views: true,
+        helpful: true,
+        notHelpful: true,
+      },
+    })
+
+    const topArticles = topArticlesRaw.map((article) => ({
+      ...article,
+      rating: article.helpful + article.notHelpful > 0
+        ? Math.round((article.helpful / (article.helpful + article.notHelpful)) * 100)
+        : 0,
+    }))
+
+    // Get category stats
+    const categoryStatsRaw = await prisma.helpArticle.groupBy({
+      by: ['category'],
+      where: { published: true },
+      _count: { category: true },
+      _sum: { views: true },
+    })
+
+    const categoryStats = categoryStatsRaw.map((stat) => ({
+      category: stat.category,
+      count: stat._count.category,
+      views: stat._sum.views || 0,
+    }))
+
+    // Get popular search queries (from feedback comments or logs)
+    // This is a simplified version - in production you'd have a search_logs table
+    const searchQueries: Array<{ query: string; count: number }> = []
+
+    const responseTime = Date.now() - startTime
+
+    const response: AnalyticsResponse = {
+      totalArticles,
+      totalViews,
+      totalFeedback,
+      averageRating,
+      topArticles,
+      searchQueries,
+      categoryStats,
+      responseTime,
+    }
+
+    // Cache the result
+    cache.set(cacheKey, { data: response, timestamp: Date.now() })
+
+    console.log(`Analytics API response time: ${responseTime}ms`)
+
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Error fetching analytics:', error);
+    console.error('Analytics API error:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to fetch analytics',
-      },
+      { error: 'Failed to fetch analytics' },
       { status: 500 }
-    );
-  }
-}
-
-// Helper function to track article views (call this from article detail pages)
-export async function trackView(articleId: string) {
-  try {
-    // In production, increment view count in database
-    // await db.article.update({
-    //   where: { id: articleId },
-    //   data: { views: { increment: 1 } },
-    // });
-    console.log(`Tracking view for article: ${articleId}`);
-  } catch (error) {
-    console.error('Error tracking view:', error);
-  }
-}
-
-// Helper function to track search queries (call this from search endpoint)
-export async function trackSearch(query: string, resultsCount: number) {
-  try {
-    // In production, log search query to analytics database
-    // await db.searchQuery.create({
-    //   data: {
-    //     query,
-    //     resultsCount,
-    //     timestamp: new Date(),
-    //   },
-    // });
-    console.log(`Tracking search: "${query}" - ${resultsCount} results`);
-  } catch (error) {
-    console.error('Error tracking search:', error);
+    )
   }
 }
