@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Box, Container, TextField, InputAdornment, Typography, Tabs, Tab, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import FAQList from '../../components/FAQList';
-import UserGuide from '../../components/UserGuide';
-import Tutorial from '../../components/Tutorial';
+import FAQList from '@/components/FAQList';
+import UserGuide from '@/components/UserGuide';
+import Tutorial from '@/components/Tutorial';
 
 const HelpPage = () => {
   const [searchTerm, setSearchTerm] = useState('');

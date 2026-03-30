@@ -155,7 +155,7 @@ export default function SecurityAlert({ onAction }: SecurityAlertProps) {
                 </div>
                 {alert.action && (
                   <button
-                    onClick={() => handleAction(alert.id, alert.action)}
+                    onClick={() => handleAction(alert.id, alert.action!)}
                     className={`px-4 py-2 ${styles.actionBg} text-white rounded-lg text-sm font-medium transition`}
                   >
                     立即查看

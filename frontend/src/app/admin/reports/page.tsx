@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import ChartComponent from '@/components/charts/chart-component';
+import ChartComponent from '@/components/chart-component';
 
 // Mock data for revenue trends
 const revenueData = [

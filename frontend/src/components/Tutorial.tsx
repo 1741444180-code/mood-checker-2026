@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Card, CardContent, CardMedia, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Grid } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
@@ -28,9 +28,9 @@ const Tutorial: React.FC<TutorialProps> = ({ tutorials }) => {
   return (
     <Box>
       {tutorials.length > 0 ? (
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
           {tutorials.map((tutorial) => (
-            <Grid item xs={12} sm={6} md={4} key={tutorial.id}>
+            <Box key={tutorial.id}>
               <Card 
                 sx={{ 
                   height: '100%', 
@@ -88,9 +88,9 @@ const Tutorial: React.FC<TutorialProps> = ({ tutorials }) => {
                   </Button>
                 </Box>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       ) : (
         <Typography variant="h6" align="center" sx={{ py: 4 }}>
           没有找到相关教程，请尝试其他关键词。

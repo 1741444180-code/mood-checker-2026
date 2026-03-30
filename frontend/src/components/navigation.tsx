@@ -22,40 +22,37 @@ export function Navigation() {
             
             <div className="flex space-x-1">
               <Button
-                variant={isActive('/') ? 'secondary' : 'ghost'}
-                asChild
+                variant={isActive('/') ? 'default' : 'ghost'}
                 size="sm"
+                onClick={() => window.location.href = '/'}
               >
-                <Link href="/">首页</Link>
+                首页
               </Button>
               
               <Button
-                variant={isActive('/diary') ? 'secondary' : 'ghost'}
-                asChild
+                variant={isActive('/diary') ? 'default' : 'ghost'}
                 size="sm"
+                onClick={() => window.location.href = '/diary'}
               >
-                <Link href="/diary">日记</Link>
+                日记
               </Button>
               
               <Button
-                variant={isActive('/mood-tracker') ? 'secondary' : 'ghost'}
-                asChild
+                variant={isActive('/mood-tracker') ? 'default' : 'ghost'}
                 size="sm"
               >
                 <Link href="/mood-tracker">心情追踪</Link>
               </Button>
               
               <Button
-                variant={isActive('/community') ? 'secondary' : 'ghost'}
-                asChild
+                variant={isActive('/community') ? 'default' : 'ghost'}
                 size="sm"
               >
                 <Link href="/community">社区</Link>
               </Button>
               
               <Button
-                variant={isActive('/calendar') ? 'secondary' : 'ghost'}
-                asChild
+                variant={isActive('/calendar') ? 'default' : 'ghost'}
                 size="sm"
               >
                 <Link href="/calendar">日历</Link>
@@ -65,16 +62,14 @@ export function Navigation() {
           
           <div className="flex items-center space-x-2">
             <Button
-              variant={isActive('/settings') ? 'secondary' : 'ghost'}
-              asChild
+              variant={isActive('/settings') ? 'default' : 'ghost'}
               size="sm"
             >
               <Link href="/settings">设置</Link>
             </Button>
             
             <Button
-              variant={isActive('/privacy') ? 'secondary' : 'ghost'}
-              asChild
+              variant={isActive('/privacy') ? 'default' : 'ghost'}
               size="sm"
             >
               <Link href="/privacy">隐私</Link>

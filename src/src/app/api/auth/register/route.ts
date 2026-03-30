@@ -1,67 +1,101 @@
 // src/app/api/auth/register/route.ts
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@/utils/encryption';
+import { generateToken } from '@/lib/jwt';
 
-// 模拟用户数据
-let mockUsers = [
-  { id: 'user1', username: 'testuser', email: 'test@example.com', password: 'hashed_password' },
-]
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, email, password } = await request.json()
+    const { username, email, password } = await request.json();
 
-    // 简单验证
+    // 验证必填字段
     if (!username || !email || !password) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Username, email and password are required' },
         { status: 400 }
-      )
+      );
     }
 
-    // 检查用户是否已存在
-    const existingUserByEmail = mockUsers.find(u => u.email === email)
-    const existingUserByUsername = mockUsers.find(u => u.username === username)
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    // 验证密码长度
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: 'Password must be at least 6 characters long' },
+        { status: 400 }
+      );
+    }
+
+    // 检查邮箱是否已存在
+    const existingUserByEmail = await prisma.user.findUnique({
+      where: { email },
+    });
 
     if (existingUserByEmail) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'User with this email already exists' },
         { status: 409 }
-      )
+      );
     }
+
+    // 检查用户名是否已存在
+    const existingUserByUsername = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (existingUserByUsername) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'User with this username already exists' },
         { status: 409 }
-      )
+      );
     }
 
-    // 创建新用户（实际应用中应加密密码）
-    const newUser = {
-      id: `user${mockUsers.length + 1}`,
-      username,
-      email,
-      password: `hashed_${password}`, // 实际应用中应使用bcrypt等加密
-    }
+    // 加密密码
+    const hashedPassword = await hashPassword(password);
 
-    mockUsers.push(newUser)
+    // 创建新用户
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword,
+      },
+    });
 
-    // 生成模拟token
-    const token = `mock_token_for_${newUser.id}`
+    // 生成 JWT token
+    const token = generateToken({
+      userId: newUser.id,
+      email: newUser.email,
+      username: newUser.username,
+    });
 
-    return Response.json({
-      success: true,
-      token,
-      user: {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-      }
-    }, { status: 201 })
+    // 返回用户信息（不包含密码）
+    return NextResponse.json(
+      {
+        success: true,
+        token,
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          email: newUser.email,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    return Response.json(
+    console.error('Registration error:', error);
+    return NextResponse.json(
       { error: 'Registration failed' },
       { status: 500 }
-    )
+    );
   }
 }
