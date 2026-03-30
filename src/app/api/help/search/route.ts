@@ -51,6 +51,14 @@ const articles: HelpArticle[] = [
     updatedAt: '2026-03-30T10:00:00Z',
     views: 980,
   },
+  {
+    id: '6',
+    title: '数据导出功能说明',
+    category: 'data',
+    content: '支持数据导出功能：进入"设置"页面，选择"数据管理"，点击"导出数据"，选择导出格式（CSV/PDF），数据将发送到您的邮箱。',
+    updatedAt: '2026-03-30T10:00:00Z',
+    views: 750,
+  },
 ];
 
 export async function GET(request: NextRequest) {
@@ -58,107 +66,99 @@ export async function GET(request: NextRequest) {
   
   try {
     const searchParams = request.nextUrl.searchParams;
+    const query = searchParams.get('q') || '';
     const category = searchParams.get('category');
-    const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
-    const sortBy = searchParams.get('sortBy') || 'updatedAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    // Filter by category if provided
-    let filteredArticles = category
-      ? articles.filter(article => article.category === category)
-      : articles;
+    if (!query.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Search query is required',
+        },
+        { status: 400 }
+      );
+    }
 
-    // Sort articles
-    filteredArticles.sort((a, b) => {
-      const aVal = a[sortBy as keyof HelpArticle] || '';
-      const bVal = b[sortBy as keyof HelpArticle] || '';
+    // Normalize search query
+    const searchTerms = query.toLowerCase().trim().split(/\s+/);
+
+    // Search in title and content
+    let results = articles.filter(article => {
+      const titleMatch = searchTerms.some(term =>
+        article.title.toLowerCase().includes(term)
+      );
+      const contentMatch = searchTerms.some(term =>
+        article.content.toLowerCase().includes(term)
+      );
       
-      if (sortOrder === 'asc') {
-        return aVal > bVal ? 1 : -1;
-      } else {
-        return aVal < bVal ? 1 : -1;
+      // Category filter if provided
+      if (category && article.category !== category) {
+        return false;
       }
+      
+      return titleMatch || contentMatch;
     });
 
-    // Pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedArticles = filteredArticles.slice(startIndex, endIndex);
+    // Sort by relevance (title matches first, then by views)
+    results.sort((a, b) => {
+      const aTitleMatch = searchTerms.some(term =>
+        a.title.toLowerCase().includes(term)
+      );
+      const bTitleMatch = searchTerms.some(term =>
+        b.title.toLowerCase().includes(term)
+      );
+      
+      if (aTitleMatch && !bTitleMatch) return -1;
+      if (!aTitleMatch && bTitleMatch) return 1;
+      
+      return (b.views || 0) - (a.views || 0);
+    });
+
+    // Limit results
+    results = results.slice(0, limit);
+
+    // Highlight search terms (simple implementation)
+    const highlightedResults = results.map(article => ({
+      ...article,
+      title: highlightTerms(article.title, searchTerms),
+      content: highlightTerms(article.content.substring(0, 200) + '...', searchTerms),
+    }));
 
     const responseTime = Date.now() - startTime;
 
     return NextResponse.json(
       {
         success: true,
-        articles: paginatedArticles,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(filteredArticles.length / limit),
-          totalItems: filteredArticles.length,
-          itemsPerPage: limit,
-        },
+        results: highlightedResults,
+        query: query,
+        totalResults: results.length,
         responseTime: `${responseTime}ms`,
       },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=120',
         },
       }
     );
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    console.error('Error searching articles:', error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to fetch articles',
+        error: 'Search failed',
       },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { title, category, content } = body;
-
-    // Validate required fields
-    if (!title || !category || !content) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required fields',
-        },
-        { status: 400 }
-      );
-    }
-
-    // In production, save to database
-    const newArticle: HelpArticle = {
-      id: Date.now().toString(),
-      title,
-      category,
-      content,
-      updatedAt: new Date().toISOString(),
-      views: 0,
-    };
-
-    articles.push(newArticle);
-
-    return NextResponse.json({
-      success: true,
-      article: newArticle,
-      message: 'Article created successfully',
-    });
-  } catch (error) {
-    console.error('Error creating article:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to create article',
-      },
-      { status: 500 }
-    );
-  }
+// Helper function to highlight search terms
+function highlightTerms(text: string, terms: string[]): string {
+  let highlighted = text;
+  terms.forEach(term => {
+    const regex = new RegExp(`(${term})`, 'gi');
+    highlighted = highlighted.replace(regex, '<mark>$1</mark>');
+  });
+  return highlighted;
 }

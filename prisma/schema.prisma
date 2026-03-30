@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+=======
+>>>>>>> 9b1466c (feat: Day 25 会员系统 API 完成)
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
+<<<<<<< HEAD
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -133,3 +137,43 @@ model Comment {
   @@index([status])
   @@index([createdAt])
 }
+=======
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  language  String    @default("zh-CN")
+  theme     String    @default("light")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  checkins  CheckIn[]
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  mood      Int
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes     Like[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  checkInId String
+  createdAt DateTime @default(now())
+  checkIn   CheckIn  @relation(fields: [checkInId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, checkInId])
+  @@index([checkInId])
+}
+>>>>>>> 9b1466c (feat: Day 25 会员系统 API 完成)

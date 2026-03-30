@@ -1,0 +1,47 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "submit": "提交"
+  },
+  "checkin": {
+    "title": "心情打卡",
+    "placeholder": "今天感觉怎么样？",
+    "submit": "提交打卡",
+    "success": "打卡成功！",
+    "error": "打卡失败，请重试",
+    "mood": {
+      "1": "非常糟糕",
+      "2": "不太好",
+      "3": "一般",
+      "4": "不错",
+      "5": "非常好"
+    }
+  },
+  "stats": {
+    "title": "统计数据",
+    "totalCheckIns": "总打卡次数",
+    "consecutiveDays": "连续打卡天数",
+    "averageMood": "平均心情",
+    "moodDistribution": "心情分布"
+  },
+  "user": {
+    "language": "语言设置",
+    "languageChanged": "语言已切换为",
+    "currentLanguage": "当前语言"
+  },
+  "errors": {
+    "required": "此项为必填项",
+    "invalid": "输入无效",
+    "network": "网络错误，请检查连接",
+    "server": "服务器错误，请稍后重试",
+    "unauthorized": "未授权，请先登录",
+    "notFound": "未找到相关内容"
+  }
+}

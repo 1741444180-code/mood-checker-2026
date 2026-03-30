@@ -1,0 +1,47 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit"
+  },
+  "checkin": {
+    "title": "Mood Check-in",
+    "placeholder": "How are you feeling today?",
+    "submit": "Submit Check-in",
+    "success": "Check-in successful!",
+    "error": "Check-in failed, please try again",
+    "mood": {
+      "1": "Very Bad",
+      "2": "Not Good",
+      "3": "Neutral",
+      "4": "Good",
+      "5": "Very Good"
+    }
+  },
+  "stats": {
+    "title": "Statistics",
+    "totalCheckIns": "Total Check-ins",
+    "consecutiveDays": "Consecutive Days",
+    "averageMood": "Average Mood",
+    "moodDistribution": "Mood Distribution"
+  },
+  "user": {
+    "language": "Language Settings",
+    "languageChanged": "Language switched to",
+    "currentLanguage": "Current Language"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalid": "Invalid input",
+    "network": "Network error, please check your connection",
+    "server": "Server error, please try again later",
+    "unauthorized": "Unauthorized, please log in first",
+    "notFound": "Content not found"
+  }
+}
