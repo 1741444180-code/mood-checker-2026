@@ -30,32 +30,38 @@ export function Navigation() {
               </Button>
               
               <Button
-                variant={isActive('/diary') ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => window.location.href = '/diary'}
-              >
-                日记
-              </Button>
-              
-              <Button
-                variant={isActive('/mood-tracker') ? 'default' : 'ghost'}
+                variant={isActive('/stats') ? 'default' : 'ghost'}
                 size="sm"
               >
-                <Link href="/mood-tracker">心情追踪</Link>
-              </Button>
-              
-              <Button
-                variant={isActive('/community') ? 'default' : 'ghost'}
-                size="sm"
-              >
-                <Link href="/community">社区</Link>
+                <Link href="/stats">数据统计</Link>
               </Button>
               
               <Button
                 variant={isActive('/calendar') ? 'default' : 'ghost'}
                 size="sm"
               >
-                <Link href="/calendar">日历</Link>
+                <Link href="/calendar">心情日历</Link>
+              </Button>
+              
+              <Button
+                variant={isActive('/friends') ? 'default' : 'ghost'}
+                size="sm"
+              >
+                <Link href="/friends">好友列表</Link>
+              </Button>
+              
+              <Button
+                variant={isActive('/badges') ? 'default' : 'ghost'}
+                size="sm"
+              >
+                <Link href="/badges">徽章系统</Link>
+              </Button>
+              
+              <Button
+                variant={isActive('/leaderboard') ? 'default' : 'ghost'}
+                size="sm"
+              >
+                <Link href="/leaderboard">排行榜</Link>
               </Button>
             </div>
           </div>

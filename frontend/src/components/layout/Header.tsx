@@ -25,14 +25,20 @@ export default function Header() {
           <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
             首页
           </Link>
-          <Link href="/dashboard" className="text-sm font-medium transition-colors hover:text-primary">
-            仪表板
+          <Link href="/stats" className="text-sm font-medium transition-colors hover:text-primary">
+            数据统计
           </Link>
-          <Link href="/history" className="text-sm font-medium transition-colors hover:text-primary">
-            历史记录
+          <Link href="/calendar" className="text-sm font-medium transition-colors hover:text-primary">
+            心情日历
           </Link>
-          <Link href="/analysis" className="text-sm font-medium transition-colors hover:text-primary">
-            数据分析
+          <Link href="/friends" className="text-sm font-medium transition-colors hover:text-primary">
+            好友列表
+          </Link>
+          <Link href="/badges" className="text-sm font-medium transition-colors hover:text-primary">
+            徽章系统
+          </Link>
+          <Link href="/leaderboard" className="text-sm font-medium transition-colors hover:text-primary">
+            排行榜
           </Link>
         </nav>
 
@@ -50,13 +56,19 @@ export default function Header() {
                 <Link href="/">首页</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/dashboard">仪表板</Link>
+                <Link href="/stats">数据统计</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/history">历史记录</Link>
+                <Link href="/calendar">心情日历</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/analysis">数据分析</Link>
+                <Link href="/friends">好友列表</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/badges">徽章系统</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/leaderboard">排行榜</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
