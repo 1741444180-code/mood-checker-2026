@@ -1,11 +1,11 @@
-import { SettingsForm } from '@/components/settings/SettingsForm';
+import { NotificationSettingsForm } from '@/components/notifications/NotificationSettingsForm';
 
-export default function SettingsPage() {
+export default function NotificationSettingsPage() {
   return (
     <div className="container mx-auto py-10">
-      <div className="max-w-2xl">
-        <h1 className="text-3xl font-bold mb-8">账户设置</h1>
-        <SettingsForm />
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">通知设置</h1>
+        <NotificationSettingsForm />
       </div>
     </div>
   );
