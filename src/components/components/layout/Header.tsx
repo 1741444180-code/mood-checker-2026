@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu, 
@@ -8,9 +9,19 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 
 export default function Header() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // 清除本地存储
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    // 跳转到登录页
+    router.push('/auth/login');
+  };
+
   return (
     <header className="border-b">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -25,15 +36,19 @@ export default function Header() {
           <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
             首页
           </Link>
-          <Link href="/dashboard" className="text-sm font-medium transition-colors hover:text-primary">
-            仪表板
+          <Link href="/stats" className="text-sm font-medium transition-colors hover:text-primary">
+            统计
           </Link>
-          <Link href="/history" className="text-sm font-medium transition-colors hover:text-primary">
-            历史记录
+          <Link href="/profile" className="text-sm font-medium transition-colors hover:text-primary">
+            我的
           </Link>
-          <Link href="/analysis" className="text-sm font-medium transition-colors hover:text-primary">
-            数据分析
+          <Link href="/settings" className="text-sm font-medium transition-colors hover:text-primary">
+            设置
           </Link>
+          <Button variant="ghost" size="sm" onClick={handleLogout} className="flex items-center gap-2">
+            <LogOut className="w-4 h-4" />
+            退出登录
+          </Button>
         </nav>
 
         {/* 移动端菜单 */}
@@ -50,13 +65,17 @@ export default function Header() {
                 <Link href="/">首页</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard">仪表板</Link>
+                <Link href="/stats">统计</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/history">历史记录</Link>
+                <Link href="/profile">我的</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/analysis">数据分析</Link>
+                <Link href="/settings">设置</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2">
+                <LogOut className="w-4 h-4" />
+                退出登录
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
