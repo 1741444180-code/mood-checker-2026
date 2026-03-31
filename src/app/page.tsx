@@ -1,22 +1,281 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import React from 'react';
+import Link from 'next/link';
+import { Box, Container, Button, Typography, Grid, Paper } from '@mui/material';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import PeopleIcon from '@mui/icons-material/People';
+import BadgeIcon from '@mui/icons-material/Badge';
+import InsightsIcon from '@mui/icons-material/Insights';
 
 export default function HomePage() {
-  const router = useRouter();
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">心情打卡应用</h1>
-      <p className="text-gray-600 mb-8 text-center max-w-md">
-        欢迎使用心情打卡应用，记录您的每日心情，追踪情绪变化
-      </p>
-      <button
-        onClick={() => router.push('/profile')}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors"
-      >
-        进入个人中心
-      </button>
-    </div>
+    <Box className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50">
+      {/* 导航栏 */}
+      <nav className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center space-x-2">
+              <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 32 }} />
+              <Typography variant="h6" className="text-purple-600 font-bold">
+                心情打卡
+              </Typography>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/help" className="text-gray-600 hover:text-purple-600 transition-colors">
+                帮助中心
+              </Link>
+              <Link
+                href="/auth/login"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                登录
+              </Link>
+              <Link
+                href="/auth/register"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition-all hover:scale-105"
+              >
+                免费注册
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero 区域 */}
+      <section className="py-20">
+        <Container maxWidth="md">
+          <Box className="text-center">
+            <Typography
+              variant="h1"
+              className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent"
+            >
+              记录每一天的心情
+            </Typography>
+            <Typography
+              variant="h5"
+              className="text-gray-600 mb-10"
+            >
+              追踪情绪变化，发现内心规律，成为更好的自己
+            </Typography>
+            <Box className="flex justify-center gap-4">
+              <Link
+                href="/auth/register"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all hover:scale-105"
+              >
+                开始记录心情
+              </Link>
+              <Link
+                href="/auth/login"
+                className="bg-white text-purple-600 px-10 py-4 rounded-full text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition-all"
+              >
+                立即登录
+              </Link>
+            </Box>
+          </Box>
+        </Container>
+      </section>
+
+      {/* 核心功能 */}
+      <section className="py-16 bg-white">
+        <Container maxWidth="lg">
+          <Typography variant="h3" className="text-center font-bold mb-4 text-gray-900">
+            为什么选择心情打卡？
+          </Typography>
+          <Typography variant="h6" className="text-center text-gray-600 mb-12">
+            全方位的情绪管理工具，帮助您更好地了解自己
+          </Typography>
+          
+          <Grid container spacing={6}>
+            {/* 功能 1 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  每日心情记录
+                </Typography>
+                <Typography className="text-gray-600">
+                  7 种标准心情 + 自定义心情，简单快捷记录每天的情绪状态
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* 功能 2 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <TrendingUpIcon className="text-indigo-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  数据分析
+                </Typography>
+                <Typography className="text-gray-600">
+                  可视化图表展示心情趋势，发现情绪变化的规律和周期
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* 功能 3 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <CalendarTodayIcon className="text-pink-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  心情日历
+                </Typography>
+                <Typography className="text-gray-600">
+                  以日历形式查看历史心情，快速回顾过去的情绪状态
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* 功能 4 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <PeopleIcon className="text-purple-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  好友互动
+                </Typography>
+                <Typography className="text-gray-600">
+                  添加好友、分享心情，与朋友一起关注心理健康
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* 功能 5 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <BadgeIcon className="text-indigo-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  徽章系统
+                </Typography>
+                <Typography className="text-gray-600">
+                  完成成就解锁专属徽章，让心情管理更有趣味性
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* 功能 6 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={3}
+                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                style={{ height: '100%' }}
+              >
+                <Box className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <InsightsIcon className="text-pink-600" style={{ fontSize: 32 }} />
+                </Box>
+                <Typography variant="h6" className="font-semibold mb-3">
+                  智能洞察
+                </Typography>
+                <Typography className="text-gray-600">
+                  AI 分析心情数据，提供个性化的心理健康建议
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
+      </section>
+
+      {/* CTA 区域 */}
+      <section className="py-20 bg-gradient-to-r from-purple-600 to-indigo-600">
+        <Container maxWidth="md">
+          <Box className="text-center text-white">
+            <Typography variant="h3" className="font-bold mb-4">
+              开始您的心情管理之旅
+            </Typography>
+            <Typography variant="h6" className="mb-10 text-purple-100">
+              加入 10 万 + 用户，一起关注心理健康
+            </Typography>
+            <Link
+              href="/auth/register"
+              className="inline-block bg-white text-purple-600 px-12 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all hover:scale-105"
+            >
+              免费开始使用
+            </Link>
+          </Box>
+        </Container>
+      </section>
+
+      {/* 页脚 */}
+      <footer className="bg-gray-900 text-gray-300 py-12">
+        <Container maxWidth="lg">
+          <Grid container spacing={8}>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h6" className="text-white font-semibold mb-4">
+                心情打卡
+              </Typography>
+              <Typography className="text-sm">
+                记录每一天的心情，成为更好的自己
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h6" className="text-white font-semibold mb-4">
+                功能
+              </Typography>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/stats" className="hover:text-white transition-colors">数据统计</Link></li>
+                <li><Link href="/calendar" className="hover:text-white transition-colors">心情日历</Link></li>
+                <li><Link href="/badges" className="hover:text-white transition-colors">徽章系统</Link></li>
+              </ul>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h6" className="text-white font-semibold mb-4">
+                支持
+              </Typography>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/help" className="hover:text-white transition-colors">帮助中心</Link></li>
+                <li><Link href="/feedback" className="hover:text-white transition-colors">意见反馈</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">隐私政策</Link></li>
+              </ul>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h6" className="text-white font-semibold mb-4">
+                账户
+              </Typography>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/auth/login" className="hover:text-white transition-colors">登录</Link></li>
+                <li><Link href="/auth/register" className="hover:text-white transition-colors">注册</Link></li>
+                <li><Link href="/settings" className="hover:text-white transition-colors">设置</Link></li>
+              </ul>
+            </Grid>
+          </Grid>
+          <Box className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+            <Typography>
+              © 2026 心情打卡。All rights reserved.
+            </Typography>
+          </Box>
+        </Container>
+      </footer>
+    </Box>
   );
 }

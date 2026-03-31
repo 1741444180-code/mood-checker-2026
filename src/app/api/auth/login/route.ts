@@ -1,50 +1,68 @@
+// src/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { verifyPassword } from '@/utils/encryption';
+import { generateToken } from '@/lib/jwt';
 
-// 模拟用户数据
-const users = [
-  { id: 1, username: 'testuser', email: 'test@test.com', password: 'Test123456' }
-];
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    const { email, password } = await request.json();
 
     // 验证必填字段
     if (!email || !password) {
       return NextResponse.json(
-        { error: '邮箱和密码不能为空' },
+        { error: 'Email and password are required' },
         { status: 400 }
       );
     }
 
-    // 查找用户
-    const user = users.find(u => u.email === email && u.password === password);
+    // 查找用户（支持邮箱或用户名登录）
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { username: email }],
+      },
+    });
 
     if (!user) {
       return NextResponse.json(
-        { error: '邮箱或密码错误' },
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    // 返回用户信息（实际项目应该返回 JWT token）
-    return NextResponse.json(
-      { 
-        message: '登录成功',
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        },
-        token: 'mock-jwt-token-' + user.id
+    // 验证密码
+    const isValid = await verifyPassword(password, user.password);
+
+    if (!isValid) {
+      return NextResponse.json(
+        { error: 'Invalid email or password' },
+        { status: 401 }
+      );
+    }
+
+    // 生成 JWT token
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    });
+
+    // 返回用户信息（不包含密码）
+    return NextResponse.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
       },
-      { status: 200 }
-    );
+    });
   } catch (error) {
-    console.error('登录失败:', error);
+    console.error('Login error:', error);
     return NextResponse.json(
-      { error: '登录失败，请稍后重试' },
+      { error: 'Login failed' },
       { status: 500 }
     );
   }
