@@ -1,0 +1,111 @@
+name: Monitoring Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'monitoring-config.md'
+      - 'scripts/deploy-monitoring.sh'
+      - '.github/workflows/monitoring.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy-monitoring:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        
+    - name: Setup Sentry CLI
+      uses: getsentry/action-setup-sentry-cli@v1
+      with:
+        token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        
+    - name: Set release version
+      id: set-release
+      run: |
+        echo "RELEASE_VERSION=production-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+        
+    - name: Configure Sentry release
+      run: |
+        sentry-cli releases new ${{ env.RELEASE_VERSION }}
+        sentry-cli releases set-commits ${{ env.RELEASE_VERSION }} --auto
+        
+    - name: Upload source maps
+      if: github.ref == 'refs/heads/main'
+      run: |
+        npm run build
+        sentry-cli releases files ${{ env.RELEASE_VERSION }} upload-sourcemaps .next/static/chunks --url-prefix "/_next/static/chunks"
+        sentry-cli releases files ${{ env.RELEASE_VERSION }} upload-sourcemaps .next/static/css --url-prefix "/_next/static/css"
+        
+    - name: Deploy to production
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        NEXT_PUBLIC_LOGROCKET_ID: ${{ secrets.NEXT_PUBLIC_LOGROCKET_ID }}
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      run: |
+        chmod +x scripts/deploy-monitoring.sh
+        ./scripts/deploy-monitoring.sh
+        
+    - name: Finalize Sentry release
+      if: success()
+      run: |
+        sentry-cli releases finalize ${{ env.RELEASE_VERSION }}
+        
+    - name: Notify deployment success
+      if: success()
+      uses: slackapi/slack-github-action@v1
+      with:
+        channel-id: 'monitoring-alerts'
+        payload: |
+          {
+            "text": "✅ Monitoring deployment successful!",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Monitoring Deployment Successful*\n\nRelease: `${{ env.RELEASE_VERSION }}`\nCommit: ${{ github.sha }}\nDeployed by: ${{ github.actor }}"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        
+    - name: Notify deployment failure
+      if: failure()
+      uses: slackapi/slack-github-action@v1
+      with:
+        channel-id: 'monitoring-alerts'
+        payload: |
+          {
+            "text": "❌ Monitoring deployment failed!",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Monitoring Deployment Failed*\n\nRelease: `${{ env.RELEASE_VERSION }}`\nCommit: ${{ github.sha }}\nFailed workflow: ${{ github.workflow }}"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

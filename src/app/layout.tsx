@@ -1,32 +1,32 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import BottomNav from "@/components/layout/BottomNav";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "心情打卡 - 记录您的每日心情",
-  description: "心情打卡网站，帮助您记录和追踪每日心情变化",
-};
+  title: '心情打卡网站',
+  description: '记录每日心情，追踪情绪变化',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html
-      lang="zh-CN"
-      className={`${inter.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <main className="flex-grow">{children}</main>
-        <BottomNav />
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

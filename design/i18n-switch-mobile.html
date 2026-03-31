@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>语言切换器 - 移动端 - 小雅游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 15px 100px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        /* 当前语言卡片 */
+        .current-language-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .current-language-label {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .current-language-value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e8ec);
+            border-radius: 14px;
+        }
+
+        .current-language-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .current-language-arrow {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        /* 快速切换按钮 */
+        .quick-switch {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .quick-switch-label {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-switch-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .quick-btn {
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quick-btn:active {
+            transform: scale(0.98);
+        }
+
+        .quick-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .quick-btn-flag {
+            font-size: 20px;
+        }
+
+        /* 语言列表 */
+        .language-list {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .language-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+            border: 2px solid transparent;
+        }
+
+        .language-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .language-option:active {
+            background: #f5f7fa;
+        }
+
+        .language-option.active {
+            background: linear-gradient(135deg, #f5f7fa, #e4e8ec);
+            border-color: #667eea;
+        }
+
+        .language-option-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .language-flag {
+            font-size: 24px;
+        }
+
+        .language-info {
+            flex: 1;
+        }
+
+        .language-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .language-native {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .language-option.active .language-native {
+            color: #999;
+        }
+
+        .checkmark {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: all 0.3s;
+        }
+
+        .language-option.active .checkmark {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* 文案长度对比 */
+        .length-demo {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .length-demo-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .length-item {
+            margin-bottom: 16px;
+        }
+
+        .length-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .length-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .length-bar-container {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .length-text {
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .length-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .length-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .length-tip {
+            background: linear-gradient(135deg, #fff9e6, #ffe0b2);
+            border-left: 4px solid #ff9800;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .length-tip-text {
+            font-size: 13px;
+            color: #f57c00;
+            line-height: 1.6;
+        }
+
+        /* 底部操作栏 */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px 20px;
+            padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:active {
+            background: #667eea;
+            color: white;
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 375px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .current-language-text {
+                font-size: 14px;
+            }
+
+            .quick-btn {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+
+            .language-name {
+                font-size: 14px;
+            }
+
+            .language-native {
+                font-size: 11px;
+            }
+        }
+
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            .current-language-card,
+            .quick-switch,
+            .language-list,
+            .length-demo,
+            .header {
+                background: #1a1a2e;
+            }
+
+            .header h1,
+            .current-language-text,
+            .language-name,
+            .length-text {
+                color: #ffffff;
+            }
+
+            .header p,
+            .current-language-label,
+            .quick-switch-label,
+            .language-native,
+            .length-label {
+                color: #a0a0a0;
+            }
+
+            .quick-btn,
+            .btn-secondary {
+                background: #16213e;
+            }
+
+            .language-option.active {
+                background: #0f3460;
+            }
+
+            .length-bar-container {
+                background: #0f3460;
+            }
+
+            .length-bar {
+                background: #1a1a2e;
+            }
+
+            .bottom-actions {
+                background: #1a1a2e;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 语言设置</h1>
+            <p>Language Settings</p>
+        </div>
+
+        <!-- 当前语言卡片 -->
+        <div class="current-language-card">
+            <div class="current-language-label">
+                ⚙️ 当前语言 / Current Language
+            </div>
+            <div class="current-language-value">
+                <div class="current-language-text">
+                    <span class="quick-btn-flag">🇨🇳</span>
+                    <span>简体中文</span>
+                </div>
+                <div class="current-language-arrow">›</div>
+            </div>
+        </div>
+
+        <!-- 快速切换 -->
+        <div class="quick-switch">
+            <div class="quick-switch-label">
+                ⚡ 快速切换 / Quick Switch
+            </div>
+            <div class="quick-switch-buttons">
+                <button class="quick-btn active">
+                    <span class="quick-btn-flag">🇨🇳</span>
+                    <span>中文</span>
+                </button>
+                <button class="quick-btn">
+                    <span class="quick-btn-flag">🇺🇸</span>
+                    <span>English</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 语言列表 -->
+        <div class="language-list">
+            <div class="language-list-title">
+                📋 所有语言 / All Languages
+            </div>
+
+            <div class="language-option active">
+                <div class="language-option-left">
+                    <span class="language-flag">🇨🇳</span>
+                    <div class="language-info">
+                        <div class="language-name">简体中文</div>
+                        <div class="language-native">Chinese Simplified</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇺🇸</span>
+                    <div class="language-info">
+                        <div class="language-name">English</div>
+                        <div class="language-native">English (US)</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇬🇧</span>
+                    <div class="language-info">
+                        <div class="language-name">English</div>
+                        <div class="language-native">English (UK)</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇯🇵</span>
+                    <div class="language-info">
+                        <div class="language-name">日本語</div>
+                        <div class="language-native">Japanese</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇰🇷</span>
+                    <div class="language-info">
+                        <div class="language-name">한국어</div>
+                        <div class="language-native">Korean</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇫🇷</span>
+                    <div class="language-info">
+                        <div class="language-name">Français</div>
+                        <div class="language-native">French</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇩🇪</span>
+                    <div class="language-info">
+                        <div class="language-name">Deutsch</div>
+                        <div class="language-native">German</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+
+            <div class="language-option">
+                <div class="language-option-left">
+                    <span class="language-flag">🇪🇸</span>
+                    <div class="language-info">
+                        <div class="language-name">Español</div>
+                        <div class="language-native">Spanish</div>
+                    </div>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+        </div>
+
+        <!-- 文案长度对比 -->
+        <div class="length-demo">
+            <div class="length-demo-title">
+                📏 文案长度适配 / Text Length
+            </div>
+
+            <div class="length-item">
+                <div class="length-label">设置按钮 / Settings Button</div>
+                <div class="length-bar-container">
+                    <div class="length-text">中文：设置</div>
+                    <div class="length-bar">
+                        <div class="length-bar-fill" style="width: 35%"></div>
+                    </div>
+                </div>
+                <div class="length-bar-container">
+                    <div class="length-text">英文：Settings</div>
+                    <div class="length-bar">
+                        <div class="length-bar-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="length-item">
+                <div class="length-label">语言切换器 / Language Switcher</div>
+                <div class="length-bar-container">
+                    <div class="length-text">中文：语言切换器</div>
+                    <div class="length-bar">
+                        <div class="length-bar-fill" style="width: 55%"></div>
+                    </div>
+                </div>
+                <div class="length-bar-container">
+                    <div class="length-text">英文：Language Switcher</div>
+                    <div class="length-bar">
+                        <div class="length-bar-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="length-tip">
+                <div class="length-tip-text">
+                    💡 <strong>移动端适配提示：</strong><br>
+                    英文文案比中文长 30%-100%。按钮使用弹性宽度，文字自动换行，避免截断。小屏幕设备（<375px）需特别测试。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="bottom-actions">
+        <button class="btn btn-secondary">取消</button>
+        <button class="btn btn-primary">保存</button>
+    </div>
+
+    <script>
+        // 快速切换按钮交互
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // 同步更新语言列表
+                const flag = btn.querySelector('.quick-btn-flag').textContent;
+                document.querySelectorAll('.language-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.querySelector('.language-flag').textContent === flag) {
+                        option.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // 语言列表交互
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.language-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                
+                // 同步更新快速切换按钮
+                const flag = option.querySelector('.language-flag').textContent;
+                document.querySelectorAll('.quick-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.querySelector('.quick-btn-flag').textContent === flag) {
+                        btn.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

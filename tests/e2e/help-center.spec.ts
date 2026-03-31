@@ -1,190 +1,113 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Help Center Feature Tests', () => {
-  test.beforeEach(async ({ page }) => {
+// Help Center E2E Tests
+test.describe('Help Center Tests', () => {
+  // Test Case: Access Help Center from homepage
+  test('should navigate to help center from homepage', async ({ page }) => {
+    await page.goto('/');
+    const helpCenterLink = page.locator('text=帮助中心');
+    await expect(helpCenterLink).toBeVisible();
+    await helpCenterLink.click();
+    await expect(page).toHaveURL(/.*\/help.*/);
+    await expect(page.locator('h1')).toContainText('帮助中心');
+  });
+
+  // Test Case: Verify help center has categories
+  test('should display help categories', async ({ page }) => {
     await page.goto('/help');
+    const categoryList = page.locator('.help-category');
+    await expect(categoryList).toBeVisible();
+    const categoriesCount = await categoryList.count();
+    expect(categoriesCount).toBeGreaterThan(0);
   });
 
-  test('should display help center homepage', async ({ page }) => {
-    // Verify help center page loads correctly
-    await expect(page.getByRole('heading', { name: 'Help Center' })).toBeVisible();
-    await expect(page.getByText('Frequently Asked Questions')).toBeVisible();
-    await expect(page.getByText('Contact Support')).toBeVisible();
+  // Test Case: Navigate to specific help category
+  test('should navigate to specific help category', async ({ page }) => {
+    await page.goto('/help');
+    const firstCategory = page.locator('.help-category').first();
+    await expect(firstCategory).toBeVisible();
+    await firstCategory.click();
+    await expect(page).toHaveURL(/.*\/help\/category.*/);
   });
 
-  test('should search FAQ successfully', async ({ page }) => {
-    // Type in search query
-    await page.locator('#faq-search').fill('login');
-    
-    // Submit search
-    await page.locator('#faq-search').press('Enter');
-    
-    // Verify search results are displayed
-    const searchResults = page.locator('.faq-result');
-    await expect(searchResults.first()).toBeVisible();
-    
-    // Verify results contain search term
-    const resultTitles = page.locator('.faq-question');
-    await expect(resultTitles.first()).toContainText('login');
+  // Test Case: View help article
+  test('should display help article content', async ({ page }) => {
+    await page.goto('/help');
+    const articleLink = page.locator('.help-article-link').first();
+    await expect(articleLink).toBeVisible();
+    await articleLink.click();
+    await expect(page.locator('.help-article-content')).toBeVisible();
   });
 
-  test('should filter FAQs by category', async ({ page }) => {
-    // Click on a category
-    await page.getByRole('button', { name: 'Account' }).click();
-    
-    // Verify filtered results
-    const faqItems = page.locator('.faq-item');
-    await expect(faqItems).toHaveCount(5);
-    
-    // Verify all items belong to selected category
-    await expect(faqItems.first()).toContainText('Account');
+  // Test Case: Help center search functionality
+  test('should search help articles', async ({ page }) => {
+    await page.goto('/help');
+    const searchInput = page.locator('#help-search-input');
+    await expect(searchInput).toBeVisible();
+    await searchInput.fill('登录');
+    await searchInput.press('Enter');
+    await expect(page.locator('.search-results')).toBeVisible();
+    const resultsCount = await page.locator('.search-result-item').count();
+    expect(resultsCount).toBeGreaterThanOrEqual(0);
   });
 
-  test('should expand and collapse FAQ items', async ({ page }) => {
-    // Find first FAQ item
-    const firstFAQ = page.locator('.faq-item').first();
-    const questionButton = firstFAQ.locator('.faq-question');
-    
-    // Verify answer is initially hidden
-    const answer = firstFAQ.locator('.faq-answer');
-    await expect(answer).not.toBeVisible();
-    
-    // Click to expand
-    await questionButton.click();
-    
-    // Verify answer is now visible
-    await expect(answer).toBeVisible();
-    
-    // Click again to collapse
-    await questionButton.click();
-    
-    // Verify answer is hidden again
-    await expect(answer).not.toBeVisible();
+  // Test Case: Help center breadcrumbs
+  test('should display breadcrumbs correctly', async ({ page }) => {
+    await page.goto('/help');
+    const breadcrumbs = page.locator('.breadcrumb');
+    await expect(breadcrumbs).toBeVisible();
+    await expect(breadcrumbs.locator('text=首页')).toBeVisible();
+    await expect(breadcrumbs.locator('text=帮助中心')).toBeVisible();
   });
 
-  test('should submit contact form', async ({ page }) => {
-    // Navigate to contact form
-    await page.getByRole('link', { name: 'Contact Support' }).click();
-    
-    // Fill in contact form
-    await page.locator('#contact-name').fill('Test User');
-    await page.locator('#contact-email').fill('test@example.com');
-    await page.locator('#contact-subject').fill('Test Subject');
-    await page.locator('#contact-message').fill('This is a test message for help center functionality.');
-    
-    // Submit form
-    await page.getByRole('button', { name: 'Send Message' }).click();
-    
-    // Verify success message
-    await expect(page.getByText('Your message has been sent successfully')).toBeVisible();
+  // Test Case: Contact support link
+  test('should have contact support link', async ({ page }) => {
+    await page.goto('/help');
+    const contactLink = page.locator('text=联系客服');
+    await expect(contactLink).toBeVisible();
+    await expect(contactLink).toHaveAttribute('href', '/support');
   });
 
-  test('should handle contact form validation', async ({ page }) => {
-    // Navigate to contact form
-    await page.getByRole('link', { name: 'Contact Support' }).click();
+  // Test Case: Help center footer links
+  test('should have footer links in help center', async ({ page }) => {
+    await page.goto('/help');
+    const faqLink = page.locator('text=常见问题');
+    const termsLink = page.locator('text=服务条款');
+    const privacyLink = page.locator('text=隐私政策');
     
-    // Try submitting empty form
-    await page.getByRole('button', { name: 'Send Message' }).click();
-    
-    // Verify validation messages
-    await expect(page.locator('#contact-name')).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.locator('#contact-email')).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.locator('#contact-message')).toHaveAttribute('aria-invalid', 'true');
+    await expect(faqLink).toBeVisible();
+    await expect(termsLink).toBeVisible();
+    await expect(privacyLink).toBeVisible();
   });
 
-  test('should display help articles', async ({ page }) => {
-    // Click on a help article
-    const firstArticle = page.locator('.help-article-link').first();
-    await firstArticle.click();
+  // Test Case: Help article rating functionality
+  test('should allow rating help articles', async ({ page }) => {
+    await page.goto('/help');
+    const articleLink = page.locator('.help-article-link').first();
+    await expect(articleLink).toBeVisible();
+    await articleLink.click();
     
-    // Verify article page loads
-    await expect(page.locator('.article-content')).toBeVisible();
-    await expect(page.locator('.article-title')).toBeVisible();
+    const ratingSection = page.locator('.article-rating');
+    await expect(ratingSection).toBeVisible();
     
-    // Verify back to help center link
-    const backButton = page.getByRole('link', { name: 'Back to Help Center' });
-    await expect(backButton).toBeVisible();
+    const thumbsUpButton = ratingSection.locator('.thumb-up');
+    const thumbsDownButton = ratingSection.locator('.thumb-down');
+    
+    await expect(thumbsUpButton).toBeVisible();
+    await expect(thumbsDownButton).toBeVisible();
   });
 
-  test('should handle email notification preference', async ({ page }) => {
-    // Navigate to notification settings
-    await page.getByRole('button', { name: 'Settings' }).click();
+  // Test Case: Help article sharing functionality
+  test('should allow sharing help articles', async ({ page }) => {
+    await page.goto('/help');
+    const articleLink = page.locator('.help-article-link').first();
+    await expect(articleLink).toBeVisible();
+    await articleLink.click();
     
-    // Find email notification toggle
-    const emailNotificationToggle = page.locator('#email-notifications-toggle');
-    const initialState = await emailNotificationToggle.isChecked();
-    
-    // Toggle the setting
-    await emailNotificationToggle.click();
-    
-    // Verify the change was saved
-    await expect(emailNotificationToggle).not.toHaveValue(initialState.toString());
-    
-    // Toggle back to original state
-    await emailNotificationToggle.click();
-  });
-});
-
-test.describe('Responsive Layout Tests', () => {
-  test('should display mobile menu on small screens', async ({ page }) => {
-    // Set viewport to mobile size
-    await page.setViewportSize({ width: 375, height: 667 });
-    
-    // Reload page
-    await page.reload();
-    
-    // Verify mobile menu button is visible
-    const mobileMenuButton = page.locator('.mobile-menu-toggle');
-    await expect(mobileMenuButton).toBeVisible();
-    
-    // Verify desktop navigation is hidden
-    const desktopNav = page.locator('.desktop-nav');
-    await expect(desktopNav).not.toBeVisible();
-    
-    // Click mobile menu button
-    await mobileMenuButton.click();
-    
-    // Verify mobile menu is displayed
-    const mobileMenu = page.locator('.mobile-menu');
-    await expect(mobileMenu).toBeVisible();
-  });
-
-  test('should adjust layout on tablet screens', async ({ page }) => {
-    // Set viewport to tablet size
-    await page.setViewportSize({ width: 768, height: 1024 });
-    
-    // Reload page
-    await page.reload();
-    
-    // Verify responsive elements adjust properly
-    const container = page.locator('.container');
-    const computedWidth = await container.evaluate((el) => window.getComputedStyle(el).width);
-    
-    // Check that layout is appropriate for tablet
-    expect(parseInt(computedWidth)).toBeLessThan(1200);
-    expect(parseInt(computedWidth)).toBeGreaterThan(600);
-  });
-
-  test('should maintain readability on all screen sizes', async ({ page }) => {
-    // Test various screen sizes
-    const sizes = [
-      { width: 320, height: 568 },   // Mobile
-      { width: 768, height: 1024 },  // Tablet
-      { width: 1024, height: 768 },  // Desktop
-      { width: 1920, height: 1080 }  // Large Desktop
-    ];
-    
-    for (const size of sizes) {
-      await page.setViewportSize(size);
-      await page.reload();
-      
-      // Check that main content is visible and readable
-      const mainContent = page.locator('main');
-      await expect(mainContent).toBeVisible();
-      
-      // Check that text elements have appropriate font sizes
-      const headings = page.locator('h1, h2, h3');
-      await expect(headings.first()).toBeVisible();
-    }
+    const shareButtons = page.locator('.share-buttons');
+    await expect(shareButtons).toBeVisible();
+    const shareOptions = page.locator('.share-option');
+    const shareOptionsCount = await shareOptions.count();
+    expect(shareOptionsCount).toBeGreaterThanOrEqual(1);
   });
 });

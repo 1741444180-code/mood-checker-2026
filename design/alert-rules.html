@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>告警规则配置 - 心情打卡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left h1 {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .rules-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .rule-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .rule-title-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rule-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .rule-icon.critical { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); }
+        .rule-icon.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .rule-icon.info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        .rule-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .rule-title p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .action-btn.edit {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .action-btn.edit:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .action-btn.delete {
+            background: rgba(245, 87, 108, 0.1);
+            color: #f5576c;
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(245, 87, 108, 0.2);
+        }
+
+        .rule-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .rule-field {
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .rule-field-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rule-field-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(86, 171, 47, 0.15);
+            color: #56ab2f;
+        }
+
+        .status-inactive {
+            background: rgba(150, 150, 150, 0.15);
+            color: #666;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .severity-critical {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+
+        .severity-warning {
+            background: rgba(245, 87, 108, 0.15);
+            color: #f5576c;
+        }
+
+        .severity-info {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+
+        .add-rule-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 3px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            padding: 48px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-rule-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .add-rule-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .add-rule-text {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 新建规则表单 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #ddd;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px;
+            }
+
+            .header-left h1 {
+                font-size: 22px;
+            }
+
+            .rule-body {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🔔 告警规则配置</h1>
+                <p>定义和管理系统告警触发条件</p>
+            </div>
+            <button class="btn btn-primary" onclick="showAddRuleModal()">+ 新建规则</button>
+        </div>
+
+        <div class="rules-container">
+            <!-- 规则 1: 页面加载超时 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon critical">⚡</div>
+                        <div class="rule-title">
+                            <h3>页面加载超时告警</h3>
+                            <p>当页面加载时间超过阈值时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">LCP (最大内容绘制)</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">> 5.0 秒</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">连续 3 次</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-critical">严重</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书、短信</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则 2: API 响应慢 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon warning">🚀</div>
+                        <div class="rule-title">
+                            <h3>API 响应过慢告警</h3>
+                            <p>当 API 接口响应时间异常时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">API 平均响应时间</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">> 1000ms</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">连续 5 次</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-warning">警告</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书、邮件</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则 3: 错误率飙升 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon critical">⚠️</div>
+                        <div class="rule-title">
+                            <h3>错误率飙升告警</h3>
+                            <p>当 JavaScript 错误率超过阈值时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">JavaScript 错误率</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">> 5%</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">连续 2 次</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-critical">严重</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书、短信、邮件</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则 4: 资源加载失败 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon warning">📦</div>
+                        <div class="rule-title">
+                            <h3>资源加载失败告警</h3>
+                            <p>当关键资源 (JS/CSS) 加载失败时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">资源加载失败次数</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">> 10 次/分钟</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">持续 1 分钟</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-warning">警告</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则 5: 活跃用户异常 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon info">👥</div>
+                        <div class="rule-title">
+                            <h3>活跃用户异常波动告警</h3>
+                            <p>当活跃用户数异常下降时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">活跃用户数</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">下降 > 50%</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">持续 5 分钟</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-info">提示</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书、邮件</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则 6: 服务器宕机 -->
+            <div class="rule-card">
+                <div class="rule-header">
+                    <div class="rule-title-section">
+                        <div class="rule-icon critical">🖥️</div>
+                        <div class="rule-title">
+                            <h3>服务器宕机告警</h3>
+                            <p>当服务器无法访问时触发</p>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit" title="编辑">✏️</button>
+                        <button class="action-btn delete" title="删除">🗑️</button>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-field">
+                        <div class="rule-field-label">监控指标</div>
+                        <div class="rule-field-value">服务器健康检查</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">触发条件</div>
+                        <div class="rule-field-value">HTTP 状态 != 200</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">持续时间</div>
+                        <div class="rule-field-value">连续 3 次</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">严重级别</div>
+                        <span class="severity-badge severity-critical">严重</span>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">通知渠道</div>
+                        <div class="rule-field-value">飞书、短信、电话</div>
+                    </div>
+                    <div class="rule-field">
+                        <div class="rule-field-label">状态</div>
+                        <span class="status-badge status-active">启用</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新建规则卡片 -->
+            <div class="add-rule-card" onclick="showAddRuleModal()">
+                <div class="add-rule-icon">+</div>
+                <div class="add-rule-text">新建告警规则</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建规则弹窗 -->
+    <div class="modal-overlay" id="addRuleModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🔔 新建告警规则</h2>
+                <p class="modal-subtitle">配置告警触发条件和通知方式</p>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label">规则名称</label>
+                    <input type="text" class="form-input" placeholder="例如：页面加载超时告警">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">规则描述</label>
+                    <input type="text" class="form-input" placeholder="简要描述此规则的用途">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">监控指标</label>
+                        <select class="form-select">
+                            <option>页面加载时间 (LCP)</option>
+                            <option>API 响应时间</option>
+                            <option>JavaScript 错误率</option>
+                            <option>资源加载失败次数</option>
+                            <option>活跃用户数</option>
+                            <option>服务器健康状态</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">严重级别</label>
+                        <select class="form-select">
+                            <option value="critical">严重</option>
+                            <option value="warning">警告</option>
+                            <option value="info">提示</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">触发条件</label>
+                        <select class="form-select">
+                            <option>大于 (>)</option>
+                            <option>小于 (<)</option>
+                            <option>等于 (=)</option>
+                            <option>不等于 (!=)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">阈值</label>
+                        <input type="text" class="form-input" placeholder="例如：5.0s, 1000ms, 5%">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">持续时间</label>
+                        <input type="text" class="form-input" placeholder="例如：连续 3 次，持续 5 分钟">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">启用状态</label>
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0;">
+                            <div class="toggle-switch active"></div>
+                            <span style="color: #666; font-size: 14px;">启用此规则</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">通知渠道</label>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" checked> 飞书
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox"> 邮件
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox"> 短信
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox"> 电话
+                        </label>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddRuleModal()">取消</button>
+                <button class="btn btn-primary">保存规则</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAddRuleModal() {
+            document.getElementById('addRuleModal').style.display = 'flex';
+        }
+
+        function closeAddRuleModal() {
+            document.getElementById('addRuleModal').style.display = 'none';
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('addRuleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddRuleModal();
+            }
+        });
+    </script>
+</body>
+</html>

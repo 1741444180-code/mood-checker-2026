@@ -61,7 +61,7 @@ model MoodType {
   id          Int       @id @default(autoincrement())
   userId      Int?      // NULL 表示系统默认心情
   name        String    @db.VarChar(50)
-  color       String    @db.VarChar(7)   // 16进制颜色代码，如 #FFD700
+  color       String    @db.VarChar(7)   // 16 进制颜色代码，如 #FFD700
   icon        String    @db.VarChar(50)  // emoji 或图标名称
   sortOrder   Int       @default(0)
   isSystem    Boolean   @default(false)
@@ -131,5 +131,48 @@ model Comment {
   @@index([moodRecordId])
   @@index([userId])
   @@index([status])
+  @@index([createdAt])
+}
+
+/// 帮助中心文章表
+model HelpArticle {
+  id            String    @id @default(cuid())
+  title         String    @db.VarChar(200)
+  content       String    @db.Text
+  category      String    @db.VarChar(50)
+  tags          String[]  // 标签数组
+  views         Int       @default(0)
+  helpful       Int       @default(0)
+  notHelpful    Int       @default(0)
+  published     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // 关系
+  feedback      HelpFeedback[]
+  
+  // 索引
+  @@index([category])
+  @@index([published])
+  @@index([createdAt])
+  @@index([title])
+}
+
+/// 帮助中心反馈表
+model HelpFeedback {
+  id            String    @id @default(cuid())
+  articleId     String?
+  userId        String?
+  rating        String    @db.VarChar(20) // helpful/notHelpful
+  comment       String?   @db.Text
+  email         String?   @db.VarChar(100)
+  createdAt     DateTime  @default(now())
+  
+  // 关系
+  article       HelpArticle? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  
+  // 索引
+  @@index([articleId])
+  @@index([rating])
   @@index([createdAt])
 }

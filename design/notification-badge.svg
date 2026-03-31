@@ -1,0 +1,110 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 渐变定义 -->
+    <linearGradient id="bellGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="friendGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="taskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="achievementGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- 样式说明 -->
+  <style>
+    .bell-default { fill: url(#bellGradient); }
+    .bell-unread { fill: url(#bellGradient); animation: shake 0.5s ease-in-out infinite; }
+    .badge { fill: #ff4757; }
+    .badge-text { fill: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 12px; text-anchor: middle; dominant-baseline: central; }
+    
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+  </style>
+  
+  <!-- 铃铛图标 - 默认状态 -->
+  <g id="bell-default" transform="translate(20, 20)">
+    <path class="bell-default" d="M80 20c-11.05 0-20 8.95-20 20v16.23c0 2.67-1.33 5.17-3.53 6.68L44.24 71.42C39.05 75 37 81.67 40.57 86.86c2.52 3.66 6.63 5.64 10.79 5.64h57.28c4.16 0 8.27-1.98 10.79-5.64 3.57-5.19 1.52-11.86-3.67-15.45l-12.23-8.51C101.33 61.4 100 58.9 100 56.23V40c0-11.05-8.95-20-20-20z" filter="url(#shadow)"/>
+    <circle cx="80" cy="140" r="8" class="bell-default"/>
+  </g>
+  
+  <!-- 铃铛图标 - 有未读状态 -->
+  <g id="bell-unread" transform="translate(20, 20)">
+    <path class="bell-unread" d="M80 20c-11.05 0-20 8.95-20 20v16.23c0 2.67-1.33 5.17-3.53 6.68L44.24 71.42C39.05 75 37 81.67 40.57 86.86c2.52 3.66 6.63 5.64 10.79 5.64h57.28c4.16 0 8.27-1.98 10.79-5.64 3.57-5.19 1.52-11.86-3.67-15.45l-12.23-8.51C101.33 61.4 100 58.9 100 56.23V40c0-11.05-8.95-20-20-20z" filter="url(#shadow)"/>
+    <circle cx="80" cy="140" r="8" class="bell-unread"/>
+    <!-- 红点徽章 -->
+    <circle cx="115" cy="35" r="14" class="badge"/>
+  </g>
+  
+  <!-- 数字徽章样式 -->
+  <g id="badge-count" transform="translate(20, 20)">
+    <path class="bell-default" d="M80 20c-11.05 0-20 8.95-20 20v16.23c0 2.67-1.33 5.17-3.53 6.68L44.24 71.42C39.05 75 37 81.67 40.57 86.86c2.52 3.66 6.63 5.64 10.79 5.64h57.28c4.16 0 8.27-1.98 10.79-5.64 3.57-5.19 1.52-11.86-3.67-15.45l-12.23-8.51C101.33 61.4 100 58.9 100 56.23V40c0-11.05-8.95-20-20-20z" filter="url(#shadow)"/>
+    <circle cx="80" cy="140" r="8" class="bell-default"/>
+    <!-- 数字徽章 -->
+    <circle cx="120" cy="30" r="18" class="badge"/>
+    <text x="120" y="30" class="badge-text">9+</text>
+  </g>
+  
+  <!-- 通知类型图标 - 系统 -->
+  <g id="icon-system" transform="translate(20, 20)">
+    <circle cx="80" cy="80" r="60" fill="url(#bellGradient)" filter="url(#shadow)"/>
+    <text x="80" y="90" font-size="50" text-anchor="middle" fill="white">⚙️</text>
+  </g>
+  
+  <!-- 通知类型图标 - 好友 -->
+  <g id="icon-friend" transform="translate(20, 20)">
+    <circle cx="80" cy="80" r="60" fill="url(#friendGradient)" filter="url(#shadow)"/>
+    <text x="80" y="90" font-size="50" text-anchor="middle" fill="white">👥</text>
+  </g>
+  
+  <!-- 通知类型图标 - 任务 -->
+  <g id="icon-task" transform="translate(20, 20)">
+    <circle cx="80" cy="80" r="60" fill="url(#taskGradient)" filter="url(#shadow)"/>
+    <text x="80" y="90" font-size="50" text-anchor="middle" fill="white">📋</text>
+  </g>
+  
+  <!-- 通知类型图标 - 成就 -->
+  <g id="icon-achievement" transform="translate(20, 20)">
+    <circle cx="80" cy="80" r="60" fill="url(#achievementGradient)" filter="url(#shadow)"/>
+    <text x="80" y="90" font-size="50" text-anchor="middle" fill="white">🏆</text>
+  </g>
+  
+  <!-- 红点徽章单独样式 -->
+  <g id="badge-dot" transform="translate(20, 20)">
+    <circle cx="80" cy="80" r="10" class="badge"/>
+  </g>
+  
+  <!-- 徽章计数样式说明 -->
+  <g id="badge-styles" transform="translate(20, 20)">
+    <!-- 1 位数 -->
+    <circle cx="30" cy="30" r="14" class="badge"/>
+    <text x="30" y="30" class="badge-text">5</text>
+    
+    <!-- 2 位数 -->
+    <circle cx="80" cy="30" r="16" class="badge"/>
+    <text x="80" y="30" class="badge-text">99</text>
+    
+    <!-- 99+ -->
+    <circle cx="130" cy="30" r="18" class="badge"/>
+    <text x="130" y="30" class="badge-text">99+</text>
+  </g>
+</svg>
