@@ -33,9 +33,33 @@ export default function DashboardPage() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedMood === null) return;
-    setSubmitted(true);
+    const mood = MOODS.find(m => m.id === selectedMood);
+    if (!mood) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/moods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          moodLevel: mood.id,
+          moodEmoji: mood.emoji,
+          moodLabel: mood.label,
+          note: note || undefined,
+          tags: selectedTags.length > 0 ? selectedTags : undefined,
+        }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error('打卡失败:', err);
+    }
   };
 
   const handleReset = () => {
