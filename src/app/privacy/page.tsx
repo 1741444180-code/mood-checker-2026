@@ -2,50 +2,42 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Box, Typography } from '@mui/material';
+import { useTranslation } from '@/hooks/useTranslation';
+import BottomNav from '@/components/layout/BottomNav';
 
 export default function PrivacyPage() {
+  const { language } = useTranslation();
+  const isZh = language === 'zh-CN';
+
   return (
-    <Box className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50 pb-20">
       <nav className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link href="/" className="text-xl font-bold text-purple-600">← 返回首页</Link>
+          <Link href="/" className="text-lg font-bold text-purple-600">← {isZh ? '返回首页' : 'Back to Home'}</Link>
         </div>
       </nav>
-      <Box className="max-w-4xl mx-auto px-4 py-8">
-        <Typography variant="h3" sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.5rem' } }} className="font-bold mb-6 sm:mb-8 text-center">
-          隐私政策
-        </Typography>
-        <Box className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg space-y-4">
-          <Typography variant="h5" sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.5rem' } }} className="font-bold">
-            1. 信息收集
-          </Typography>
-          <Typography>
-            我们收集您注册时提供的邮箱、用户名等信息，以及您记录的心情数据。
-          </Typography>
-          
-          <Typography variant="h5" sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.5rem' } }} className="font-bold">
-            2. 信息使用
-          </Typography>
-          <Typography>
-            我们仅使用您的信息为您提供心情记录和分析服务。
-          </Typography>
-          
-          <Typography variant="h5" sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.5rem' } }} className="font-bold">
-            3. 信息保护
-          </Typography>
-          <Typography>
-            我们采取严格的安全措施保护您的个人信息。
-          </Typography>
-          
-          <Typography variant="h5" sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.5rem' } }} className="font-bold">
-            4. 联系我们
-          </Typography>
-          <Typography>
-            如有隐私相关问题，请联系我们的客服团队。
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">{isZh ? '隐私政策' : 'Privacy Policy'}</h1>
+        <div className="bg-white rounded-xl shadow p-6 space-y-6 text-sm text-gray-700 leading-relaxed">
+          <section>
+            <h2 className="text-lg font-semibold mb-2">{isZh ? '数据收集' : 'Data Collection'}</h2>
+            <p>{isZh ? '我们仅收集您主动提供的心情记录数据，包括心情类型、备注文字和标签信息。' : 'We only collect mood data you actively provide, including mood type, notes, and tags.'}</p>
+          </section>
+          <section>
+            <h2 className="text-lg font-semibold mb-2">{isZh ? '数据存储' : 'Data Storage'}</h2>
+            <p>{isZh ? '所有数据采用加密存储，我们不会将您的个人数据出售或分享给第三方。' : 'All data is encrypted. We never sell or share your personal data with third parties.'}</p>
+          </section>
+          <section>
+            <h2 className="text-lg font-semibold mb-2">{isZh ? '数据删除' : 'Data Deletion'}</h2>
+            <p>{isZh ? '您可以随时在设置中删除您的账号和所有相关数据。删除操作不可恢复。' : 'You can delete your account and all data anytime in Settings. This action is irreversible.'}</p>
+          </section>
+          <section>
+            <h2 className="text-lg font-semibold mb-2">{isZh ? '联系我们' : 'Contact Us'}</h2>
+            <p>{isZh ? '如有任何隐私相关问题，请通过帮助中心联系我们。' : 'For any privacy concerns, please reach out via the Help Center.'}</p>
+          </section>
+        </div>
+      </div>
+      <BottomNav />
+    </div>
   );
 }

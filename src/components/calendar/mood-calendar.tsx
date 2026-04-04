@@ -1,23 +1,33 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography } from '@mui/material';
 
-interface MoodCalendarProps {
-  data?: any[];
-}
+export default function MoodCalendar() {
+  const days = Array.from({ length: 30 }, (_, i) => i + 1);
+  const moodEmojis: Record<number, string> = {
+    1: '😄', 3: '😊', 5: '😐', 7: '😄', 10: '😔',
+    12: '😊', 15: '😄', 18: '😰', 20: '😊', 22: '😄',
+    25: '😐', 27: '😊', 28: '😄', 30: '😊',
+  };
 
-export default function MoodCalendar({ data = [] }: MoodCalendarProps) {
   return (
-    <Box className="bg-white rounded-2xl shadow-lg p-6">
-      <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-bold mb-3 sm:mb-4">
-        心情日历
-      </Typography>
-      <Box className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-        <Typography className="text-gray-400">
-          日历开发中...
-        </Typography>
-      </Box>
-    </Box>
+    <div className="bg-white rounded-xl shadow p-4">
+      <h3 className="text-sm font-semibold mb-3">本月打卡日历</h3>
+      <div className="grid grid-cols-7 gap-1">
+        {['日', '一', '二', '三', '四', '五', '六'].map(d => (
+          <div key={d} className="text-center text-xs text-gray-400 py-1">{d}</div>
+        ))}
+        {days.map(day => (
+          <div
+            key={day}
+            className={`text-center py-1.5 rounded text-xs ${
+              moodEmojis[day] ? 'bg-purple-50' : 'bg-gray-50'
+            }`}
+          >
+            {moodEmojis[day] || day}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -21,12 +22,12 @@ export default function RegisterPage() {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('两次密码输入不一致');
+      setError(t('errors.invalid'));
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('密码至少6位');
+      setError(t('errors.invalid'));
       return;
     }
 
@@ -45,81 +46,87 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        // 保存 token
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        alert('注册成功！即将跳转到首页');
         router.push('/');
       } else {
-        setError(data.error || '注册失败，请重试');
+        setError(data.error || t('errors.server'));
       }
     } catch (err) {
-      setError('网络错误，请检查连接后重试');
+      setError(t('errors.network'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
-      <Box className="bg-white p-4 sm:p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 sm:mx-auto">
-        <Typography variant="h4" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' } }} className="font-bold text-center mb-4 sm:mb-6">
-          免费注册
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md mx-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
+          {t('auth.registerTitle')}
+        </h1>
 
         {error && (
-          <Alert severity="error" className="mb-4" onClose={() => setError('')}>
-            {error}
-          </Alert>
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex justify-between items-center">
+            <span>{error}</span>
+            <button onClick={() => setError('')} className="text-red-500 hover:text-red-700 ml-2">✕</button>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <TextField
-            fullWidth
-            label="用户名"
-            value={formData.username}
-            onChange={(e) => setFormData({...formData, username: e.target.value})}
-            required
-          />
-          <TextField
-            fullWidth
-            label="邮箱"
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            required
-          />
-          <TextField
-            fullWidth
-            label="密码"
-            type="password"
-            value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
-            required
-            helperText="至少6位"
-          />
-          <TextField
-            fullWidth
-            label="确认密码"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-            required
-          />
-          <Button
-            fullWidth
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.username')}</label>
+            <input
+              type="text"
+              value={formData.username}
+              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">≥ 6 characters</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.confirmPassword')}</label>
+            <input
+              type="password"
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <button
             type="submit"
-            variant="contained"
             disabled={loading}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600"
+            className="w-full py-3 rounded-lg text-white font-medium bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            {loading ? '注册中...' : '注册'}
-          </Button>
+            {loading ? t('common.loading') : t('auth.register')}
+          </button>
         </form>
-        <Typography className="text-center mt-4">
-          已有账号？<Link href="/auth/login" className="text-purple-600">立即登录</Link>
-        </Typography>
-      </Box>
-    </Box>
+        <p className="text-center mt-4 text-gray-600">
+          {t('auth.hasAccount')} <Link href="/auth/login" className="text-purple-600 font-medium hover:underline">{t('auth.loginNow')}</Link>
+        </p>
+      </div>
+    </div>
   );
 }
