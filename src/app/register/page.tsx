@@ -47,7 +47,7 @@ export default function RegisterPage() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         alert('注册成功！即将跳转到首页');
-        router.push('/dashboard');
+        router.push('/');
       } else {
         setError(data.error || '注册失败，请重试');
       }
