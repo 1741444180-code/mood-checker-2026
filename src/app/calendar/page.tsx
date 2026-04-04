@@ -1,4 +1,4 @@
-import { MoodCalendar } from '@/components/calendar/mood-calendar';
+import MoodCalendar from '@/components/calendar/mood-calendar';
 
 // 模拟心情数据
 const mockMoodRecords = [
@@ -15,17 +15,17 @@ export default function CalendarPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">心情日历</h1>
-          <p className="text-gray-600 mt-2">查看您的心情历史记录</p>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">心情日历</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">查看您的心情历史记录</p>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6">
           <MoodCalendar moodRecords={mockMoodRecords} />
         </div>
         
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h2 className="text-xl font-semibold mb-4">使用提示</h2>
             <ul className="list-disc pl-5 space-y-2 text-gray-600">
               <li>点击日期可查看当天心情详情</li>
@@ -35,16 +35,16 @@ export default function CalendarPage() {
             </ul>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">打卡建议</h2>
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">打卡建议</h2>
             <p className="text-gray-600">
               每天花几分钟记录心情，有助于更好地了解自己的情绪变化。
               坚持打卡可以帮助您发现情绪模式，提升自我认知。
             </p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">隐私保护</h2>
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">隐私保护</h2>
             <p className="text-gray-600">
               您的心情数据仅对您本人可见，
               我们不会向第三方分享您的个人信息。

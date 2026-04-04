@@ -3,17 +3,19 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Home, BarChart3, User, Settings } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function BottomNav() {
   const pathname = usePathname();
-  
+  const { t } = useTranslation();
+
   const navItems = [
-    { href: '/', icon: Home, label: '首页' },
-    { href: '/stats', icon: BarChart3, label: '统计' },
-    { href: '/profile', icon: User, label: '我的' },
-    { href: '/settings', icon: Settings, label: '设置' },
+    { href: '/', icon: Home, label: t('nav.home') },
+    { href: '/stats', icon: BarChart3, label: t('nav.stats') },
+    { href: '/profile', icon: User, label: t('nav.profile') },
+    { href: '/settings', icon: Settings, label: t('nav.settings') },
   ];
-  
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background border-t md:hidden z-50 safe-area-bottom">
       <div className="grid grid-cols-4">

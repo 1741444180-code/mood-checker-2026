@@ -8,7 +8,39 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
-    "submit": "Submit"
+    "submit": "Submit",
+    "back": "Back",
+    "search": "Search",
+    "noData": "No data available",
+    "retry": "Retry",
+    "more": "More",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "Home",
+    "stats": "Stats",
+    "profile": "Profile",
+    "settings": "Settings",
+    "checkin": "Check-in",
+    "calendar": "Calendar",
+    "friends": "Friends",
+    "messages": "Messages"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Sign Up",
+    "logout": "Log Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "loginTitle": "Welcome Back",
+    "registerTitle": "Create Account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginNow": "Log in now",
+    "registerNow": "Sign up now",
+    "forgotPassword": "Forgot password?"
   },
   "checkin": {
     "title": "Mood Check-in",
@@ -16,6 +48,8 @@
     "submit": "Submit Check-in",
     "success": "Check-in successful!",
     "error": "Check-in failed, please try again",
+    "todayMood": "Today's Mood",
+    "addNote": "Add a note...",
     "mood": {
       "1": "Very Bad",
       "2": "Not Good",
@@ -29,7 +63,73 @@
     "totalCheckIns": "Total Check-ins",
     "consecutiveDays": "Consecutive Days",
     "averageMood": "Average Mood",
-    "moodDistribution": "Mood Distribution"
+    "moodDistribution": "Mood Distribution",
+    "weeklyTrend": "Weekly Trend",
+    "monthlyOverview": "Monthly Overview"
+  },
+  "calendar": {
+    "title": "Mood Calendar",
+    "today": "Today",
+    "noRecord": "No record",
+    "viewDetails": "View Details"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "avatar": "Avatar",
+    "nickname": "Nickname",
+    "bio": "Bio",
+    "joinDate": "Joined",
+    "totalDays": "Total Check-in Days",
+    "achievements": "Achievements"
+  },
+  "settings": {
+    "title": "Settings",
+    "notification": "Notifications",
+    "dailyReminder": "Daily Reminder",
+    "reminderTime": "Reminder Time",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "language": "Language",
+    "currentLanguage": "Current Language",
+    "privacy": "Privacy",
+    "about": "About",
+    "version": "Version",
+    "feedback": "Feedback",
+    "logout": "Log Out",
+    "backToHome": "Back to Home"
+  },
+  "friends": {
+    "title": "Friends",
+    "addFriend": "Add Friend",
+    "friendList": "Friend List",
+    "noFriends": "No friends yet",
+    "searchFriend": "Search friends"
+  },
+  "messages": {
+    "title": "Messages",
+    "noMessages": "No messages yet",
+    "sendMessage": "Send Message",
+    "placeholder": "Type a message..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "todayCheckin": "Today's Check-in",
+    "recentActivity": "Recent Activity",
+    "quickActions": "Quick Actions"
+  },
+  "help": {
+    "title": "Help Center",
+    "faq": "FAQ",
+    "contact": "Contact Us",
+    "tutorial": "Tutorial"
+  },
+  "privacy": {
+    "title": "Privacy Settings",
+    "publicProfile": "Public Profile",
+    "showMood": "Show Mood",
+    "showStats": "Show Stats"
   },
   "user": {
     "language": "Language Settings",

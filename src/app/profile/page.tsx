@@ -59,8 +59,8 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">个人中心</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">个人中心</h1>
           <nav className="hidden md:block">
             <ul className="flex space-x-8">
               <li>
@@ -91,7 +91,7 @@ export default function ProfilePage() {
         />
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mt-6 sm:mt-8">
           <StatCard 
             title="总打卡" 
             value={userData.totalCheckins} 
@@ -119,7 +119,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Badges Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8 mt-8">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8 mt-6 sm:mt-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">获得徽章</h3>
           <div className="flex flex-wrap gap-3">
             {userData.badges.map((badge, index) => (
@@ -140,9 +140,9 @@ export default function ProfilePage() {
         />
 
         {/* Action Buttons */}
-        <div className="bg-white rounded-xl shadow-md p-6 mt-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">快速操作</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6 sm:mt-8">
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">快速操作</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             <button 
               onClick={() => router.push('/settings')}
               className="border border-gray-200 hover:bg-gray-50 text-gray-800 py-3 px-4 rounded-md transition-colors flex items-center justify-center"

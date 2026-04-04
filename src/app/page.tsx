@@ -16,14 +16,15 @@ export default function HomePage() {
       {/* 导航栏 */}
       <nav className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             <Link href="/" className="flex items-center space-x-2">
-              <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 32 }} />
-              <Typography variant="h6" className="text-purple-600 font-bold">
+              <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 28 }} />
+              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} className="text-purple-600 font-bold">
                 心情打卡
               </Typography>
             </Link>
-            <div className="flex items-center space-x-4">
+            {/* 桌面端导航 */}
+            <div className="hidden sm:flex items-center space-x-4">
               <Link href="/help" className="text-gray-600 hover:text-purple-600 transition-colors">
                 帮助中心
               </Link>
@@ -40,36 +41,50 @@ export default function HomePage() {
                 免费注册
               </Link>
             </div>
+            {/* 移动端导航 */}
+            <div className="flex sm:hidden items-center space-x-2">
+              <Link href="/auth/login" className="text-purple-600 text-sm font-medium">
+                登录
+              </Link>
+              <Link
+                href="/auth/register"
+                className="bg-purple-600 text-white px-4 py-1.5 rounded-full text-sm font-medium"
+              >
+                注册
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero 区域 */}
-      <section className="py-20">
+      <section className="py-10 sm:py-16 md:py-20">
         <Container maxWidth="md">
-          <Box className="text-center">
+          <Box className="text-center px-4 sm:px-0">
             <Typography
               variant="h1"
-              className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent"
+              sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3.75rem' }, lineHeight: 1.2 }}
+              className="font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent"
             >
               记录每一天的心情
             </Typography>
             <Typography
               variant="h5"
-              className="text-gray-600 mb-10"
+              sx={{ fontSize: { xs: '0.95rem', sm: '1.125rem', md: '1.5rem' } }}
+              className="text-gray-600 mb-6 sm:mb-10"
             >
               追踪情绪变化，发现内心规律，成为更好的自己
             </Typography>
-            <Box className="flex justify-center gap-4">
+            <Box className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
               <Link
                 href="/auth/register"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all hover:scale-105"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-semibold hover:shadow-xl transition-all hover:scale-105 text-center"
               >
                 开始记录心情
               </Link>
               <Link
                 href="/auth/login"
-                className="bg-white text-purple-600 px-10 py-4 rounded-full text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition-all"
+                className="bg-white text-purple-600 px-6 py-3 sm:px-10 sm:py-4 rounded-full text-base sm:text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition-all text-center"
               >
                 立即登录
               </Link>
@@ -81,25 +96,25 @@ export default function HomePage() {
       {/* 核心功能 */}
       <section className="py-16 bg-white">
         <Container maxWidth="lg">
-          <Typography variant="h3" className="text-center font-bold mb-4 text-gray-900">
+          <Typography variant="h3" sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.5rem' } }} className="text-center font-bold mb-3 sm:mb-4 text-gray-900">
             为什么选择心情打卡？
           </Typography>
-          <Typography variant="h6" className="text-center text-gray-600 mb-12">
+          <Typography variant="h6" sx={{ fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' } }} className="text-center text-gray-600 mb-6 sm:mb-12">
             全方位的情绪管理工具，帮助您更好地了解自己
           </Typography>
           
-          <Grid container spacing={6}>
+          <Grid container spacing={{ xs: 3, sm: 4, md: 6 }}>
             {/* 功能 1 */}
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <EmojiEmotionsIcon className="text-purple-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   每日心情记录
                 </Typography>
                 <Typography className="text-gray-600">
@@ -112,13 +127,13 @@ export default function HomePage() {
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <TrendingUpIcon className="text-indigo-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <TrendingUpIcon className="text-indigo-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   数据分析
                 </Typography>
                 <Typography className="text-gray-600">
@@ -131,13 +146,13 @@ export default function HomePage() {
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <CalendarTodayIcon className="text-pink-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <CalendarTodayIcon className="text-pink-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   心情日历
                 </Typography>
                 <Typography className="text-gray-600">
@@ -150,13 +165,13 @@ export default function HomePage() {
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <PeopleIcon className="text-purple-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <PeopleIcon className="text-purple-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   好友互动
                 </Typography>
                 <Typography className="text-gray-600">
@@ -169,13 +184,13 @@ export default function HomePage() {
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <BadgeIcon className="text-indigo-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <BadgeIcon className="text-indigo-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   徽章系统
                 </Typography>
                 <Typography className="text-gray-600">
@@ -188,13 +203,13 @@ export default function HomePage() {
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
-                className="p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
+                className="p-4 sm:p-6 md:p-8 text-center rounded-2xl hover:shadow-xl transition-all hover:-translate-y-2"
                 style={{ height: '100%' }}
               >
-                <Box className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <InsightsIcon className="text-pink-600" style={{ fontSize: 32 }} />
+                <Box className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <InsightsIcon className="text-pink-600" style={{ fontSize: 28 }} />
                 </Box>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" sx={{ fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' } }} className="font-semibold mb-2 sm:mb-3">
                   智能洞察
                 </Typography>
                 <Typography className="text-gray-600">
@@ -207,18 +222,18 @@ export default function HomePage() {
       </section>
 
       {/* CTA 区域 */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-indigo-600">
+      <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-r from-purple-600 to-indigo-600">
         <Container maxWidth="md">
-          <Box className="text-center text-white">
-            <Typography variant="h3" className="font-bold mb-4">
+          <Box className="text-center text-white px-4 sm:px-0">
+            <Typography variant="h3" sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.5rem' } }} className="font-bold mb-3 sm:mb-4">
               开始您的心情管理之旅
             </Typography>
-            <Typography variant="h6" className="mb-10 text-purple-100">
+            <Typography variant="h6" sx={{ fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' } }} className="mb-6 sm:mb-10 text-purple-100">
               加入 10 万 + 用户，一起关注心理健康
             </Typography>
             <Link
               href="/auth/register"
-              className="inline-block bg-white text-purple-600 px-12 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all hover:scale-105"
+              className="inline-block bg-white text-purple-600 px-8 py-3 sm:px-12 sm:py-4 rounded-full text-base sm:text-lg font-semibold hover:shadow-xl transition-all hover:scale-105"
             >
               免费开始使用
             </Link>
@@ -227,19 +242,19 @@ export default function HomePage() {
       </section>
 
       {/* 页脚 */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
+      <footer className="bg-gray-900 text-gray-300 py-8 sm:py-12">
         <Container maxWidth="lg">
-          <Grid container spacing={8}>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" className="text-white font-semibold mb-4">
+          <Grid container spacing={{ xs: 4, sm: 6, md: 8 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }} className="text-white font-semibold mb-3 sm:mb-4">
                 心情打卡
               </Typography>
               <Typography className="text-sm">
                 记录每一天的心情，成为更好的自己
               </Typography>
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" className="text-white font-semibold mb-4">
+            <Grid item xs={6} sm={6} md={3}>
+              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }} className="text-white font-semibold mb-3 sm:mb-4">
                 功能
               </Typography>
               <ul className="space-y-2 text-sm">
@@ -248,8 +263,8 @@ export default function HomePage() {
                 <li><Link href="/badges" className="hover:text-white transition-colors">徽章系统</Link></li>
               </ul>
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" className="text-white font-semibold mb-4">
+            <Grid item xs={6} sm={6} md={3}>
+              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }} className="text-white font-semibold mb-3 sm:mb-4">
                 支持
               </Typography>
               <ul className="space-y-2 text-sm">
@@ -258,8 +273,8 @@ export default function HomePage() {
                 <li><Link href="/privacy" className="hover:text-white transition-colors">隐私政策</Link></li>
               </ul>
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" className="text-white font-semibold mb-4">
+            <Grid item xs={6} sm={6} md={3}>
+              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }} className="text-white font-semibold mb-3 sm:mb-4">
                 账户
               </Typography>
               <ul className="space-y-2 text-sm">

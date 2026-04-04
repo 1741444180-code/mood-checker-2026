@@ -1,10 +1,23 @@
 // src/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { verifyPassword } from '@/utils/encryption';
-import { generateToken } from '@/lib/jwt';
 
-const prisma = new PrismaClient();
+// 测试账号（无数据库模式）
+const TEST_USERS = [
+  {
+    id: 1,
+    username: 'jianquan',
+    email: 'jianquan@test.com',
+    password: 'jq123456',
+    avatar: null,
+  },
+  {
+    id: 2,
+    username: 'test',
+    email: 'test@test.com',
+    password: 'test123',
+    avatar: null,
+  },
+];
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,43 +26,32 @@ export async function POST(request: NextRequest) {
     // 验证必填字段
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: '请输入邮箱和密码' },
         { status: 400 }
       );
     }
 
-    // 查找用户（支持邮箱或用户名登录）
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [{ email }, { username: email }],
-      },
-    });
+    // 查找测试用户（支持邮箱或用户名登录）
+    const user = TEST_USERS.find(
+      (u) => (u.email === email || u.username === email) && u.password === password
+    );
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: '邮箱或密码错误' },
         { status: 401 }
       );
     }
 
-    // 验证密码
-    const isValid = await verifyPassword(password, user.password);
-
-    if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
-
-    // 生成 JWT token
-    const token = generateToken({
+    // 生成简单的 mock token
+    const token = Buffer.from(JSON.stringify({
       userId: user.id,
       email: user.email,
       username: user.username,
-    });
+      exp: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7天有效
+    })).toString('base64');
 
-    // 返回用户信息（不包含密码）
+    // 返回用户信息
     return NextResponse.json({
       success: true,
       token,
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Login failed' },
+      { error: '登录失败，请重试' },
       { status: 500 }
     );
   }

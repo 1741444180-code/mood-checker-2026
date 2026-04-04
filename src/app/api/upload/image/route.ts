@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { uploadMultipleImages, isValidImageFormat, isValidImageSize } from '@/src/lib/image-upload';
+import { uploadMultipleImages, isValidImageFormat, isValidImageSize } from '@/lib/image-upload';
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,8 +91,4 @@ export async function POST(request: NextRequest) {
 }
 
 // 允许 FormData 解析
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Next.js App Router 自动处理 FormData

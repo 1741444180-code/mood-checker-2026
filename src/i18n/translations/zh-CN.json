@@ -8,7 +8,39 @@
     "save": "保存",
     "delete": "删除",
     "edit": "编辑",
-    "submit": "提交"
+    "submit": "提交",
+    "back": "返回",
+    "search": "搜索",
+    "noData": "暂无数据",
+    "retry": "重试",
+    "more": "更多",
+    "close": "关闭"
+  },
+  "nav": {
+    "home": "首页",
+    "stats": "统计",
+    "profile": "我的",
+    "settings": "设置",
+    "checkin": "打卡",
+    "calendar": "日历",
+    "friends": "好友",
+    "messages": "消息"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "username": "用户名",
+    "loginTitle": "欢迎回来",
+    "registerTitle": "创建账号",
+    "noAccount": "没有账号？",
+    "hasAccount": "已有账号？",
+    "loginNow": "立即登录",
+    "registerNow": "立即注册",
+    "forgotPassword": "忘记密码？"
   },
   "checkin": {
     "title": "心情打卡",
@@ -16,6 +48,8 @@
     "submit": "提交打卡",
     "success": "打卡成功！",
     "error": "打卡失败，请重试",
+    "todayMood": "今日心情",
+    "addNote": "添加备注...",
     "mood": {
       "1": "非常糟糕",
       "2": "不太好",
@@ -29,7 +63,73 @@
     "totalCheckIns": "总打卡次数",
     "consecutiveDays": "连续打卡天数",
     "averageMood": "平均心情",
-    "moodDistribution": "心情分布"
+    "moodDistribution": "心情分布",
+    "weeklyTrend": "本周趋势",
+    "monthlyOverview": "月度概览"
+  },
+  "calendar": {
+    "title": "心情日历",
+    "today": "今天",
+    "noRecord": "暂无记录",
+    "viewDetails": "查看详情"
+  },
+  "profile": {
+    "title": "个人中心",
+    "editProfile": "编辑资料",
+    "avatar": "头像",
+    "nickname": "昵称",
+    "bio": "个人简介",
+    "joinDate": "加入时间",
+    "totalDays": "打卡总天数",
+    "achievements": "成就"
+  },
+  "settings": {
+    "title": "设置",
+    "notification": "通知设置",
+    "dailyReminder": "每日提醒",
+    "reminderTime": "提醒时间",
+    "theme": "主题",
+    "darkMode": "深色模式",
+    "language": "语言设置",
+    "currentLanguage": "当前语言",
+    "privacy": "隐私设置",
+    "about": "关于",
+    "version": "版本",
+    "feedback": "意见反馈",
+    "logout": "退出登录",
+    "backToHome": "返回首页"
+  },
+  "friends": {
+    "title": "好友",
+    "addFriend": "添加好友",
+    "friendList": "好友列表",
+    "noFriends": "暂无好友",
+    "searchFriend": "搜索好友"
+  },
+  "messages": {
+    "title": "消息",
+    "noMessages": "暂无消息",
+    "sendMessage": "发送消息",
+    "placeholder": "输入消息..."
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "welcome": "欢迎回来",
+    "todayCheckin": "今日打卡",
+    "recentActivity": "最近活动",
+    "quickActions": "快捷操作"
+  },
+  "help": {
+    "title": "帮助中心",
+    "faq": "常见问题",
+    "contact": "联系我们",
+    "tutorial": "使用教程"
+  },
+  "privacy": {
+    "title": "隐私设置",
+    "publicProfile": "公开资料",
+    "showMood": "展示心情",
+    "showStats": "展示统计"
   },
   "user": {
     "language": "语言设置",

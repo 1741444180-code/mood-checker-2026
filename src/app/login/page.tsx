@@ -8,13 +8,13 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">登录</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">登录</h1>
           <p className="mt-2 text-gray-600">
             输入您的信息以继续
           </p>
         </div>
         
-        <div className="bg-white shadow rounded-lg p-8">
+        <div className="bg-white shadow rounded-lg p-4 sm:p-6 md:p-8">
           <form className="space-y-6">
             <div>
               <Label htmlFor="email">邮箱</Label>

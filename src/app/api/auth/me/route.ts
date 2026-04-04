@@ -1,59 +1,49 @@
 // src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { verifyToken, getTokenFromHeader } from '@/lib/jwt';
-
-const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-    // 从请求头获取 token
     const authHeader = request.headers.get('authorization');
-    const token = getTokenFromHeader(authHeader);
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: '未登录' },
         { status: 401 }
       );
     }
 
-    // 验证 token
-    const payload = verifyToken(token);
+    const token = authHeader.replace('Bearer ', '');
 
-    if (!payload) {
+    // 解析 mock token
+    try {
+      const payload = JSON.parse(Buffer.from(token, 'base64').toString());
+
+      if (payload.exp < Date.now()) {
+        return NextResponse.json(
+          { error: 'Token 已过期' },
+          { status: 401 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        user: {
+          id: payload.userId,
+          username: payload.username,
+          email: payload.email,
+          createdAt: '2026-03-28T00:00:00Z',
+        },
+      });
+    } catch {
       return NextResponse.json(
-        { error: 'Invalid or expired token' },
+        { error: 'Token 无效' },
         { status: 401 }
       );
     }
-
-    // 查找用户
-    const user = await prisma.user.findUnique({
-      where: { id: payload.userId },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        createdAt: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      user,
-    });
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json(
-      { error: 'Failed to get user info' },
+      { error: '获取用户信息失败' },
       { status: 500 }
     );
   }
